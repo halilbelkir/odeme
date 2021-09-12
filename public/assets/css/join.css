@@ -1,0 +1,77 @@
+
+.btn-red:hover,
+.btn-red:focus
+{
+    color: #fff;
+    background-color: #dd0815d1;
+    border-color: #dd0815d1;
+    transition: .2s;
+}
+
+.btn-red
+{
+    transition: .2s;
+    color: #fff;
+    background-color: #dd0815;
+    border-color: #dd0815;
+}
+
+.color-red
+{
+    color: #dd0815;
+}
+
+
+
+.form-floating>.form-control
+{
+    padding: 5px 10px;
+}
+
+.form-floating>label
+{
+    font-size: 14px;
+    padding: 12px 10px;
+}
+
+.form-floating>.form-control, .form-floating>.form-select
+{
+    font-size: 14px;
+    height: calc(43px + 2px);
+    line-height: 1.25;
+}
+
+.form-floating>.form-control:-webkit-autofill
+{
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.form-control:focus
+{
+    border-color: #dd08151a;
+    box-shadow: none;
+}
+
+.form-group
+{
+    margin-bottom: 10px;
+}
+
+.input-error
+{
+    color: #dd0815;
+    font-size: 14px;
+}
+
+.loading
+{
+    position: fixed;
+    z-index: 99999999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #dcdcdc63;
+    display: none;
+}

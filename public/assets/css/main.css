@@ -1,0 +1,156 @@
+.b-example-divider {
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.form-control-dark {
+    color: #fff;
+    background-color: var(--bs-dark);
+    border-color: var(--bs-gray);
+}
+.form-control-dark:focus {
+    color: #fff;
+    background-color: var(--bs-dark);
+    border-color: #fff;
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+}
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.text-small {
+    font-size: 85%;
+}
+
+.dropdown-toggle {
+    outline: 0;
+}
+.bg-red
+{
+    background-color: #bb0e0f;
+}
+@media (max-width: 991.98px) {
+    .offcanvas-collapse {
+        position: fixed;
+        top: 56px; /* Height of navbar */
+        bottom: 0;
+        left: 100%;
+        width: 100%;
+        padding-right: 1rem;
+        padding-left: 1rem;
+        overflow-y: auto;
+        visibility: hidden;
+        background-color: #343a40;
+        transition: transform .3s ease-in-out, visibility .3s ease-in-out;
+    }
+    .offcanvas-collapse.open {
+        visibility: visible;
+        transform: translateX(-100%);
+    }
+}
+
+.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+}
+
+.nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    color: rgba(255, 255, 255, .75);
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-underline .nav-link {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .875rem;
+    color: #6c757d;
+}
+
+.nav-underline .nav-link:hover {
+    color: #007bff;
+}
+
+.nav-underline .active {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.text-white-50 { color: rgba(255, 255, 255, .5); }
+
+.bg-purple { background-color: #6f42c1; }
+
+.form-floating>.form-control
+{
+    padding: 5px 10px;
+}
+
+.row .form-floating>label
+{
+    left: 12px;
+}
+
+.form-floating>label
+{
+    font-size: 14px;
+    padding: 12px 10px;
+}
+
+.form-floating>.form-control, .form-floating>.form-select
+{
+    font-size: 14px;
+    height: calc(43px + 2px);
+    line-height: 1.25;
+}
+
+.form-floating>.form-control:-webkit-autofill
+{
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+
+.btn-red:hover,
+.btn-red:focus
+{
+    color: #fff;
+    background-color: #dd0815d1;
+    border-color: #dd0815d1;
+    transition: .2s;
+}
+
+.btn-red
+{
+    transition: .2s;
+    color: #fff;
+    background-color: #dd0815;
+    border-color: #dd0815;
+}
+
+.color-red
+{
+    color: #dd0815;
+}
+
+.text-right
+{
+    text-align: right;
+}
+
+.offcanvas-collapse
+{
+    z-index : 9;
+}
