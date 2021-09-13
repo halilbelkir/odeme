@@ -54,7 +54,7 @@ class appController extends Controller
         else
         {
             $customerCode = Auth::user()->customer_code;
-            $customerCode = 246492;
+            //$customerCode = 246492;
             $remainder    = DB::connection('sqlsrv')->select('Exec sp_mus_odeme :customer_code',['customer_code' => $customerCode]);
             Cache::put('remainder', $remainder, Carbon::now()->addMinutes(480));
         }
@@ -133,7 +133,6 @@ class appController extends Controller
         }
         catch (\Exception $e)
         {
-            dd($e);
             Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
         }
 
@@ -247,7 +246,6 @@ class appController extends Controller
         }
         catch (\Exception $e)
         {
-            dd($e);
             Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
         }
 
