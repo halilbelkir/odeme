@@ -16,6 +16,7 @@ class VerificationCodes extends Migration
         Schema::create('verification_codes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('surname');
             $table->bigInteger('phone_number');
             $table->bigInteger('tc');
             $table->bigInteger('customer_code');

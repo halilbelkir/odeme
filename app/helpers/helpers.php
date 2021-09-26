@@ -15,7 +15,7 @@
             return rand(1, 1000000);
         }
 
-        public static function verificationCodeMessage($tc,$phoneNumber,$customerCode,$name)
+        public static function verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname)
         {
             $randomCode                = self::randomNumberCode();
             $message                   = 'Odeme sistemine giris icin dogrulama kodunuz : '.$randomCode;
@@ -35,6 +35,7 @@
                 $verification->customer_code = $customerCode;
                 $verification->random_code   = $randomCode;
                 $verification->name          = $name;
+                $verification->surname       = $surname;
                 $verification->save();
 
                 /*
@@ -70,6 +71,12 @@
             $nameAndSurname      = explode(' ',$str);
             $fullName['name']    = $nameAndSurname[0];
             $fullName['surname'] = $nameAndSurname[1];
+
+            if (isset($nameAndSurname[2]))
+            {
+                $fullName['name']    = $nameAndSurname[0].' '.$nameAndSurname[1];
+                $fullName['surname'] = $nameAndSurname[2];
+            }
 
             return (object)$fullName;
         }

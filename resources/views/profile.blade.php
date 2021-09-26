@@ -17,15 +17,14 @@
                 <x-inputerror for="customer_code" class="mt-2" />
             </div>
 
-
             <div class="form-floating form-group col-12 col-md-6">
-                <input type="text" class="form-control" name="name" value="{{\App\helpers\helpers::nameAndSurname($users->name)->name}}" placeholder="Ad" required>
+                <input type="text" class="form-control" name="name" value="{{$users->name}}" placeholder="Ad" required>
                 <label for="name">Ad</label>
                 <x-inputerror for="name" class="mt-2" />
             </div>
 
             <div class="form-floating form-group col-12 col-md-6">
-                <input type="text" class="form-control" name="surname" value="{{\App\helpers\helpers::nameAndSurname($users->name)->surname}}" placeholder="Soyad" required>
+                <input type="text" class="form-control" name="surname" value="{{$users->surname}}" placeholder="Soyad" required>
                 <label for="surname">Soyad</label>
                 <x-inputerror for="surname" class="mt-2" />
             </div>

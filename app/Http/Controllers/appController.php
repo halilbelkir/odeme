@@ -98,7 +98,8 @@ class appController extends Controller
             }
 
             $users               = User::find(Auth::user()->id);
-            $users->name         = $request->get('name').' '.$request->get('surname');
+            $users->name         = $request->get('name');
+            $users->surname      = $request->get('surname');
             $users->phone_number = $request->get('phone_number');
             $users->email        = $request->get('email');
             $users->save();
@@ -172,8 +173,9 @@ class appController extends Controller
 
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
-            $nameSurname  = $phone->FirstName.' '.$phone->LastName;
-            $this->sendSms($tc,$phoneNumber,$customerCode,$nameSurname);
+            $name         = $phone->FirstName;
+            $surname      = $phone->LastName;
+            $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
 
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
@@ -235,6 +237,7 @@ class appController extends Controller
                 $auth->tc            = $codeControl->tc;
                 $auth->phone_number  = $codeControl->phone_number;
                 $auth->name          = $codeControl->name;
+                $auth->surname       = $codeControl->surname;
                 $auth->email         = $tcControl->EmailAddress;
                 $auth->customer_code = $customerCode;
                 $auth->password      = bcrypt($customerCode.$codeControl->tc);
@@ -252,7 +255,7 @@ class appController extends Controller
         return redirect()->route('index');
     }
 
-    public function sendSms($tc = null, $phoneNumber = null,$customerCode = null,$name = null)
+    public function sendSms($tc = null, $phoneNumber = null,$customerCode = null,$name = null,$surname = null )
     {
         if (!request('tc') && !$tc) { return false; }
 
@@ -270,11 +273,12 @@ class appController extends Controller
 
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
-            $name         = $phone->FirstName." ".$phone->LastName;
-            $this->sendSms($tc,$phoneNumber,$customerCode,$name);
+            $name         = $phone->FirstName;
+            $surname      = $phone->LastName;
+            $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
         }
         //$phoneNumber = '05342233232';
-        $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name);
+        $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
         sms::send($phoneNumber,$message);
 
         if (request('tc'))
