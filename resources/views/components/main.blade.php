@@ -23,10 +23,32 @@
             </button>
 
             <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav m-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{route('price.list')}}">Kalan Taksitler</a>
+                        <a class="nav-link active" aria-current="page" href="#">
+                            Sayın <b>{{Auth::user()->name}} {{Auth::user()->surname}}</b>
+                        </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">
+                            Toplam Borç: {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺
+                        </a>
+                    </li>
+
+                    <li class="nav-item float-right">
+                        <a class="nav-link" href="{{route('profile')}}">Profil</a>
+                    </li>
+                    <li class="nav-item float-right">
+                        <form action="{{route('logout')}}" method="post">
+                            @csrf
+                            <button type="submit"  style="display: none" class="logout">Çıkış Yap</button>
+                        </form>
+                        <a class="nav-link" href="#" onclick="$('.logout').trigger('click')">
+                            Çıkış Yap
+                        </a>
+                    </li>
+
 
                     <!--
                     <li class="nav-item">
@@ -39,24 +61,24 @@
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
-                    </li>
-                    -->
-                    <li class="nav-item dropdown float">
+                    </li><li class="nav-item dropdown float">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">
                             {!! Media::createTag('assets/img/user.png',['width' =>[30], 'height' => [30]],['class' => 'rounded-circle']) !!}
-                            <b>{{Auth::user()->name}}</b>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdown01">
-                            <li><a class="dropdown-item" href="{{route('profile')}}">Profil</a></li>
+
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                        <li><a class="dropdown-item" href="{{route('profile')}}">Profil</a></li>
                             <li>
                                 <form action="{{route('logout')}}" method="post">
                                     @csrf
-                                    <button type="submit"  style="display: none" class="logout">Çıkış Yap</button>
-                                </form>
-                                <a class="dropdown-item" href="#" onclick="$('.logout').trigger('click')">Çıkış Yap</a>
-                            </li>
-                        </ul>
-                    </li>
+                    <button type="submit"  style="display: none" class="logout">Çıkış Yap</button>
+                </form>
+                <a class="dropdown-item" href="#" onclick="$('.logout').trigger('click')">Çıkış Yap</a>
+            </li>
+        </ul>
+    </li>
+-->
+
                 </ul>
 
             </div>

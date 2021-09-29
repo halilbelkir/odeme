@@ -16,16 +16,20 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use phpDocumentor\Reflection\Types\Object_;
 use Validator,Session;
 
 class appController extends Controller
 {
     public function verification()
     {
-        $customerCode =  Cache::get('customerCode');
-        $tc           =  Cache::get('tc');
+        $tc      =  Cache::get('tc');
+        $name    =  Cache::get('name');
+        $surName =  Cache::get('surname');
+        $phone   =  Cache::get('phone');
+        $phone   =  helpers::hiddenPhone($phone);
 
-        return view('verification',compact('customerCode','tc'));
+        return view('verification',compact('name','surName','phone','tc'));
     }
 
     public function pricing(Request $request)
@@ -47,19 +51,23 @@ class appController extends Controller
         Cache::forget('customerCode');
         Cache::forget('tc');
 
-        if (Cache::has('remainder'))
+        return view('priceList');
+    }
+
+    public function calcPrice(Request $request)
+    {
+        $price = 0;
+
+        if ($request->has('monthYear'))
         {
-            $remainder =  Cache::get('remainder');
-        }
-        else
-        {
-            $customerCode = Auth::user()->customer_code;
-            //$customerCode = 246492;
-            $remainder    = DB::connection('sqlsrv')->select('Exec sp_mus_odeme :customer_code',['customer_code' => $customerCode]);
-            Cache::put('remainder', $remainder, Carbon::now()->addMinutes(480));
+            $priceList =  Cache::get('priceList');
+            foreach ($request->get('monthYear') as $monthYear)
+            {
+                $price += $priceList[$monthYear]['price'];
+            }
         }
 
-        return view('priceList',compact('remainder'));
+        return helpers::priceFormat($price);
     }
 
     public function profile()
@@ -180,6 +188,9 @@ class appController extends Controller
 
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
             Cache::put('tc', $tc, Carbon::now()->addMinutes(480));
+            Cache::put('name', $name, Carbon::now()->addMinutes(480));
+            Cache::put('surname', $surname, Carbon::now()->addMinutes(480));
+            Cache::put('phone', $phoneNumber, Carbon::now()->addMinutes(480));
 
             return redirect()->route('verification');
         }

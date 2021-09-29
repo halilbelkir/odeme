@@ -60,11 +60,12 @@
             return number_format($str, 2, '.', ',');
         }
 
-        public static function noktasiz($veri){
-
-            $veri = str_replace(".","",$veri);
-            $veri = str_replace(",","",$veri);
-            echo $veri;
+        public static function hiddenPhone($phone)
+        {
+            $phone = self::editPhoneNumber($phone);
+            $phone = Str::substr($phone,-4);
+            $phone = '******'.$phone;
+            return $phone;
         }
         public static function nameAndSurname($str)
         {

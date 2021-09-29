@@ -8,12 +8,14 @@
             <span class="seconds">00</span>
         </div>
     </div>
-
+    <p>
+        Sayın <strong>{{$name.' '.$surName}}</strong> {{$phone}} numaralı hattınıza doğrulama kodu gönderilmiştir.
+    </p>
     <form method="post" action="{{route('verification.control')}}">
         @csrf
         <div class="form-floating mb-2">
-            <input type="text" class="form-control" name="customer_code" placeholder="Müşteri Kodu" value="{{$customerCode}}" disabled>
-            <label for="floatingPassword">Müşteri Kodu</label>
+            <input type="text" class="form-control" name="customer_code" placeholder="Ad & Soyad" value="{{$name.' '.$surName}}" disabled>
+            <label for="floatingPassword">Ad & Soyad</label>
         </div>
         <div class="form-floating mb-2">
             <input type="text" class="form-control" name="tc" placeholder="T.C" value="{{$tc}}" disabled>
