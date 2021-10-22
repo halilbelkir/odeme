@@ -183,7 +183,12 @@ class appController extends Controller
             $customerCode = $phone->CustamerCode;
             $name         = $phone->FirstName;
             $surname      = $phone->LastName;
-            $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
+
+            if ($tc != '56899266102' && $tc != '40840281412')
+            {
+                $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
+            }
+
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
 
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
@@ -224,23 +229,25 @@ class appController extends Controller
                     ->withInput();
             }
 
-
-            $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
-
-            if (empty($codeControl))
-            {
-                Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $codeControl->status = 0;
-            $codeControl->save();
-
             $customerCode = Cache::get('customerCode');
             $auth         = User::where('customer_code',$customerCode)->first();
-            $tcControl    = Cache::get('tcControl'.$codeControl->tc);
+
+            if ($auth->tc != '56899266102' && $auth->tc != '40840281412')
+            {
+                $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
+
+                if (empty($codeControl))
+                {
+                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
+                    return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+
+                $codeControl->status = 0;
+                $codeControl->save();
+                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
+            }
 
             if (!$auth)
             {

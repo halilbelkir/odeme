@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="224e8392-ad32-4a10-a7f8-c19f3b982e3d" name="Default Changelist" comment="son revize">
+    <list default="true" id="224e8392-ad32-4a10-a7f8-c19f3b982e3d" name="Default Changelist" comment="Halil İbrahim BELKIR tarafindan yapildi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/appController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/appController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +197,8 @@
       <workItem from="1632652417910" duration="1567000" />
       <workItem from="1632685593824" duration="1495000" />
       <workItem from="1632766273234" duration="3876000" />
-      <workItem from="1632938521204" duration="845000" />
+      <workItem from="1632938521204" duration="1243000" />
+      <workItem from="1634899342712" duration="560000" />
     </task>
     <task id="LOCAL-00001" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1631448378775</created>
@@ -241,7 +242,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632939247550</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1632939424647</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1632939424647</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,8 +269,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Halil İbrahim BELKIR tarafindan yapildi" />
     <MESSAGE value="son revize" />
-    <option name="LAST_COMMIT_MESSAGE" value="son revize" />
+    <MESSAGE value="Halil İbrahim BELKIR tarafindan yapildi" />
+    <option name="LAST_COMMIT_MESSAGE" value="Halil İbrahim BELKIR tarafindan yapildi" />
   </component>
 </project>
