@@ -56,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
                         $priceList[$key]['year'] = $price->YIL;
                         $totalPrice += $price->RemainingInstallment;
                     }
+                    ksort($priceList);
 
                     Cache::put('priceList', $priceList, Carbon::now()->addMinutes(480));
                     Cache::put('totalPrice', $totalPrice, Carbon::now()->addMinutes(480));
