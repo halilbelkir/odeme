@@ -87,7 +87,13 @@
     <main class="container mt-5">
         {{$slot}}
     </main>
-
+    <footer>
+        <ul>
+            <li> <strong>Adres :</strong> Bey mahallesi Atatürk Bulvarı No: 23</li>
+            <li> <strong>Telefon :</strong> 4440943</li>
+            <li> <strong>E-Mail :</strong> info@ugurluceyiz.com.tr</li>
+        </ul>
+    </footer>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
@@ -97,3 +103,17 @@
 <x-alert></x-alert>
 <x-loading></x-loading>
 </html>
+<style>
+    footer ul
+    {
+        display: flex;
+        justify-content: center;
+    }
+    footer ul li
+    {
+        float: left;
+        margin-right: 20px;
+        list-style: none;
+        text-align: center;
+    }
+</style>
