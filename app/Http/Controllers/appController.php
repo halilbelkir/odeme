@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Object_;
 use Validator,Session;
 
@@ -34,14 +35,47 @@ class appController extends Controller
 
     public function pricing(Request $request)
     {
-        $data = $request->all();
-        Cache::put('pricing', $data, Carbon::now()->addMinutes(480));
-        return true;
+        $data['mode']                 = "PROD";
+        $data['apiversion']           = "v0.01";
+        $data['terminalprovuserid']   = "PROVAUT";
+        $data['txntype']              = "sales";
+        $data['txnamount']            = str_replace([',','.'],['',''],$request->get('total')); //��lem Tutar�  1.00 TL i�in 100 g�nderilmeli
+        $data['txncurrencycode']      = "949";
+        $data['txninstallmentcount']  = ""; //Taksit Say�s�. Bo� g�nderilirse taksit yap�lmaz
+        $data['terminaluserid']       = "10230941";
+        $data['orderid']              = helpers::orderNumber();
+        $data['customeripaddress']    = $request->ip();
+        $data['customeremailaddress'] = "eticaret@garanti.com.tr";
+        $data['terminalid']           = "10230941";
+        $strTerminalID_               = "010230941"; //Ba��na 0 eklenerek 9 digite tamamlanmal�d�r.
+        $data['terminalmerchantid']   = "1594364"; //�ye ��yeri Numaras�
+        $strStoreKey                  = "313233343536373839303132333435363738393031323334"; //3D Secure �ifreniz
+        $strProvisionPassword         = "Beliz.3377"; //TerminalProvUserID �ifresi
+        $data['successurl']           = route('pay.result');
+        $data['errorurl']             = route('pay.result');
+        $SecurityData                 = strtoupper(sha1($strProvisionPassword.$strTerminalID_));
+        $data['secure3dhash']         = strtoupper(sha1($data['terminalid'].$data['orderid'].$data['txnamount'].$data['successurl'].$data['errorurl'].$data['txntype'].$data['txninstallmentcount'].$strStoreKey.$SecurityData));
+        $data['cardnumber']           = str_replace(' ','',$request->get('number'));
+        $expiry                       = str_replace(' ','',$request->get('expiry'));
+        $expiry                       = explode('/',$request->get('expiry'));
+        $data['cardexpiredatemonth']  = trim($expiry[0]);
+        $data['cardexpiredateyear']   = substr(trim($expiry[1]),2, 4);
+        $data['cardcvv2']             = $request->get('cvc');
+        $data['secure3dsecuritylevel']= '3D';
+        //$send                         = helpers::curlSend('https://sanalposprov.garanti.com.tr/servlet/gt3dengine','POST',$data);
+
+        return view('pricing',compact('data'));
     }
 
-    public function pay()
+    public function profile()
     {
-        $pricing =  Cache::get('pricing');
+        $users = Auth::user();
+        return view('profile',compact('users'));
+    }
+
+    public function pay(Request $request)
+    {
+        $pricing =  Cache::get('pricing'.Auth::user()->customer_code);
         $amount  = 0;
         return view('pricing',compact('pricing','amount'));
     }
@@ -60,7 +94,7 @@ class appController extends Controller
 
         if ($request->has('monthYear'))
         {
-            $priceList =  Cache::get('priceList');
+            $priceList =  Cache::get('priceList'.Auth::user()->customer_code);
             foreach ($request->get('monthYear') as $monthYear)
             {
                 $price += $priceList[$monthYear]['price'];
@@ -70,10 +104,10 @@ class appController extends Controller
         return helpers::priceFormat($price);
     }
 
-    public function profile()
+    public function payResult(Request $request)
     {
-        $users = Auth::user();
-        return view('profile',compact('users'));
+        $data = $request->all();
+        return view('payResult',compact('data'));
     }
 
     public function profileEdit(Request $request)
@@ -232,7 +266,7 @@ class appController extends Controller
             $customerCode = Cache::get('customerCode');
             $auth         = User::where('customer_code',$customerCode)->first();
 
-            if ($auth->tc != '56899266102' && $auth->tc != '40840281412')
+            if (empty($auth) || $auth->tc != '56899266102' && $auth->tc != '40840281412')
             {
                 $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
 

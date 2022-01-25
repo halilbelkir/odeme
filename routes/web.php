@@ -27,4 +27,5 @@ use Illuminate\Support\Facades\Route;
         Route::post('/odeme-hesapla', [\App\Http\Controllers\appController::class,'calcPrice'])->name('price-calculation');
         Route::get('/profil', [\App\Http\Controllers\appController::class,'profile'])->name('profile');
         Route::post('/profil-duzenle', [\App\Http\Controllers\appController::class,'profileEdit'])->name('profile.edit');
+        Route::post('/odeme-sonuc', [\App\Http\Controllers\appController::class,'payResult'])->name('pay.result');
     });

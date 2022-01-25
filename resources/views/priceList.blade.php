@@ -2,7 +2,7 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{count($priceList)}}</span></h6>
         @if(count($priceList) > 0)
-            <form action="#" data-after-url="{{route('pay')}}" class="pay row" method="post">
+            <form action="{{route('pay')}}" class="pay row" method="post">
                 @csrf
                 <div class="col-md-6 col-12 mt-3">
                     <h5 class="mb-5 mt-3 text-center totalPrice"> Toplam Tutar : <span> 0₺</span></h5>
@@ -32,8 +32,8 @@
                     </div>
 
                     <div class="form-floating form-group mt-1 col-12">
-                        <input type="text" class="form-control price" name="price" placeholder="Tutar" required>
-                        <label for="cvc">Tutar</label>
+                        <input type="text" class="form-control price" name="total" placeholder="Tutar" required>
+                        <label for="price">Tutar</label>
                         <x-inputerror for="price" class="mt-2" />
                     </div>
 
@@ -61,13 +61,15 @@
             </div>
         @endif
     </div>
+
+    <div class="pay-show" style="display: none"></div>
     @section('js')
         <script src="{{asset('assets/js/card.js')}}"></script>
         <script>
             var c = new Card({
                 form: document.querySelector('form.pay'),
                 container: '.card-wrapper',
-                maskCardNumber : '.card_no'
+                maskCardNumber : '.card_no',
             });
 
             $("input[name='price[]']").change(function()
@@ -75,7 +77,8 @@
                 calcPrice();
             });
 
-            function calcPrice(){
+            function calcPrice()
+            {
                 var monthYear = [];
 
                 $("input[name='price[]']:checked").each(function() {
@@ -104,6 +107,31 @@
                     }
                 });
             }
+
+            $('.pay').submit(function (e)
+            {
+                e.preventDefault();
+                $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
+                $.ajax({
+                    type: $(this).attr('method'),
+                    url:  $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success: function (e)
+                    {
+                        $('.loading').fadeOut('fast');
+                        $('.pay-show').html(e);
+                        setTimeout(function() {
+                            $('.form-pay-send').trigger('submit');
+                        }, 100);
+                    },
+                    error : function (e)
+                    {
+                        responseMessages('danger',e.responseJSON.message,'#locations');
+                        loading();
+                    }
+                });
+
+            });
         </script>
     @endsection
 </x-main>

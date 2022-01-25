@@ -10,6 +10,11 @@
 
     class helpers
 	{
+        public static function orderNumber()
+        {
+            return rand(1, 1000000000);
+        }
+
         public static function randomNumberCode()
         {
             return rand(1, 1000000);
@@ -67,6 +72,7 @@
             $phone = '******'.$phone;
             return $phone;
         }
+
         public static function nameAndSurname($str)
         {
             $nameAndSurname      = explode(' ',$str);
@@ -80,5 +86,27 @@
             }
 
             return (object)$fullName;
+        }
+
+        public static function curlSend($url,$method,$data)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => $method,
+                CURLOPT_POSTFIELDS => $data,
+            ));
+
+            $response = curl_exec($curl);
+            return $response;
+            curl_close($curl);
+            return $response;
         }
 	}
