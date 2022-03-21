@@ -65,6 +65,23 @@
             return number_format($str, 2, '.', ',');
         }
 
+        public static function totalPriceFormat($total)
+        {
+            $newTotal = str_replace([',','.'], ['',''],$total);
+            return rtrim($newTotal,'00');
+        }
+
+        public static function priceFormatCc($str)
+        {
+            if (empty($str))
+            {
+                return 0;
+            }
+
+            $price = rtrim($str,'00');
+            return number_format($price, 2, '.', ',');
+        }
+
         public static function hiddenPhone($phone)
         {
             $phone = self::editPhoneNumber($phone);

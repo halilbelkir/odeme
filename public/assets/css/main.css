@@ -32,8 +32,9 @@
 }
 .bg-red
 {
-    background-color: #bb0e0f;
+    background-color: #bb0e0f !important;
 }
+
 @media (max-width: 991.98px) {
     .offcanvas-collapse {
         position: fixed;
@@ -153,4 +154,109 @@
 .offcanvas-collapse
 {
     z-index : 9;
+}
+
+footer
+{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: #BDBDBD;
+    padding-top: 15px;
+}
+
+
+.bg-yellow
+{
+    background-color: #FFA000;
+}
+
+.bg-green
+{
+    background-color: #388E3C !important;
+}
+.bg-blue
+{
+    background-color: #1565C0;
+}
+
+.bg-purple
+{
+    background-color: #6A1B9A;
+}
+
+.bg-pink
+{
+    background-color: #E91E63;
+}
+
+.box
+{
+    background-color: #757575;
+    border: 1px solid #0000001a;
+    box-shadow: 0px 0px 21px -4px #00000085;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-align: center;
+    min-height: 120px;
+    display: table-cell;
+    vertical-align: middle;
+    height: 120px;
+}
+
+.box h2
+{
+    font-weight: bold;
+}
+
+.box h5
+{
+    font-size: 12px;
+}
+
+.badge
+{
+    border-radius: 5px !important;
+    padding: 6px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+}
+
+button.dt-button,
+div.dt-button,
+a.dt-button,
+input.dt-button,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover
+{
+    color: #fff !important;
+    background-color: #dd0815 !important;
+    border: none !important;
+    padding: 5px 19px !important;
+    border-radius: 5px !important;
+}
+
+table.dataTable tbody tr,
+table.dataTable tbody,
+.dataTables_wrapper .dataTables_scroll
+{
+    border-bottom: 1px solid #c2c2c2;
+}
+
+table.dataTable tbody th, table.dataTable tbody td
+{
+    vertical-align: middle;
+}
+
+div.dt-button-collection button.dt-button:active:not(.disabled), div.dt-button-collection button.dt-button.active:not(.disabled), div.dt-button-collection div.dt-button:active:not(.disabled), div.dt-button-collection div.dt-button.active:not(.disabled), div.dt-button-collection a.dt-button:active:not(.disabled), div.dt-button-collection a.dt-button.active:not(.disabled),
+div.dt-button-collection button.dt-button:hover, div.dt-button-collection div.dt-button:hover, div.dt-button-collection a.dt-button:hover
+{
+    transition: .2s;
+    background: #000 !important;
+}
+
+button.dt-button span.dt-down-arrow, div.dt-button span.dt-down-arrow, a.dt-button span.dt-down-arrow, input.dt-button span.dt-down-arrow
+{
+    color: #fff !important;
 }

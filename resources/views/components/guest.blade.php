@@ -17,7 +17,7 @@
 <main class="form-signin">
     <x-logo></x-logo>
     {{$slot}}
-    <p class="mt-5 mb-3 text-muted">&copy;2021</p>
+    <p class="mt-5 mb-3 text-muted">&copy;{{date('Y')}}</p>
 </main>
 </body>
 

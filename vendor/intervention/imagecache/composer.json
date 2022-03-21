@@ -1,7 +1,7 @@
 {
     "name": "intervention/imagecache",
     "description": "Caching extension for the Intervention Image Class",
-    "homepage": "http://image.intervention.io",
+    "homepage": "https://image.intervention.io",
     "keywords": [
         "image",
         "gd",
@@ -13,15 +13,15 @@
     "authors": [
         {
             "name": "Oliver Vogel",
-            "email": "oliver@olivervogel.com",
-            "homepage": "http://olivervogel.com/"
+            "email": "oliver@intervention.io",
+            "homepage": "http://intervention.io/"
         }
     ],
     "require": {
-        "php": ">=7.2",
-        "intervention/image": ">=2.2.0",
-        "illuminate/cache": "^5.5|~6|~7|~8",
-        "illuminate/filesystem": "^5.5|~6|~7|~8",
+        "php": "~7.2|~8",
+        "intervention/image": "~2.2",
+        "illuminate/cache": "^5.5|~6|~7|~8|~9",
+        "illuminate/filesystem": "^5.5|~6|~7|~8|~9",
         "nesbot/carbon": "^2.39",
         "opis/closure": "^3.5"
     },

@@ -62,9 +62,10 @@ class AppServiceProvider extends ServiceProvider
                     foreach ($remainder as $price)
                     {
                         $key = $price->Month;
-                        $priceList[$key]['price'] = isset($priceList[$key]) ? $priceList[$key]['price'] + $price->RemainingInstallment : $price->RemainingInstallment;
-                        $priceList[$key]['month'] = $price->AYAD1;
-                        $priceList[$key]['year'] = $price->YIL;
+                        $priceList[$key]['price']   = isset($priceList[$key]) ? $priceList[$key]['price'] + $price->RemainingInstallment : $price->RemainingInstallment;
+                        $priceList[$key]['month']   = $price->AYAD1;
+                        $priceList[$key]['year']    = $price->YIL;
+                        $priceList[$key]['OrderPaymentPlanID'] = $price->OrderPaymentPlanID;
                         $totalPrice += $price->RemainingInstallment;
                     }
 

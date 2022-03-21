@@ -1,6 +1,22 @@
 <x-main>
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{count($priceList)}}</span></h6>
+        @if (Session::has('flash_message'))
+            <div class="d-flex justify-content-center">
+                <div class="col-md-6">
+                    @if(Session::get('flash_message')['Transaction']['Response']['Code'] == 0)
+                        <div class="alert alert-success mt-3" role="alert">
+                            Ödeme Başarılı Olmuştur. Dekontu görmek için <a href="{{Session::get('flash_message')['link']}}" target="_blank">tıklayınız.</a>
+                        </div>
+                    @else
+                        <div class="alert alert-danger mt-3 text-left" role="alert">
+                            <h6 class="alert-heading fw-bold">{{Session::get('flash_message')['Transaction']['Response']['ErrorMsg']}}</h6>
+                            <p class="mb-0">{{Session::get('flash_message')['Transaction']['Response']['SysErrMsg']}}</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
         @if(count($priceList) > 0)
             <form action="{{route('pay')}}" class="pay row" method="post">
                 @csrf
@@ -32,7 +48,7 @@
                     </div>
 
                     <div class="form-floating form-group mt-1 col-12">
-                        <input type="text" class="form-control price" name="total" placeholder="Tutar" required>
+                        <input type="text" class="form-control price" onkeyup="$('.totalPrice span').text(this.value+'₺');" name="total" placeholder="Tutar" required>
                         <label for="price">Tutar</label>
                         <x-inputerror for="price" class="mt-2" />
                     </div>
@@ -44,14 +60,16 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-12 order-first">
+                    @php $row = 0; @endphp
                     @foreach($priceList as $order => $price)
                         <div class="d-flex text-muted pt-3 ">
-                            <input type="checkbox" name="price[]" data-month="{{$price['month']}}" data-year="{{$price['year']}}" value="{{$order}}" class="bd-placeholder-img flex-shrink-0 me-2 mt-2 rounded">
+                            <input type="checkbox" @if($row != 0) disabled @endif  name="price[]" data-order="{{$row}}" data-month="{{$price['month']}}" data-year="{{$price['year']}}" value="{{$order}}" class="bd-placeholder-img flex-shrink-0 me-2 mt-2 rounded">
                             <p class="pb-3 mb-0 small lh-sm border-bottom w-100 px-2">
                                 <strong class="d-block text-gray-dark">{{$price['month']}} - {{$price['year']}}</strong>
                                 {{\App\helpers\helpers::priceFormat($price['price'])}} ₺
                             </p>
                         </div>
+                        @php $row++; @endphp
                     @endforeach
                 </div>
             </form>
@@ -65,7 +83,12 @@
     <div class="pay-show" style="display: none"></div>
     @section('js')
         <script src="{{asset('assets/js/card.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
         <script>
+            $(function() {
+                $('.price').maskMoney();
+            })
+
             var c = new Card({
                 form: document.querySelector('form.pay'),
                 container: '.card-wrapper',
@@ -74,6 +97,23 @@
 
             $("input[name='price[]']").change(function()
             {
+                var order   = $(this).data('order');
+                var checked = $(this).prop('checked');
+
+                if (checked == false && order != 0)
+                {
+                    $(this).attr('disabled',true);
+                    $('[data-order="'+(order + 1)+'"]').attr('disabled',true);
+                }
+                else if(checked == false && order == 0)
+                {
+                    $('[data-order="'+(order + 1)+'"]').attr('disabled',true);
+                }
+                else
+                {
+                    $('[data-order="'+(order + 1)+'"]').attr('disabled',false);
+                }
+
                 calcPrice();
             });
 

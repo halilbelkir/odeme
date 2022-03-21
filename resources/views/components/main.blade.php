@@ -29,18 +29,21 @@
                             Sayın <b>{{Auth::user()->name}} {{Auth::user()->surname}}</b>
                         </a>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
-                            Toplam Borç: {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺
-                        </a>
-                    </li>
-
+                    @if(Auth::user()->login_control != 1)
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">
+                                Toplam Borç: {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item float-right">
-                        <a class="nav-link" href="{{route('profile')}}">Profil</a>
+                        <a class="nav-link @if(request()->routeIs('price.list')) active @endif " href="{{route('price.list')}}">Anasayfa</a>
                     </li>
                     <li class="nav-item float-right">
-                        <form action="{{route('logout')}}" method="post">
+                        <a class="nav-link @if(request()->routeIs('profile')) active @endif " href="{{route('profile')}}">Profil</a>
+                    </li>
+                    <li class="nav-item float-right">
+                        <form action="@if(Auth::user()->login_control != 1) {{route('logout')}} @else{{route('admin.logout')}}@endif" method="post">
                             @csrf
                             <button type="submit"  style="display: none" class="logout">Çıkış Yap</button>
                         </form>
@@ -89,8 +92,8 @@
     </main>
     <footer>
         <ul>
-            <li> <strong>Adres :</strong> Bey mahallesi Atatürk Bulvarı No: 23</li>
-            <li> <strong>Telefon :</strong> 4440943</li>
+            <li> <strong>Adres :</strong> Bey mahallesi Atatürk Bulvarı No: 23 Şehitkamil / Gaziantep</li>
+            <li> <strong>Telefon :</strong> 444 0 943</li>
             <li> <strong>E-Mail :</strong> info@ugurluceyiz.com.tr</li>
         </ul>
     </footer>
