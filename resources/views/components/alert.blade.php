@@ -1,5 +1,26 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+@if (session('status'))
+    <script>
+        toastr.success('{{ session('status') }}','');
+    </script>
+@endif
+
+@if (session('email'))
+    <script>
+        toastr.error('{{ session('email') }}','');
+    </script>
+@endif
+@if ($errors->any())
+    <script>
+        @foreach ($errors->all() as $error)
+            toastr.error('','{{ $error }}');
+        @endforeach
+    </script>
+@endif
+
 @if (session('message'))
     @if(session('message')[2] == 'info')
         <script>

@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\helpers\helpers;
 use App\Models\PayResult;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
 use Validator,Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -54,6 +56,145 @@ class AdminController extends Controller
 
             Session::flash('message', array('Başarısız!','E-mail adresiniz veya şifreniz hatalıdır.', 'error'));
             return redirect()->back()->withInput($request->only('email', 'password'));
+        }
+        catch (\Exception $e)
+        {
+            Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
+            return redirect()->back();
+        }
+    }
+
+    public function register(Request $request)
+    {
+        try
+        {
+            $attribute = array(
+                'name'     => 'Ad',
+                'surname'  => 'Soyad',
+                'email'    => 'E-Mail',
+                'password' => 'Şifre',
+            );
+
+            $rules = array(
+                'email'     => 'required|unique:users,email',
+                'password'  => 'required',
+                'name'      => 'required',
+                'surname'   => 'required',
+            );
+
+
+            $validator = Validator::make($request->all(), $rules);
+            $validator->setAttributeNames($attribute);
+
+            if ($validator->fails())
+            {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $user           = new User;
+            $user->name     = $request->get('name');
+            $user->surname  = $request->get('surname');
+            $user->email    = $request->get('email');
+            $user->password = bcrypt($request->get('password'));
+            $user->login_control = 1;
+            $user->save();
+
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password], 1))
+            {
+                Session::flash('message', array('Başarılı!','Kayıt Başarılı.', 'success'));
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
+            return redirect()->back()->withInput($request->only('email', 'password','name','surname'));
+        }
+        catch (\Exception $e)
+        {
+            Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
+            return redirect()->back();
+        }
+    }
+
+    public function password(Request $request)
+    {
+        try
+        {
+            $attribute = array(
+                'email'    => 'E-Mail',
+            );
+
+            $rules = array(
+                'email'     => 'required|email',
+            );
+
+
+            $validator = Validator::make($request->all(), $rules);
+            $validator->setAttributeNames($attribute);
+
+            if ($validator->fails())
+            {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+
+            return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+        }
+        catch (\Exception $e)
+        {
+            Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
+            return redirect()->back();
+        }
+    }
+
+    public function passwordReset(Request $request)
+    {
+        try
+        {
+            $attribute = array(
+                'token'    => 'Token',
+                'email'    => 'E-mail',
+                'password' => 'Şifre',
+            );
+
+            $rules = array(
+                'token'    => 'required',
+                'email'    => 'required|email',
+                'password' => 'required',
+            );
+
+            $validator = Validator::make($request->all(), $rules);
+            $validator->setAttributeNames($attribute);
+
+            if ($validator->fails())
+            {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $user = User::where('email',$request->email)->first();
+
+            if ($user)
+            {
+                $user->password = bcrypt($request->password);
+                $user->save();
+
+                if (Auth::attempt(['email' => $request->email, 'password' => $request->password], 1))
+                {
+                    Session::flash('message', array('Başarılı!','Şifre Değiştirildi.', 'success'));
+                    return redirect()->intended(route('admin.dashboard'));
+                }
+            }
+
         }
         catch (\Exception $e)
         {

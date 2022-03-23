@@ -1,0 +1,26 @@
+<?php 
+
+return [
+    'rezervation_error' => 'Rezervasyon numarası oluşturulamadı.Lütfen tekrar rezervasyon yapmayı deneyiniz.',
+    'age_27_limit' => 'Rezervasyon yaptırmak istediğiniz araç için yaş sınırı "27" olarak belirlenmiştir. Bu sebeple rezervasyonunuzu Genç Sürücü Paketi ekleyerek tamamlayabilirsiniz.',
+    'age_25_limit' => 'Rezervasyon yaptırmak istediğiniz araç için yaş sınırı "25" olarak belirlenmiştir. Bu sebeple rezervasyonunuzu Genç Sürücü Paketi ekleyerek tamamlayabilirsiniz.',
+    'age_30_limit' => 'Rezervasyon yaptırmak istediğiniz araç için yaş sınırı "30" olarak belirlenmiştir. Bu sebeple rezervasyonunuzu Genç Sürücü Paketi ekleyerek tamamlayabilirsiniz.',
+    'daily_price' => 'Günlük Fiyat',
+    'total_price' => 'Toplam Fiyat',
+    'rental_days' => 'Kiralama Gun Sayisi',
+    'one_way_price' => 'Tek Yön Fiyat',
+    'total_extra_price' => 'Toplam Ekstra Fiyatı',
+    'includes_list' => 'Dahiller Liste',
+    'extras' => 'Ekstralar',
+    'extras_list' => 'Ekstralar Liste',
+    'extras_codes' => 'Ekstralar Kodlar',
+    'fuses' => 'Sigortalar',
+    'fuses_list' => 'Sigortalar Liste',
+    'fuses_codes' => 'Sigortalar Kodlar',
+    'closed_card' => 'Kartınız e-ticaret işlemlerine kapalıdır. Bankanızı arayınız.',
+    'credit_card_payment_problem' => 'Kredi Kartı Ödeme Problemi',
+    'credit_card_error' => 'Kredi kartı tahsilat işlemi sırasında bir problem oluştu. Lütfen müşteri hizmetleri ile görüşünüz.',
+    'rezervation_create_error' => 'Rezervasyon oluşturulurken bir hata oluştu lütfen tekrar deneyiniz.',
+    'rezervation_number_error' => ':rez_no Numaralı rezervasyonunuz daha önce kaydedilmiştir.',
+    'age_error' => 'Değerli müşterimizi, seçmiş olduğunuz araç grubunda sigortaların geçerli olabilmesi için sürücünün en az :yas yaşını doldurmuş olması gerekmektedir. Lütfen doğum tarihinizi doğru girdiğinizden emin olun veya seçmiş olduğunuz araç grubunu değiştirin.',
+];

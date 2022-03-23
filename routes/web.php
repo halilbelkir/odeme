@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +35,13 @@ use Illuminate\Support\Facades\Route;
     {
         Route::get('/', function () { return view('admin.index');})->name('admin.index');
         Route::post('/login', [\App\Http\Controllers\AdminController::class,'login'])->name('admin.login');
+        Route::get('/kayit-ol', function () { return view('admin.register');})->name('admin.register');
+        Route::post('/register', [\App\Http\Controllers\AdminController::class,'register'])->name('admin.register.submit');
+        Route::get('/sifremi-unuttum', function () { return view('admin.password');})->name('admin.password');
+        Route::post('/password', [\App\Http\Controllers\AdminController::class,'password'])->name('admin.password.submit');
         Route::post('/cikis-yap', [\App\Http\Controllers\AdminController::class,'logout'])->name('admin.logout');
+        Route::get('/sifremi-unuttum/{token}', function () { return view('admin.passwordReset');})->name('password.reset');
+        Route::post('/reset-password', [\App\Http\Controllers\AdminController::class, 'passwordReset'])->name('admin.password.reset.submit');
 
         Route::middleware(['auth'])->group(function ()
         {

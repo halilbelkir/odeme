@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('surname');
-            $table->string('tc')->unique();
-            $table->string('phone_number')->unique();
-            $table->string('customer_code')->unique();
+            $table->string('tc')->unique()->nullable();
+            $table->string('phone_number')->unique()->nullable();
+            $table->string('customer_code')->unique()->nullable();
             $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
