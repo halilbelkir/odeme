@@ -220,12 +220,15 @@ class AdminController extends Controller
 
     public function todayDatatable()
     {
-        return Datatables::of(PayResult::whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) = DATE_FORMAT(CURDATE(), '%Y/%m/%d')")->get())
+        return Datatables::of(PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) = DATE_FORMAT(CURDATE(), '%Y/%m/%d')")->get())
             ->editColumn('created_at', function ($payResult) {
                 return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
             })
             ->editColumn('amount', function ($payResult) {
                 return helpers::priceFormatCc($payResult->amount).' ₺';
+            })
+            ->editColumn('name_surname', function ($payResult) {
+                return $payResult->name.' '.$payResult->surname;
             })
             ->addColumn('response_code', function ($payResult) {
                 return $payResult->response_code == 0 ? '<h4><span class="badge bg-green">İşlem Başarılı</span></h4>' : '<span class="badge bg-red">İşlem Başarısız ('.$payResult->response_code.')</span>';
@@ -239,12 +242,15 @@ class AdminController extends Controller
 
     public function weekDatatable()
     {
-        return Datatables::of(PayResult::whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")->get())
+        return Datatables::of(PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")->get())
             ->editColumn('created_at', function ($payResult) {
                 return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
             })
             ->editColumn('amount', function ($payResult) {
                 return helpers::priceFormatCc($payResult->amount).' ₺';
+            })
+            ->editColumn('name_surname', function ($payResult) {
+                return $payResult->name.' '.$payResult->surname;
             })
             ->addColumn('response_code', function ($payResult) {
                 return $payResult->response_code == 0 ? '<h4><span class="badge bg-green">İşlem Başarılı</span></h4>' : '<span class="badge bg-red">İşlem Başarısız ('.$payResult->response_code.')</span>';
@@ -258,12 +264,15 @@ class AdminController extends Controller
 
     public function monthDatatable()
     {
-        return Datatables::of(PayResult::whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")->get())
+        return Datatables::of(PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")->get())
             ->editColumn('created_at', function ($payResult) {
                 return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
             })
             ->editColumn('amount', function ($payResult) {
                 return helpers::priceFormatCc($payResult->amount).' ₺';
+            })
+            ->editColumn('name_surname', function ($payResult) {
+                return $payResult->name.' '.$payResult->surname;
             })
             ->addColumn('response_code', function ($payResult) {
                 return $payResult->response_code == 0 ? '<h4><span class="badge bg-green">İşlem Başarılı</span></h4>' : '<span class="badge bg-red">İşlem Başarısız ('.$payResult->response_code.')</span>';

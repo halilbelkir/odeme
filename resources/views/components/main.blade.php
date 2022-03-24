@@ -111,6 +111,7 @@
     {
         display: flex;
         justify-content: center;
+        margin-bottom: 0;
     }
     footer ul li
     {

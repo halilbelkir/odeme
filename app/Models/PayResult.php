@@ -9,4 +9,9 @@ class PayResult extends Model
 {
     use HasFactory;
     protected $table = "pay_result";
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'id');
+    }
 }
