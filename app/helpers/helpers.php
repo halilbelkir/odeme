@@ -68,7 +68,7 @@
         public static function totalPriceFormat($total)
         {
             $newTotal = str_replace([',','.'], ['',''],$total);
-            return rtrim($newTotal,'00');
+            return substr($newTotal,0,-2);
         }
 
         public static function priceFormatCc($str)

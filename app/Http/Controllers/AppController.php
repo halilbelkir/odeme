@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -96,106 +97,201 @@ class AppController extends Controller
     {
         Cache::forget('customerCode');
         Cache::forget('tc');
+        //Cache::flush();
+        //print_r(Cache::get('price'));
+        //return view('priceList');
+        $deleteDate    = '20220329';
+        $selectDate    = '20220329';
+        $customerCode  = Auth::user()->customer_code;
+        $a = '666';
+        $connection       = DB::connection('sqlsrv');
+/*
 
-        /*
-                $deleteDate    = '20220319';
-                $selectDate    = '20220321';
-                $connection    = DB::connection('sqlsrv');
+                                                                                $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
+                                                                                                                                delete from trPaymentLineCurrency Where PaymentLineID in
+                                                                                                                                (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in
+                                                                                                                                (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."' ));
+                                                                                                                                delete from trPaymentLine Where PaymentHeaderID in
+                                                                                                                                (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."' );
+                                                                                                                                delete from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."';    --- 6.Tablo
+                                                                                                                                Delete  from trCurrAccBookCurrency Where CurrAccBookID in
+                                                                                                                                (select CurrAccBookID from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$deleteDate."');
+                                                                                                                                Delete from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$deleteDate."';
+                                                                                                                                Delete from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in
+                                                                                                                                (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
+                                                                                                                                (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader
+                                                                                                                                where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."'));
+                                                                                                                                Delete  from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
+                                                                                                                                (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."');
+                                                                                                                                Delete from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."';
+                                                                                                                        ");
+                                                                                Cache::flush();
+                                                                                return view('priceList');/*
+                $s[7] = $connection->select("
+                                                                                                           SET NOCOUNT ON;
+                                                                                                           Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
 
-                $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
-                                                                delete from trPaymentLineCurrency Where PaymentLineID in
-                                                                (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in
-                                                                (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."' ));
-                                                                delete from trPaymentLine Where PaymentHeaderID in
-                                                                (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."' );
-                                                                delete from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$deleteDate."';    --- 6.Tablo
-                                                                Delete  from trCurrAccBookCurrency Where CurrAccBookID in
-                                                                (select CurrAccBookID from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$deleteDate."');
-                                                                Delete from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$deleteDate."';
-                                                                Delete from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in
-                                                                (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
-                                                                (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader
-                                                                where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."'));
-                                                                Delete  from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
-                                                                (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."');
-                                                                Delete from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$deleteDate."';
-                                                        ");
-                Cache::flush();
-                return view('priceList');
+                                                                                                           ");
+                $s[8] = $connection->select("
+                                                                                                           SET NOCOUNT ON;
 
-                $customerCode  = Auth::user()->customer_code;
-                $amount        = '347300';
-                $connection    = DB::connection('sqlsrv');
-                $kkRefNo       = $connection->select('SET NOCOUNT ON; exec sp_LastRefNumCreditCardPayment 1');
-                $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
-                $d=strtotime("yesterday");
-                $date          = date('Y-m-d', $d);
-                $time          = date('H:i:s', $d);
+                                                                                                           Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                           ");
+                dd($s);
+                                $paymentLineId = '6386AFBE-1B41-4F81-93A6-815B5399F16B2222';
+                                $data['amount'] = '500';
+                                $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$data['amount']."'");
+                                $s = $connection->select("
+                                                                                                           SET NOCOUNT ON;
+                                                                                                           Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                           ");
+                                dd($s);
+                                        $s = $connection->select("
+                                                                                                           SET NOCOUNT ON;
+                                                                                                           Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
+                                                                                                           Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                           ");
+                                                dd($s);
+                                                                                                $s = $connection->select("
+                                                                                                           SET NOCOUNT ON;
+                                                                                                           Select * from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."';
+                                                                                                           Select * from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."');
+                                                                                                           Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."'));
+                                                                                                           select * from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."';
+                                                                                                           Select * from trCurrAccBookCurrency Where CurrAccBookID in (select CurrAccBookID from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."');
+                                                                                                           Select * from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."';
+                                                                                                           Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
+                                                                                                           Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                           ");
+                                                                                                       dd($s);
+                                                                                                       */
+        $a = '1019';
+        $amount        = helpers::totalPriceFormat($a.'00');
 
-                // paymentHeader
-                $paymentHeader = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_1_trCreditCardPaymentHeader '".$ccRefNo."','".$date."','".$time."','".$customerCode."'");
-                $paymentHeaderControl = new TrCreditCardPaymentHeader;
-                $paymentHeaderControl->setConnection('sqlsrv');
-                $creditCardPaymentHeaderID = $paymentHeaderControl->select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
-                // paymentHeader
-
-                // paymentLine
-                $paymentLine        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_2_trCreditCardPaymentLine '".$creditCardPaymentHeaderID."','".$date."','1','".$amount."'");
-                $paymentLineControl = new TrCreditCardPaymentLine;
-                $paymentLineControl->setConnection('sqlsrv');
-                $creditCardPaymentLineID = $paymentLineControl->select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first()->CreditCardPaymentLineID;
-                // paymentLine
-
-                // ccPaymentLineCurrency
-                $ccPaymentLineCurrency  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_3_trCreditCardPaymentLineCurrency '".$creditCardPaymentLineID."','".$amount."'");
-                // ccPaymentLineCurrency
-
-                // trCurrAccBook
-                $trCurrAccBook        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_4_trCurrAccBook '".$customerCode."','".$date."','".$time."','".$creditCardPaymentLineID."'");
-                $trCurrAccBookControl = new TrCurrAccBook;
-                $trCurrAccBookControl->setConnection('sqlsrv');
-                $currAccBookID = $trCurrAccBookControl->select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
-                // trCurrAccBook
-
-                // trCurrAccBookCurrency
-                $trCurrAccBookCurrency  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_5_trCurrAccBookCurrency '".$currAccBookID."','".$amount."'");
-                // trCurrAccBookCurrency
-
-                // paymentNumber
-                $paymentNumber  = $connection->select("SET NOCOUNT ON;exec sp_LastRefNumPayment 1,'YS','1-5-1',2")[0]->PaymentNumber;
-                // paymentNumber
-
-                // trPaymentHeader
-                $trPaymentHeader  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_6_trPaymentHeader '".$date."','".$time."','".$paymentNumber."','".$customerCode."'");
-                $trPaymentHeaderControl = new TrPaymentHeader;
-                $trPaymentHeaderControl->setConnection('sqlsrv');
-                $paymentHeaderID = $trPaymentHeaderControl->select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
-                // trPaymentHeader
-
-                $priceList = Cache::get('priceList'.$customerCode);
-
-                foreach ($priceList as $key => $value )
-                {
-                    $orderPaymentPlanId   = $value['OrderPaymentPlanID'];
-
-                    if ($key == '2022-04')
-                    {
-                        $getPrice = '479';
-                    }
-                    else
-                    {
-                        $getPrice = '499';
-                    }
-
-                    $trPaymentLine        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_7_trPaymentLine '".$paymentHeaderID."','".$creditCardPaymentLineID."','".$orderPaymentPlanId."'");
-                    $trPaymentLineControl = new TrPaymentLine();
-                    $trPaymentLineControl->setConnection('sqlsrv');
-                    $paymentLineId         = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$paymentNumber,$customerCode])->first()->PaymentLineID;
-                    $trPaymentLineCurrency = $connection->select("SELECT SCOPE_IDENTITY();SET NOCOUNT ON;EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$getPrice."'");
-                }
-        */
         Cache::flush();
         return view('priceList');
+    }
+
+    public function SPSave($amount)
+    {
+        $customerCode  = Auth::user()->customer_code;
+        $connection    = DB::connection('sqlsrv');
+        $kkRefNo       = $connection->select('SET NOCOUNT ON; exec sp_LastRefNumCreditCardPayment 1');
+        $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
+        $date          = date('Y-m-d');
+        $time          = date('H:i:s');
+
+        // paymentHeader
+        $paymentHeader        = $connection->insert("EXEC Sp_Web_Odeme_1_trCreditCardPaymentHeader '".$ccRefNo."','".$date."','".$time."','".$customerCode."'");
+        $paymentHeaderControl = new TrCreditCardPaymentHeader;
+        $paymentHeaderControl->setConnection('sqlsrv');
+        $creditCardPaymentHeaderID = $paymentHeaderControl->select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
+        // paymentHeader
+
+        // paymentLine
+        $paymentLine        = $connection->insert("EXEC Sp_Web_Odeme_2_trCreditCardPaymentLine '".$creditCardPaymentHeaderID."','".$date."','1','".$amount."'");
+        $paymentLineControl = new TrCreditCardPaymentLine;
+        $paymentLineControl->setConnection('sqlsrv');
+        $creditCardPaymentLineID = $paymentLineControl->select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first()->CreditCardPaymentLineID;
+        // paymentLine
+
+        // ccPaymentLineCurrency
+        $ccPaymentLineCurrency  = $connection->insert("EXEC Sp_Web_Odeme_3_trCreditCardPaymentLineCurrency '".$creditCardPaymentLineID."','".$amount."'");
+        // ccPaymentLineCurrency
+
+        // trCurrAccBook
+        $trCurrAccBook        = $connection->insert("EXEC Sp_Web_Odeme_4_trCurrAccBook '".$customerCode."','".$date."','".$time."','".$creditCardPaymentLineID."'");
+        $trCurrAccBookControl = new TrCurrAccBook;
+        $trCurrAccBookControl->setConnection('sqlsrv');
+        $currAccBookID = $trCurrAccBookControl->select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
+        // trCurrAccBook
+
+        // trCurrAccBookCurrency
+        $trCurrAccBookCurrency  = $connection->insert("EXEC Sp_Web_Odeme_5_trCurrAccBookCurrency '".$currAccBookID."','".$amount."'");
+        // trCurrAccBookCurrency
+
+        // paymentNumber
+        $paymentNumber  = $connection->select("SET NOCOUNT ON;exec sp_LastRefNumPayment 1,'YS','1-5-1',2")[0]->PaymentNumber;
+        // paymentNumber
+
+        // trPaymentHeader
+        $trPaymentHeader        = $connection->insert("EXEC Sp_Web_Odeme_6_trPaymentHeader '".$date."','".$time."','".$paymentNumber."','".$customerCode."'");
+        $trPaymentHeaderControl = new TrPaymentHeader;
+        $trPaymentHeaderControl->setConnection('sqlsrv');
+        $paymentHeaderID = $trPaymentHeaderControl->select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
+        // trPaymentHeader
+
+        return [
+            'paymentHeaderID' => $paymentHeaderID,
+            'creditCardPaymentLineID' => $creditCardPaymentLineID,
+            'paymentNumber' => $paymentNumber,
+        ];
+    }
+
+    public function lastTwoSPSave($data)
+    {
+        if (Cache::has('price'))
+        {
+            $data['purchaseAmount'] = \App\helpers\helpers::priceFormat($data['purchaseAmount']);
+            $data['purchaseAmount'] = str_replace('.00','',$data['purchaseAmount']);
+        }
+        else
+        {
+            $data['amounts'] = \App\helpers\helpers::priceFormat($data['amounts']);
+            $data['amounts'] = str_replace(['.00',','],['',''],$data['amounts']);
+
+            if ($data['order'] == 0)
+            {
+                if ($data['getTotal'] < $data['amounts'])
+                {
+                    $data['purchaseAmount1'] = $data['amounts'] - $data['getTotal'];
+                    $data['purchaseAmount']  = $data['amounts'] - $data['purchaseAmount1'];
+                    $data['remainingAmount'] = $data['purchaseAmount1'];
+                }
+                else
+                {
+                    $data['purchaseAmount1'] = $data['getTotal'] - $data['amounts'];
+                    $data['purchaseAmount']  = $data['getTotal'] - $data['purchaseAmount1'];
+                    $data['remainingAmount'] = $data['purchaseAmount1'];
+                }
+            }
+            else if ($data['remainingAmount'] > $data['amounts'])
+            {
+                $data['purchaseAmount1'] = $data['remainingAmount'] - $data['amounts'];
+                $data['purchaseAmount']  = $data['amounts'];
+                $data['remainingAmount'] = $data['purchaseAmount1'] ;
+            }
+            else
+            {
+                $data['purchaseAmount']  = $data['remainingAmount'];
+            }
+        }
+
+        $orderPaymentPlanId = $data['OrderPaymentPlanID'];
+        $data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
+        $sql  =
+            [
+                'payment_header_id'           => $data['paymentHeaderID'],
+                'credit_card_payment_line_id' => $data['creditCardPaymentLineID'],
+                'order_payment_plan_id'       => $orderPaymentPlanId,
+                'payment_number'              => $data['paymentNumber'],
+                'amount'                      => $data['purchaseAmount'],
+            ];
+
+        $connection           = DB::connection('sqlsrv');
+        $sp7                  = $connection->insert("EXEC Sp_Web_Odeme_7_trPaymentLine '".$sql['payment_header_id']."','".$sql['credit_card_payment_line_id']."','".$sql['order_payment_plan_id']."'");
+        $sp7e[]               = $sp7;
+        $trPaymentLineControl = new TrPaymentLine();
+        $trPaymentLineControl->setConnection('sqlsrv');
+        $paymentLineId        = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$sql['payment_number'],$data['customerCode']])->orderBy('CreatedDate','desc')->first()->PaymentLineID;
+        $sp8                  = $connection->insert("EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$sql['amount']."'");
+        $paymentLineIdmsg[]   = $paymentLineId;
+        $error[]              = $sp8;
+        Log::emergency('PaymentLineID',$paymentLineIdmsg);
+        Log::emergency('sp7',$sp7e);
+        Log::emergency('sp8',$error);
+
+        return $data;
     }
 
     public function calcPrice(Request $request)
@@ -321,15 +417,15 @@ class AppController extends Controller
             $data      = json_decode($json, true);
 
             $payResult                       = new PayResult();
-            $payResult->name_surname         = $data['Transaction']['CardHolderName'] ?? null;
+            $payResult->name_surname         = is_array($data['Transaction']['CardHolderName']) ? null : $data['Transaction']['CardHolderName'];
             $payResult->card_number          = $data['Transaction']['CardNumberMasked'] ?? null;
             $payResult->response_code        = $data['Transaction']['Response']['Code'];
             $payResult->error_message        = $data['Transaction']['Response']['Message'] ?? null;
-            $payResult->error_message_title  = count($data['Transaction']['Response']['ErrorMsg']) == 0 ? null : $data['Transaction']['Response']['ErrorMsg'];
-            $payResult->error_message_detail = count($data['Transaction']['Response']['SysErrMsg']) == 0 ? null : $data['Transaction']['Response']['SysErrMsg'];
+            $payResult->error_message_title  = is_array($data['Transaction']['Response']['ErrorMsg']) ? null : $data['Transaction']['Response']['ErrorMsg'];
+            $payResult->error_message_detail = is_array($data['Transaction']['Response']['SysErrMsg']) ? null : $data['Transaction']['Response']['SysErrMsg'];
             $payResult->hash_data            = $data['Transaction']['HashData'] ?? null;
             $payResult->amount               = $strAmount;
-            $payResult->reference_no         = $data['Transaction']['RetrefNum'] ?? null;
+            $payResult->reference_no         = is_array($data['Transaction']['RetrefNum']) ? null : $data['Transaction']['RetrefNum'];
             $payResult->user_id              = Auth::user()->id;
             $payResult->md_status            = $strMDStatus;
             $payResult->ip_address           = $data['Customer']['IPAddress'];
@@ -339,117 +435,97 @@ class AppController extends Controller
             {
                 $customerCode  = Auth::user()->customer_code;
                 $amount        = helpers::totalPriceFormat($strAmount);
-                $connection    = DB::connection('sqlsrv');
-                $kkRefNo       = $connection->select('SET NOCOUNT ON; exec sp_LastRefNumCreditCardPayment 1');
-                $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
-
-                // paymentHeader
-                $paymentHeader = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_1_trCreditCardPaymentHeader '".$ccRefNo."','".date('Y-m-d')."','".date('H:i:s')."','".$customerCode."'");
-                $paymentHeaderControl = new TrCreditCardPaymentHeader;
-                $paymentHeaderControl->setConnection('sqlsrv');
-                $creditCardPaymentHeaderID = $paymentHeaderControl->select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
-                // paymentHeader
-
-                // paymentLine
-                $paymentLine        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_2_trCreditCardPaymentLine '".$creditCardPaymentHeaderID."','".date('Y-m-d')."','1','".$amount."'");
-                $paymentLineControl = new TrCreditCardPaymentLine;
-                $paymentLineControl->setConnection('sqlsrv');
-                $creditCardPaymentLineID = $paymentLineControl->select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first()->CreditCardPaymentLineID;
-                // paymentLine
-
-                // ccPaymentLineCurrency
-                $ccPaymentLineCurrency  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_3_trCreditCardPaymentLineCurrency '".$creditCardPaymentLineID."','".$amount."'");
-                // ccPaymentLineCurrency
-
-                // trCurrAccBook
-                $trCurrAccBook        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_4_trCurrAccBook '".$customerCode."','".date('Y-m-d')."','".date('H:i:s')."','".$creditCardPaymentLineID."'");
-                $trCurrAccBookControl = new TrCurrAccBook;
-                $trCurrAccBookControl->setConnection('sqlsrv');
-                $currAccBookID = $trCurrAccBookControl->select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
-                // trCurrAccBook
-
-                // trCurrAccBookCurrency
-                $trCurrAccBookCurrency  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_5_trCurrAccBookCurrency '".$currAccBookID."','".$amount."'");
-                // trCurrAccBookCurrency
-
-                // paymentNumber
-                $paymentNumber  = $connection->select("SET NOCOUNT ON;exec sp_LastRefNumPayment 1,'YS','1-5-1',2")[0]->PaymentNumber;
-                // paymentNumber
-
-                // trPaymentHeader
-                $trPaymentHeader  = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_6_trPaymentHeader '".date('Y-m-d')."','".date('H:i:s')."','".$paymentNumber."','".$customerCode."'");
-                $trPaymentHeaderControl = new TrPaymentHeader;
-                $trPaymentHeaderControl->setConnection('sqlsrv');
-                $paymentHeaderID = $trPaymentHeaderControl->select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
-                // trPaymentHeader
-
-                // TrPaymentLine
-                    $orderPaymentPlanId = $connection->select("SET NOCOUNT ON;Exec qry_GetCurrAccDebits 4, '".$customerCode."', 1, '00000000-0000-0000-0000-000000000000', 1, 'YS'");
-                // TrPaymentLine
+                $sP            = $this->SPSave($amount);
 
                 if (Cache::has('price'))
                 {
-                    $price = Cache::get('price');$priceList = Cache::get('priceList'.$customerCode);
+                    $price            = Cache::get('price');
+                    $priceList        = Cache::get('priceList'.$customerCode);
+                    $totalPrice       = 0;
+                    $remainingAmount  = 0;
+                    $order            = 0;
+                    $getTotal         = 0;
+                    $responseMessage  = '';
+                    $response =
+                        [
+                            'purchaseAmount1' => 0,
+                            'purchaseAmount'  => 0,
+                            'remainingAmount' => 0,
+                            'response'        => null,
+                        ];
 
-                    foreach ($price as $key => $value )
+                    foreach ($price as $key => $value)
                     {
-                        $orderPaymentPlanId   = $priceList[$value]['OrderPaymentPlanID'];
-                        $getPrice             = $priceList[$value]['price'];
-                        $getPrice             = \App\helpers\helpers::priceFormat($getPrice);
-                        $getPrice             = str_replace('.00','',$getPrice);
-                        $trPaymentLine        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_7_trPaymentLine '".$paymentHeaderID."','".$creditCardPaymentLineID."','".$orderPaymentPlanId."'");
-                        $trPaymentLineControl = new TrPaymentLine();
-                        $trPaymentLineControl->setConnection('sqlsrv');
-                        $paymentLineId         = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$paymentNumber,$customerCode])->first()->PaymentLineID;
-                        $trPaymentLineCurrency = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$getPrice."'");
+                        foreach ($priceList[$value]['amounts'] as $key2 => $value2)
+                        {
+                            $value3 =
+                                [
+                                    'amounts'                 => $priceList[$value]['amounts'][$key2],
+                                    'OrderPaymentPlanID'      => $priceList[$value]['OrderPaymentPlanID'][$key2],
+                                    'order'                   => $order,
+                                    'getTotal'                => $getTotal,
+                                    'remainingAmount'         => $response['remainingAmount'],
+                                    'paymentHeaderID'         => $sP['paymentHeaderID'],
+                                    'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
+                                    'paymentNumber'           => $sP['paymentNumber'],
+                                    'customerCode'            => $customerCode,
+                                    'response'                => $response['response'],
+                                    'totalPrice'              => $totalPrice,
+                                    'purchaseAmount1'         => $response['purchaseAmount1'],
+                                    'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
+                                ];
+                            $response = $this->lastTwoSPSave($value3);
+                        }
                     }
                 }
                 else
                 {
-                    //$priceCalc = Arr::first($priceCalc)['price'];
-                    $priceList    = Cache::get('priceList'.$customerCode);
-                    $totalPrice   = 0;
+                    $priceList        = Cache::get('priceList'.$customerCode);
+                    $totalPrice       = 0;
                     $remainingAmount  = 0;
-                    $order        = 0;
-                    $getTotal     = \App\helpers\helpers::totalPriceFormat($request->get('total'));
+                    $order            = 0;
+                    $getTotal         = $amount;
+                    $responseMessage  = '';
+                    $response =
+                        [
+                            'purchaseAmount1' => 0,
+                            'purchaseAmount'  => 0,
+                            'remainingAmount' => 0,
+                            'response'        => null,
+                        ];
 
                     foreach ($priceList as $key => $value)
                     {
-                        if ($totalPrice < $getTotal)
+                        foreach ($value['amounts'] as $key2 => $value2)
                         {
-                            $value['price'] = \App\helpers\helpers::priceFormat($value['price']);
-                            $value['price'] = str_replace('.00','',$value['price']);
-
-                            if ($order == 0)
+                            if ($totalPrice < $getTotal)
                             {
-                                $purchaseAmount1 = $getTotal - $value['price'];
-                                $purchaseAmount  = $getTotal - $purchaseAmount1;
-                                $remainingAmount = $purchaseAmount1;
-                            }
-                            else if ($remainingAmount > $value['price'])
-                            {
-                                $purchaseAmount1 = $remainingAmount - $value['price'];
-                                $purchaseAmount  = $value['price'];
-                                $remainingAmount    = $purchaseAmount1 ;
+                                $value3 =
+                                    [
+                                        'amounts'                 => $value['amounts'][$key2],
+                                        'OrderPaymentPlanID'      => $value['OrderPaymentPlanID'][$key2],
+                                        'order'                   => $order,
+                                        'getTotal'                => $getTotal,
+                                        'remainingAmount'         => $response['remainingAmount'],
+                                        'paymentHeaderID'         => $sP['paymentHeaderID'],
+                                        'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
+                                        'paymentNumber'           => $sP['paymentNumber'],
+                                        'customerCode'            => $customerCode,
+                                        'response'                => $response['response'],
+                                        'totalPrice'              => $totalPrice,
+                                        'purchaseAmount1'         => $response['purchaseAmount1'],
+                                        'purchaseAmount'          => $response['purchaseAmount'],
+                                    ];
+                                $response = $this->lastTwoSPSave($value3);
+                                $totalPrice  += $value['amounts'][$key2];
+                                $order++;
                             }
                             else
                             {
-                                $purchaseAmount = $remainingAmount;
+                                break;
                             }
+                        }
 
-                            $orderPaymentPlanId   = $value['OrderPaymentPlanID'];
-                            $trPaymentLine        = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_7_trPaymentLine '".$paymentHeaderID."','".$creditCardPaymentLineID."','".$orderPaymentPlanId."'");
-                            $trPaymentLineControl = new TrPaymentLine();
-                            $trPaymentLineControl->setConnection('sqlsrv');
-                            $paymentLineId         = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$paymentNumber,$customerCode])->first()->PaymentLineID;
-                            $trPaymentLineCurrency = $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$purchaseAmount."'");
-                            $totalPrice           += $value['price'];
-                            $order++;
-                        }
-                        else
-                        {
-                            break;
-                        }
                     }
                 }
 

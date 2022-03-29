@@ -1,7 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Http\Controllers\NewPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,6 +21,7 @@ use Laravel\Fortify\Http\Controllers\NewPasswordController;
     Route::post('/cikis-yap', [\App\Http\Controllers\AppController::class,'logout'])->name('logout');
     Route::middleware(['auth'])->group(function ()
     {
+        Route::get('/aa', [\App\Http\Controllers\AppController::class,'home'])->name('home');
         Route::get('/odemeler', [\App\Http\Controllers\AppController::class,'priceList'])->name('price.list');
         Route::get('/odeme-yap', [\App\Http\Controllers\AppController::class,'pay'])->name('pay');
         Route::post('/odeme-yap', [\App\Http\Controllers\AppController::class,'pricing'])->name('pricing');
@@ -29,6 +30,9 @@ use Laravel\Fortify\Http\Controllers\NewPasswordController;
         Route::post('/profil-duzenle', [\App\Http\Controllers\AppController::class,'profileEdit'])->name('profile.edit');
         Route::match(['get','post'],'/odeme-sonuc', [\App\Http\Controllers\AppController::class,'payResult'])->name('pay.result');
         Route::get('/receipt/{amount}', [\App\Http\Controllers\AppController::class,'receipt'])->name('receipt');
+        Route::get('/queue', function(){
+            artisan::call('queue:work --queue=sp7sp8');
+        });
     });
 
     Route::prefix('yonetimpaneli')->group(function ()
