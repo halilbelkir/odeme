@@ -103,7 +103,6 @@
 
                 if (checked == false && order != 0)
                 {
-                    $(this).attr('disabled',true);
                     $('[data-order="'+(order + 1)+'"]').attr('disabled',true);
                 }
                 else if(checked == false && order == 0)

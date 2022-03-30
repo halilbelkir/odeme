@@ -74,7 +74,15 @@ class AppController extends Controller
 
         if ($request->has('price'))
         {
-            Cache::put('price', $request->get('price'), Carbon::now()->addMinutes(3));
+            $priceList = Cache::get('priceList'.Auth::user()->customer_code);
+            $price     = 0;
+            foreach ($request->get('monthYear') as $monthYear)
+            {
+                $price += $priceList[$monthYear]['price'];
+            }
+
+            Cache::put('price', $request->get('price'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
         }
 
         return view('pricing',compact('data'));
@@ -105,6 +113,7 @@ class AppController extends Controller
         $customerCode  = Auth::user()->customer_code;
         $a = '666';
         $connection       = DB::connection('sqlsrv');
+
 /*
 
                                                                                 $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
@@ -165,10 +174,10 @@ class AppController extends Controller
                                                                                                            ");
                                                                                                        dd($s);
                                                                                                        */
-        $a = '1019';
+        $a = '1538';
         $amount        = helpers::totalPriceFormat($a.'00');
 
-        Cache::flush();
+        //Cache::flush();
         return view('priceList');
     }
 
@@ -228,9 +237,9 @@ class AppController extends Controller
         ];
     }
 
-    public function lastTwoSPSave($data)
+    public function lastTwoSPSave($data,$status = null)
     {
-        if (Cache::has('price'))
+        if ($status == 1)
         {
             $data['purchaseAmount'] = \App\helpers\helpers::priceFormat($data['purchaseAmount']);
             $data['purchaseAmount'] = str_replace('.00','',$data['purchaseAmount']);
@@ -266,7 +275,7 @@ class AppController extends Controller
                 $data['purchaseAmount']  = $data['remainingAmount'];
             }
         }
-
+dd($data['purchaseAmount']);
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
         $data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
         $sql  =
@@ -305,6 +314,9 @@ class AppController extends Controller
             {
                 $price += $priceList[$monthYear]['price'];
             }
+
+            Cache::put('price', $request->get('monthYear'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
         }
 
         return helpers::priceFormat($price);
@@ -315,7 +327,6 @@ class AppController extends Controller
         $strMDStatus = $request->get('mdstatus');
         if ($strMDStatus == "1" || $strMDStatus == "2" || $strMDStatus == "3" || $strMDStatus == "4")
         {
-
             $strMode                  = $request->get('mode');
             $strVersion               = $request->get('apiversion');
             $strTerminalID            = $request->get('clientid');
@@ -436,23 +447,22 @@ class AppController extends Controller
                 $customerCode  = Auth::user()->customer_code;
                 $amount        = helpers::totalPriceFormat($strAmount);
                 $sP            = $this->SPSave($amount);
+                $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'));
 
-                if (Cache::has('price'))
+                if (Cache::has('price') && $amount == $priceTotal)
                 {
                     $price            = Cache::get('price');
                     $priceList        = Cache::get('priceList'.$customerCode);
                     $totalPrice       = 0;
-                    $remainingAmount  = 0;
                     $order            = 0;
                     $getTotal         = 0;
-                    $responseMessage  = '';
-                    $response =
-                        [
-                            'purchaseAmount1' => 0,
-                            'purchaseAmount'  => 0,
-                            'remainingAmount' => 0,
-                            'response'        => null,
-                        ];
+                    $response         =
+                                        [
+                                            'purchaseAmount1' => 0,
+                                            'purchaseAmount'  => 0,
+                                            'remainingAmount' => 0,
+                                            'response'        => null,
+                                        ];
 
                     foreach ($price as $key => $value)
                     {
@@ -474,7 +484,8 @@ class AppController extends Controller
                                     'purchaseAmount1'         => $response['purchaseAmount1'],
                                     'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
                                 ];
-                            $response = $this->lastTwoSPSave($value3);
+
+                            $this->lastTwoSPSave($value3,1);
                         }
                     }
                 }
@@ -482,17 +493,15 @@ class AppController extends Controller
                 {
                     $priceList        = Cache::get('priceList'.$customerCode);
                     $totalPrice       = 0;
-                    $remainingAmount  = 0;
                     $order            = 0;
                     $getTotal         = $amount;
-                    $responseMessage  = '';
-                    $response =
-                        [
-                            'purchaseAmount1' => 0,
-                            'purchaseAmount'  => 0,
-                            'remainingAmount' => 0,
-                            'response'        => null,
-                        ];
+                    $response         =
+                                        [
+                                            'purchaseAmount1' => 0,
+                                            'purchaseAmount'  => 0,
+                                            'remainingAmount' => 0,
+                                            'response'        => null,
+                                        ];
 
                     foreach ($priceList as $key => $value)
                     {
@@ -516,8 +525,9 @@ class AppController extends Controller
                                         'purchaseAmount1'         => $response['purchaseAmount1'],
                                         'purchaseAmount'          => $response['purchaseAmount'],
                                     ];
-                                $response = $this->lastTwoSPSave($value3);
-                                $totalPrice  += $value['amounts'][$key2];
+
+                                $this->lastTwoSPSave($value3);
+                                $totalPrice += $value['amounts'][$key2];
                                 $order++;
                             }
                             else
