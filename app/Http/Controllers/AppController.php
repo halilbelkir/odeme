@@ -108,14 +108,12 @@ class AppController extends Controller
         //Cache::flush();
         //print_r(Cache::get('price'));
         //return view('priceList');
-        $deleteDate    = '20220329';
-        $selectDate    = '20220329';
+        $deleteDate    = '20220331';
+        $selectDate    = '20220331';
         $customerCode  = Auth::user()->customer_code;
-        $a = '666';
-        $connection       = DB::connection('sqlsrv');
+        $connection    = DB::connection('sqlsrv');
 
 /*
-
                                                                                 $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
                                                                                                                                 delete from trPaymentLineCurrency Where PaymentLineID in
                                                                                                                                 (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in
@@ -174,10 +172,6 @@ class AppController extends Controller
                                                                                                            ");
                                                                                                        dd($s);
                                                                                                        */
-        $a = '1538';
-        $amount        = helpers::totalPriceFormat($a.'00');
-
-        //Cache::flush();
         return view('priceList');
     }
 
@@ -205,18 +199,18 @@ class AppController extends Controller
         // paymentLine
 
         // ccPaymentLineCurrency
-        $ccPaymentLineCurrency  = $connection->insert("EXEC Sp_Web_Odeme_3_trCreditCardPaymentLineCurrency '".$creditCardPaymentLineID."','".$amount."'");
+        $connection->insert("EXEC Sp_Web_Odeme_3_trCreditCardPaymentLineCurrency '".$creditCardPaymentLineID."','".$amount."'");
         // ccPaymentLineCurrency
 
         // trCurrAccBook
         $trCurrAccBook        = $connection->insert("EXEC Sp_Web_Odeme_4_trCurrAccBook '".$customerCode."','".$date."','".$time."','".$creditCardPaymentLineID."'");
         $trCurrAccBookControl = new TrCurrAccBook;
         $trCurrAccBookControl->setConnection('sqlsrv');
-        $currAccBookID = $trCurrAccBookControl->select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
+        $currAccBookID        = $trCurrAccBookControl->select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
         // trCurrAccBook
 
         // trCurrAccBookCurrency
-        $trCurrAccBookCurrency  = $connection->insert("EXEC Sp_Web_Odeme_5_trCurrAccBookCurrency '".$currAccBookID."','".$amount."'");
+            $connection->insert("EXEC Sp_Web_Odeme_5_trCurrAccBookCurrency '".$currAccBookID."','".$amount."'");
         // trCurrAccBookCurrency
 
         // paymentNumber
@@ -230,11 +224,13 @@ class AppController extends Controller
         $paymentHeaderID = $trPaymentHeaderControl->select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
         // trPaymentHeader
 
-        return [
-            'paymentHeaderID' => $paymentHeaderID,
-            'creditCardPaymentLineID' => $creditCardPaymentLineID,
-            'paymentNumber' => $paymentNumber,
-        ];
+        return
+                [
+                    'paymentHeaderID'         => $paymentHeaderID,
+                    'creditCardPaymentLineID' => $creditCardPaymentLineID,
+                    'paymentNumber'           => $paymentNumber,
+                    'CreditCardPaymentNumber' => $ccRefNo
+                ];
     }
 
     public function lastTwoSPSave($data,$status = null)
@@ -275,30 +271,29 @@ class AppController extends Controller
                 $data['purchaseAmount']  = $data['remainingAmount'];
             }
         }
-dd($data['purchaseAmount']);
+
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
         $data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
-        $sql  =
-            [
-                'payment_header_id'           => $data['paymentHeaderID'],
-                'credit_card_payment_line_id' => $data['creditCardPaymentLineID'],
-                'order_payment_plan_id'       => $orderPaymentPlanId,
-                'payment_number'              => $data['paymentNumber'],
-                'amount'                      => $data['purchaseAmount'],
-            ];
 
         $connection           = DB::connection('sqlsrv');
-        $sp7                  = $connection->insert("EXEC Sp_Web_Odeme_7_trPaymentLine '".$sql['payment_header_id']."','".$sql['credit_card_payment_line_id']."','".$sql['order_payment_plan_id']."'");
+        $sp7                  = $connection->insert("EXEC Sp_Web_Odeme_7_trPaymentLine '".$data['paymentHeaderID']."','".$data['creditCardPaymentLineID']."','".$orderPaymentPlanId."',".($data['order'] + 1));
         $sp7e[]               = $sp7;
         $trPaymentLineControl = new TrPaymentLine();
         $trPaymentLineControl->setConnection('sqlsrv');
-        $paymentLineId        = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$sql['payment_number'],$data['customerCode']])->orderBy('CreatedDate','desc')->first()->PaymentLineID;
-        $sp8                  = $connection->insert("EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$sql['amount']."'");
+        $paymentLineId        = $trPaymentLineControl->select('PaymentLineID')->whereRaw('PaymentHeaderID  in (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?  and CurrAccCode = ? )',[$data['paymentNumber'],$data['customerCode']])->orderBy('CreatedDate','desc')->first()->PaymentLineID;
+        $sp8                  = $connection->insert("EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$data['purchaseAmount']."'");
+        $update               = $connection->update("update trCreditCardPaymentHeader set
+            DocumentNumber = (Select PaymentNumber from trPaymentHeader Where PaymentNumber =  ?),
+            ApplicationID = (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?)
+            where CurrAccCode = ? and CreditCardPaymentNumber = ?",[$data['paymentNumber'],$data['paymentNumber'],$data['customerCode'],$data['CreditCardPaymentNumber']]);
+
         $paymentLineIdmsg[]   = $paymentLineId;
         $error[]              = $sp8;
+        $updateErr[]          = $update;
         Log::emergency('PaymentLineID',$paymentLineIdmsg);
         Log::emergency('sp7',$sp7e);
         Log::emergency('sp8',$error);
+        Log::emergency('update',$updateErr);
 
         return $data;
     }
@@ -478,6 +473,7 @@ dd($data['purchaseAmount']);
                                     'paymentHeaderID'         => $sP['paymentHeaderID'],
                                     'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
                                     'paymentNumber'           => $sP['paymentNumber'],
+                                    'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
                                     'customerCode'            => $customerCode,
                                     'response'                => $response['response'],
                                     'totalPrice'              => $totalPrice,
@@ -519,6 +515,7 @@ dd($data['purchaseAmount']);
                                         'paymentHeaderID'         => $sP['paymentHeaderID'],
                                         'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
                                         'paymentNumber'           => $sP['paymentNumber'],
+                                        'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
                                         'customerCode'            => $customerCode,
                                         'response'                => $response['response'],
                                         'totalPrice'              => $totalPrice,
@@ -660,7 +657,7 @@ dd($data['purchaseAmount']);
 
             if ($tc != '56899266102' && $tc != '40840281412')
             {
-                $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
+                //$this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
             }
 
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));

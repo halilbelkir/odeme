@@ -218,6 +218,45 @@ class AdminController extends Controller
         return view('admin.dashboard',compact('todayCount','todayTotalPrice','weekCount','weekTotalPrice','monthCount','monthTotalPrice'));
     }
 
+    public static function datatablesTurkish()
+    {
+        return config('datatablesTurkish');
+    }
+
+    public function datatables(Request $request)
+    {
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $startDate = explode('-',$startDate);
+        $startDate = $startDate[2].'-'.$startDate[1].'-'.$startDate[0];
+        $endDate = explode('-',$endDate);
+        $endDate = $endDate[2].'-'.$endDate[1].'-'.$endDate[0];
+
+        $sql = PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) BETWEEN DATE_FORMAT('".$startDate."', '%Y/%m/%d') and DATE_FORMAT('".$endDate."', '%Y/%m/%d')")->get();
+        return Datatables::of($sql)
+            ->editColumn('created_at', function ($payResult) {
+                return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
+            })
+            ->editColumn('amount', function ($payResult) {
+                //return helpers::priceFormatCc($payResult->amount).' ₺';
+                return $payResult->amount;
+            })
+            ->editColumn('name_surname', function ($payResult) {
+                return $payResult->name.' '.$payResult->surname;
+            })
+            ->addColumn('response_code', function ($payResult) {
+                return $payResult->response_code == 0 ? '<h4><span class="badge bg-green">İşlem Başarılı</span></h4>' : '<span class="badge bg-red">İşlem Başarısız ('.$payResult->response_code.')</span>';
+            })
+            ->editColumn('error_message', function ($payResult) {
+                return '<strong>'.$payResult->error_message_detail.'</strong><br>'.$payResult->error_message_title ?? null;
+            })
+            ->rawColumns(['response_code','error_message'])
+            ->with('total', function() use ($sql) {
+                return helpers::priceFormatCc($sql->sum('amount')).' ₺';
+            })
+            ->toJson();
+    }
+
     public function todayDatatable()
     {
         return Datatables::of(PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) = DATE_FORMAT(CURDATE(), '%Y/%m/%d')")->get())

@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('*',function($view)
         {
-            if (Auth::user())
+            if (Auth::user() && Auth::user()->login_control != 1)
             {
                 $customerCode        = Auth::user()->customer_code;
                 $remainderCacheName  = 'remainder'.$customerCode;
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
                 else
                 {
                     //$customerCode = 246492;
-                    $remainder = DB::connection('sqlsrv')->select('Exec sp_mus_odeme :customer_code', ['customer_code' => $customerCode]);
+                    $remainder = DB::connection('sqlsrv')->select('Exec Sp_Web_Odeme_0_Musteri_Odeme_List :customer_code', ['customer_code' => $customerCode]);
 
                     Cache::put($remainderCacheName, $remainder, Carbon::now()->addMinutes(480));
                 }

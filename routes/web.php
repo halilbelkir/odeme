@@ -47,11 +47,13 @@ use Illuminate\Support\Facades\Route;
         Route::get('/sifremi-unuttum/{token}', function () { return view('admin.passwordReset');})->name('password.reset');
         Route::post('/reset-password', [\App\Http\Controllers\AdminController::class, 'passwordReset'])->name('admin.password.reset.submit');
 
-        Route::middleware(['auth'])->group(function ()
+        Route::middleware(['admin.auth'])->group(function ()
         {
             Route::get('/dashboard', [\App\Http\Controllers\AdminController::class,'dashboard'])->name('admin.dashboard');
+            Route::post('/datatables', [App\Http\Controllers\AdminController::class, 'datatables'])->name('admin.datatables');
             Route::get('/todayDatatables', [App\Http\Controllers\AdminController::class, 'todayDatatable'])->name('admin.today.datatables');
             Route::get('/weekDatatables', [App\Http\Controllers\AdminController::class, 'weekDatatable'])->name('admin.week.datatables');
             Route::get('/monthDatatables', [App\Http\Controllers\AdminController::class, 'monthDatatable'])->name('admin.month.datatables');
+            Route::get('/datatablesTurkish', [App\Http\Controllers\AdminController::class, 'datatablesTurkish'])->name('admin.datatables.turkish');
         });
     });
