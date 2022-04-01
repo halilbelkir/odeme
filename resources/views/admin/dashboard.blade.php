@@ -71,6 +71,7 @@
             <table class="table" id="report" data-order='[[ 3, "desc" ]]'>
                 <thead>
                     <tr>
+                        <th>Müşteri Numarası</th>
                         <th>Ad & Soyad</th>
                         <th>Kart Numarası</th>
                         <th>Ödenen Tutar</th>
@@ -221,6 +222,7 @@
                     },
                     columns :
                         [
+                            { data: 'customer_code', name: 'customer_code' },
                             { data: 'name_surname', name: 'name_surname' },
                             { data: 'card_number', name: 'card_number' },
                             { data: 'amount', name: 'amount',footer:'amount' },
