@@ -61,14 +61,18 @@
         {{$slot}}
     </main>
     <footer>
-        <ul>
-            <li> <strong>Adres :</strong> Bey mahallesi Atatürk Bulvarı No: 23 Şehitkamil / Gaziantep</li>
-            <li> <strong>Telefon :</strong> 444 0 943</li>
-            <li> <strong>E-Mail :</strong> info@ugurluceyiz.com.tr</li>
-        </ul>
+        <div class="container">
+            <div class="row text-left text-md-center justify-content-center">
+                <div class="col-md-6 col-xl-5 col-lg-6"><strong>Adres :</strong> Bey mahallesi Atatürk Bulvarı No: 23 Şehitkamil / Gaziantep</div>
+                <div class="col-md-3 col-xl-2 col-lg-2"><strong>Telefon :</strong> <a href="tel:4440943">444 0 943</a></div>
+                <div class="col-md-3 col-xl-3 col-lg-4"><strong>E-Mail :</strong> <a href="mailto:info@ugurluceyiz.com.tr">info@ugurluceyiz.com.tr</a></div>
+            </div>
+        </div>
     </footer>
-    <div class="col-12 text-center mb-0">
-        <a href="https://zaurac.io" style="color: #212529;text-decoration: none;margin-bottom: 0" class=" text-center" target="_blank">Zaurac</a> © 2022 Uğurlu Çeyiz. Bütün Hakları Saklıdır.
+    <div class="container">
+        <div class="col-12 text-left text-md-center mt-2 mb-2">
+            <a href="https://zaurac.io" style="color: #212529;text-decoration: none;" class=" text-center" target="_blank">Zaurac</a> © 2022 Uğurlu Çeyiz. Bütün Hakları Saklıdır.
+        </div>
     </div>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
@@ -80,17 +84,21 @@
 <x-loading></x-loading>
 </html>
 <style>
-    footer ul
+    footer a:hover
     {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 0;
+        color: #dd0815;
     }
-    footer ul li
+    footer a
     {
-        float: left;
-        margin-right: 20px;
-        list-style: none;
-        text-align: center;
+        color: #212529;
+        text-decoration: none;
+        margin-bottom: 0
+    }
+    @media (min-width: 1200px)
+    {
+        footer
+        {
+            position: relative;
+        }
     }
 </style>
