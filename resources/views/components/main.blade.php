@@ -97,6 +97,9 @@
             <li> <strong>E-Mail :</strong> info@ugurluceyiz.com.tr</li>
         </ul>
     </footer>
+    <div class="col-12 text-center mb-0">
+        <a href="https://zaurac.io" style="color: #212529;text-decoration: none;margin-bottom: 0" class=" text-center" target="_blank">Zaurac</a> © 2022 Uğurlu Çeyiz. Bütün Hakları Saklıdır.
+    </div>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>

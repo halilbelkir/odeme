@@ -1,1 +1,1 @@
-{!! Media::createTag('assets/img/logo.png',['width' =>[180], 'height' => [50]],['class'=> 'mb-4']) !!}
+<img src="{{asset('assets/img/logo.png')}}" width="180" style="margin-bottom: 20px;" height="50" alt="">
