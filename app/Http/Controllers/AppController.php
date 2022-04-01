@@ -655,11 +655,8 @@ class AppController extends Controller
             $name         = $phone->FirstName;
             $surname      = $phone->LastName;
 
-            if ($tc != '56899266102' && $tc != '40840281412')
-            {
-                //$this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
-            }
 
+            $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
 
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
@@ -702,32 +699,43 @@ class AppController extends Controller
 
             $customerCode = Cache::get('customerCode');
             $auth         = User::where('customer_code',$customerCode)->first();
+            $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('status',1)->first();
 
-            if (empty($auth) || $auth->tc != '56899266102' && $auth->tc != '40840281412')
+            if (empty($codeControl))
             {
-                $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
-
-                if (empty($codeControl))
-                {
-                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                    return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-
-                $codeControl->status = 0;
-                $codeControl->save();
-                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
+                Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
 
-            if (!$auth)
+            $codeControl->status = 0;
+            $codeControl->save();
+
+            if (empty($auth))
             {
+
+                /*
+                  $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
+                                if (empty($codeControl))
+                                {
+                                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
+                                    return redirect()->back()
+                                        ->withErrors($validator)
+                                        ->withInput();
+                                }
+
+                                $codeControl->status = 0;
+                                $codeControl->save();
+                                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
+                                */
+
                 $auth                = new User;
                 $auth->tc            = $codeControl->tc;
                 $auth->phone_number  = $codeControl->phone_number;
                 $auth->name          = $codeControl->name;
                 $auth->surname       = $codeControl->surname;
-                $auth->email         = $tcControl->EmailAddress;
+                $auth->email         = null;
                 $auth->customer_code = $customerCode;
                 $auth->password      = bcrypt($customerCode.$codeControl->tc);
                 $auth->save();
@@ -774,7 +782,7 @@ class AppController extends Controller
         }
         //$phoneNumber = '05342233232';
         $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
-        sms::send($phoneNumber,$message);
+        //sms::send($phoneNumber,$message);
 
         if (request('tc'))
         {
