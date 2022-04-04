@@ -101,6 +101,112 @@ class AppController extends Controller
         return view('pricing',compact('pricing','amount'));
     }
 
+    public function testPrice(Request $request)
+    {
+        $amount        = helpers::totalPriceFormat($request->get('total'));
+        $customerCode  = Auth::user()->customer_code;
+        $sP            = $this->SPSave($amount);
+        $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'));
+
+        if (Cache::has('price') && $amount == $priceTotal)
+        {
+            $price            = Cache::get('price');
+            $priceList        = Cache::get('priceList'.$customerCode);
+            $totalPrice       = 0;
+            $order            = 0;
+            $getTotal         = 0;
+            $response         =
+                [
+                    'purchaseAmount1' => 0,
+                    'purchaseAmount'  => 0,
+                    'remainingAmount' => 0,
+                    'response'        => null,
+                ];
+
+            foreach ($price as $key => $value)
+            {
+                foreach ($priceList[$value]['amounts'] as $key2 => $value2)
+                {
+                    $value3 =
+                        [
+                            'amounts'                 => $priceList[$value]['amounts'][$key2],
+                            'OrderPaymentPlanID'      => $priceList[$value]['OrderPaymentPlanID'][$key2],
+                            'order'                   => $order,
+                            'getTotal'                => $getTotal,
+                            'remainingAmount'         => $response['remainingAmount'],
+                            'paymentHeaderID'         => $sP['paymentHeaderID'],
+                            'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
+                            'paymentNumber'           => $sP['paymentNumber'],
+                            'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
+                            'customerCode'            => $customerCode,
+                            'response'                => $response['response'],
+                            'totalPrice'              => $totalPrice,
+                            'purchaseAmount1'         => $response['purchaseAmount1'],
+                            'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
+                        ];
+
+                    $this->lastTwoSPSave($value3,1);
+                }
+            }
+        }
+        else
+        {
+            $priceList        = Cache::get('priceList'.$customerCode);
+            $totalPrice       = 0;
+            $order            = 0;
+            $getTotal         = $amount;
+            $response         =
+                [
+                    'purchaseAmount1' => 0,
+                    'purchaseAmount'  => 0,
+                    'remainingAmount' => 0,
+                    'response'        => null,
+                ];
+
+            foreach ($priceList as $key => $value)
+            {
+                foreach ($value['amounts'] as $key2 => $value2)
+                {
+                    if ($totalPrice < $getTotal)
+                    {
+                        $value3 =
+                            [
+                                'amounts'                 => $value['amounts'][$key2],
+                                'OrderPaymentPlanID'      => $value['OrderPaymentPlanID'][$key2],
+                                'order'                   => $order,
+                                'getTotal'                => $getTotal,
+                                'remainingAmount'         => $response['remainingAmount'],
+                                'paymentHeaderID'         => $sP['paymentHeaderID'],
+                                'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
+                                'paymentNumber'           => $sP['paymentNumber'],
+                                'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
+                                'customerCode'            => $customerCode,
+                                'response'                => $response['response'],
+                                'totalPrice'              => $totalPrice,
+                                'purchaseAmount1'         => $response['purchaseAmount1'],
+                                'purchaseAmount'          => $response['purchaseAmount'],
+                            ];
+
+                        $this->lastTwoSPSave($value3);
+                        $totalPrice += $value['amounts'][$key2];
+                        $order++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        $data['link'] = route('receipt',[$amount]);
+        $data['Transaction']['Response']['Code'] = 0;
+        Cache::flush();
+        session()->flash('flash_message', $data);
+        return redirect()->route('price.list');
+    }
+
     public function priceList()
     {
         Cache::forget('customerCode');
@@ -452,12 +558,12 @@ class AppController extends Controller
                     $order            = 0;
                     $getTotal         = 0;
                     $response         =
-                                        [
-                                            'purchaseAmount1' => 0,
-                                            'purchaseAmount'  => 0,
-                                            'remainingAmount' => 0,
-                                            'response'        => null,
-                                        ];
+                        [
+                            'purchaseAmount1' => 0,
+                            'purchaseAmount'  => 0,
+                            'remainingAmount' => 0,
+                            'response'        => null,
+                        ];
 
                     foreach ($price as $key => $value)
                     {
@@ -492,12 +598,12 @@ class AppController extends Controller
                     $order            = 0;
                     $getTotal         = $amount;
                     $response         =
-                                        [
-                                            'purchaseAmount1' => 0,
-                                            'purchaseAmount'  => 0,
-                                            'remainingAmount' => 0,
-                                            'response'        => null,
-                                        ];
+                        [
+                            'purchaseAmount1' => 0,
+                            'purchaseAmount'  => 0,
+                            'remainingAmount' => 0,
+                            'response'        => null,
+                        ];
 
                     foreach ($priceList as $key => $value)
                     {
@@ -844,6 +950,7 @@ class AppController extends Controller
         $totalPriceCacheName = 'totalPrice'.$customerCode;
         $priceListHtml       = '';
         $totalPrice          = Cache::get($totalPriceCacheName);
+        $amount              = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($amount) :  \App\helpers\helpers::priceFormatCc($amount);
 
         foreach ($priceList as $key => $value)
         {
@@ -951,10 +1058,10 @@ class AppController extends Controller
                                     <p style="text-align: left;font-size: 12px;margin-top: 10px;"> Kredi Kartı </p>
                                 </td>
                                 <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.\App\helpers\helpers::priceFormatCc($amount).' ₺</p>
+                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.$amount.' ₺</p>
                                 </td>
                                 <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.\App\helpers\helpers::priceFormatCc($amount).' ₺</p>
+                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.$amount.' ₺</p>
                                 </td>
                             </tr>
                             <tr>
@@ -962,7 +1069,7 @@ class AppController extends Controller
                                     <p style="text-align: right;font-size: 12px;margin-top: 10px;font-weight: bold"> Toplam :</p>
                                 </td>
                                 <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;font-weight: bold"> '.\App\helpers\helpers::priceFormatCc($amount).' ₺</p>
+                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;font-weight: bold"> '.$amount.' ₺</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -981,7 +1088,7 @@ class AppController extends Controller
                                     <p style="text-align: right;font-size: 15px;margin-top: 10px;padding-right: 10px"> <strong>Kalan Bakiye : </strong> </p>
                                 </td>
                                 <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> <strong>'.\App\helpers\helpers::priceFormat($totalPrice).' ₺</strong></p>
+                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> <strong>'.$amount.' ₺</strong></p>
                                 </td>
                             </tr>
                         </tbody>

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/cikis-yap', [\App\Http\Controllers\AppController::class,'logout'])->name('logout');
     Route::middleware(['auth'])->group(function ()
     {
-        Route::get('/aa', [\App\Http\Controllers\AppController::class,'home'])->name('home');
+        Route::post('/odeme-test', [\App\Http\Controllers\AppController::class,'testPrice'])->name('pay.test');
         Route::get('/odemeler', [\App\Http\Controllers\AppController::class,'priceList'])->name('price.list');
         Route::get('/odeme-yap', [\App\Http\Controllers\AppController::class,'pay'])->name('pay');
         Route::post('/odeme-yap', [\App\Http\Controllers\AppController::class,'pricing'])->name('pricing');

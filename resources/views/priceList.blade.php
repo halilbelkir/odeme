@@ -19,7 +19,7 @@
             </div>
         @endif
         @if(count($priceList) > 0)
-            <form action="{{route('pay')}}" class="pay row" method="post">
+            <form action="@if(env('APP_TEST')) {{route('pay.test')}} @else {{route('pay')}} @endif" class="pay row" method="post">
                 @csrf
                 <div class="col-md-6 col-12 mt-3">
                     <h5 class="mb-5 mt-3 text-center totalPrice"> Toplam Tutar : <span> 0₺</span></h5>
@@ -147,31 +147,32 @@
                     }
                 });
             }
+            @if(!env('APP_TEST'))
+                $('.pay').submit(function (e)
+                {
+                    e.preventDefault();
+                    $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
+                    $.ajax({
+                        type: $(this).attr('method'),
+                        url:  $(this).attr('action'),
+                        data: $(this).serialize(),
+                        success: function (e)
+                        {
+                            $('.loading').fadeOut('fast');
+                            $('.pay-show').html(e);
+                            setTimeout(function() {
+                                $('.form-pay-send').trigger('submit');
+                            }, 100);
+                        },
+                        error : function (e)
+                        {
+                            responseMessages('danger',e.responseJSON.message,'#locations');
+                            loading();
+                        }
+                    });
 
-            $('.pay').submit(function (e)
-            {
-                e.preventDefault();
-                $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
-                $.ajax({
-                    type: $(this).attr('method'),
-                    url:  $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function (e)
-                    {
-                        $('.loading').fadeOut('fast');
-                        $('.pay-show').html(e);
-                        setTimeout(function() {
-                            $('.form-pay-send').trigger('submit');
-                        }, 100);
-                    },
-                    error : function (e)
-                    {
-                        responseMessages('danger',e.responseJSON.message,'#locations');
-                        loading();
-                    }
                 });
-
-            });
+            @endif
         </script>
     @endsection
 </x-main>
