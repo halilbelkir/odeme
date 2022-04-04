@@ -108,6 +108,21 @@ class AppController extends Controller
         $sP            = $this->SPSave($amount);
         $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'));
 
+        $payResult                       = new PayResult();
+        $payResult->name_surname         = null;
+        $payResult->card_number          = null;
+        $payResult->response_code        = '00';
+        $payResult->error_message        = null;
+        $payResult->error_message_title  = null;
+        $payResult->error_message_detail = null;
+        $payResult->hash_data            = null;
+        $payResult->amount               = $amount;
+        $payResult->reference_no         = null;
+        $payResult->user_id              = Auth::user()->id;
+        $payResult->md_status            = '00';
+        $payResult->ip_address           = $request->ip();
+        $payResult->save();
+
         if (Cache::has('price') && $amount == $priceTotal)
         {
             $price            = Cache::get('price');
