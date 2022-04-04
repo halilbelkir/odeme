@@ -1,7 +1,7 @@
 <x-main>
     {!! $response['response'] ?? null !!}
     <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{count($priceList)}}</span></h6>
+        <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{is_array($priceList) ? count($priceList) : 0}}</span></h6>
         @if (Session::has('flash_message'))
             <div class="d-flex justify-content-center">
                 <div class="col-md-6">

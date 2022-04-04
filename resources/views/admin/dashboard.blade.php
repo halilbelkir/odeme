@@ -3,64 +3,65 @@
 <div class="container">
     <div class="row mb-5">
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box">
                 <h5>Günlük Toplam Ödeme Sayısı</h5>
                 <h2>{{$todayCount}}</h2>
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box">
                 <h5>Günlük Toplam Ödeme Tutarı</h5>
                 <h2>{{$todayTotalPrice}} ₺</h2>
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box ">
                 <h5>Haftalık Toplam Ödeme Sayısı</h5>
                 <h2>{{$weekCount}}</h2>
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box">
                 <h5>Haftalık Toplam Ödeme Tutarı</h5>
                 <h2>{{$weekTotalPrice}} ₺</h2>
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box">
                 <h5>Aylık Toplam Ödeme Sayısı</h5>
                 <h2>{{$monthCount}}</h2>
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 col-6 mb-2">
             <div class="box">
                 <h5>Aylık Toplam Ödeme Tutarı</h5>
                 <h2>{{$monthTotalPrice}} ₺</h2>
             </div>
         </div>
     </div>
-    <div class="row">
+
         <form action="{{route('admin.datatables')}}" class="row" id="reportForm" method="POST">
-            <div id="multipleDate" class="row col-8">
-                <div class="col-6 mb-3">
+            <div id="multipleDate" class="row col-12 col-md-8">
+                <div class="col-12 col-md-6 mb-3">
                     <div class="form-group mt-1">
                         <input type="text" name="startDate" class="form-control date" value="{{Carbon\Carbon::now()->format('d-m-Y')}}" placeholder="Başlangıç Tarihi ">
                     </div>
                 </div>
-                <div class="col-6 mb-3">
+
+                <div class="col-12 col-md-6 mb-3">
                     <div class="form-group mt-1">
                         <input type="text" name="endDate" class="form-control date" value="{{Carbon\Carbon::tomorrow()->format('d-m-Y')}}" placeholder="Bitiş Tarihi">
                     </div>
                 </div>
             </div>
 
-            <div class="col-4 mb-3">
+            <div class="col-12 col-md-4 mb-3">
                 <div class="form-group mt-1">
                     <button class="w-100 btn btn-md btn-red" type="submit">Raporla</button>
                 </div>
@@ -89,7 +90,6 @@
                 </tfoot>
             </table>
         </div>
-    </div>
 </div>
 @section('css')
         <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">

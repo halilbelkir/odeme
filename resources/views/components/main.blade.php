@@ -36,9 +36,16 @@
                             </a>
                         </li>
                     @endif
-                    <li class="nav-item float-right">
-                        <a class="nav-link @if(request()->routeIs('price.list')) active @endif " href="{{route('price.list')}}">Anasayfa</a>
-                    </li>
+
+                    @if(Auth::user()->login_control != 1)
+                        <li class="nav-item float-right">
+                            <a class="nav-link @if(request()->routeIs('price.list')) active @endif " href="{{route('price.list')}}">Anasayfa</a>
+                        </li>
+                    @else
+                        <li class="nav-item float-right">
+                            <a class="nav-link @if(request()->routeIs('admin.dashboard')) active @endif " href="{{route('admin.dashboard')}}">Anasayfa</a>
+                        </li>
+                    @endif
                     <li class="nav-item float-right">
                         <a class="nav-link @if(request()->routeIs('profile')) active @endif " href="{{route('profile')}}">Profil</a>
                     </li>

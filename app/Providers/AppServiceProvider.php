@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('*',function($view)
         {
-            if (Auth::user() && Auth::user()->login_control != 1)
+            if (Auth::user())
             {
                 $customerCode        = Auth::user()->customer_code;
                 $remainderCacheName  = 'remainder'.$customerCode;

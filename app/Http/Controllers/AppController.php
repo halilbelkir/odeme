@@ -658,7 +658,7 @@ class AppController extends Controller
 
             $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
-
+            Cache::flush();
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
             Cache::put('tc', $tc, Carbon::now()->addMinutes(480));
             Cache::put('name', $name, Carbon::now()->addMinutes(480));
