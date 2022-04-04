@@ -209,11 +209,11 @@ class AdminController extends Controller
         $weekCount       = PayResult::where('response_code','00')->whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")->count();
         $monthCount      = PayResult::where('response_code','00')->whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")->count();
         $todayTotalPrice = PayResult::selectRaw('SUM(amount) as price')->where('response_code','00')->whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) = DATE_FORMAT(CURDATE(), '%Y/%m/%d')")->first()->price;
-        $todayTotalPrice = helpers::priceFormatCc($todayTotalPrice);
+        $todayTotalPrice = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($todayTotalPrice) :  \App\helpers\helpers::priceFormatCc($todayTotalPrice);
         $weekTotalPrice  = PayResult::selectRaw('SUM(amount) as price')->where('response_code','00')->whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")->first()->price;
-        $weekTotalPrice  = helpers::priceFormatCc($weekTotalPrice);
+        $weekTotalPrice  = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($weekTotalPrice) :  \App\helpers\helpers::priceFormatCc($weekTotalPrice);
         $monthTotalPrice = PayResult::selectRaw('SUM(amount) as price')->where('response_code','00')->whereRaw("(DATE_FORMAT(created_at,'%Y/%m/%d')) > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")->first()->price;
-        $monthTotalPrice = helpers::priceFormatCc($monthTotalPrice);
+        $monthTotalPrice = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($monthTotalPrice) :  \App\helpers\helpers::priceFormatCc($monthTotalPrice);
 
         return view('admin.dashboard',compact('todayCount','todayTotalPrice','weekCount','weekTotalPrice','monthCount','monthTotalPrice'));
     }
@@ -226,11 +226,11 @@ class AdminController extends Controller
     public function datatables(Request $request)
     {
         $startDate = $request->get('startDate');
-        $endDate = $request->get('endDate');
+        $endDate   = $request->get('endDate');
         $startDate = explode('-',$startDate);
         $startDate = $startDate[2].'-'.$startDate[1].'-'.$startDate[0];
-        $endDate = explode('-',$endDate);
-        $endDate = $endDate[2].'-'.$endDate[1].'-'.$endDate[0];
+        $endDate   = explode('-',$endDate);
+        $endDate   = $endDate[2].'-'.$endDate[1].'-'.$endDate[0];
 
         $sql = PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname','users.customer_code')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) BETWEEN DATE_FORMAT('".$startDate."', '%Y/%m/%d') and DATE_FORMAT('".$endDate."', '%Y/%m/%d')")->get();
         return Datatables::of($sql)
@@ -238,8 +238,9 @@ class AdminController extends Controller
                 return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
             })
             ->editColumn('amount', function ($payResult) {
-                //return helpers::priceFormatCc($payResult->amount).' ₺';
-                return $payResult->amount;
+                $amount = $payResult->amount;
+                $amount = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($amount) :  \App\helpers\helpers::priceFormatCc($amount);
+                return $amount;
             })
             ->editColumn('name_surname', function ($payResult) {
                 return $payResult->name.' '.$payResult->surname;
@@ -255,7 +256,9 @@ class AdminController extends Controller
             })
             ->rawColumns(['response_code','error_message'])
             ->with('total', function() use ($sql) {
-                return helpers::priceFormatCc($sql->where('response_code','00')->sum('amount')).' ₺';
+                $total = $sql->where('response_code','00')->sum('amount');
+                $total = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($total) :  \App\helpers\helpers::priceFormatCc($total);
+                return helpers::priceFormatCc($total).' ₺';
             })
             ->toJson();
     }

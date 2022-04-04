@@ -965,6 +965,7 @@ class AppController extends Controller
         $totalPriceCacheName = 'totalPrice'.$customerCode;
         $priceListHtml       = '';
         $totalPrice          = Cache::get($totalPriceCacheName);
+        $totalPrice          = \App\helpers\helpers::priceFormat($totalPrice);
         $amount              = env('APP_TEST')  ? \App\helpers\helpers::priceFormat($amount) :  \App\helpers\helpers::priceFormatCc($amount);
 
         foreach ($priceList as $key => $value)
@@ -1103,7 +1104,7 @@ class AppController extends Controller
                                     <p style="text-align: right;font-size: 15px;margin-top: 10px;padding-right: 10px"> <strong>Kalan Bakiye : </strong> </p>
                                 </td>
                                 <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> <strong>'.$amount.' ₺</strong></p>
+                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> <strong>'.$totalPrice.' ₺</strong></p>
                                 </td>
                             </tr>
                         </tbody>
@@ -1112,7 +1113,7 @@ class AppController extends Controller
                     <p style="font-size: 10px;font-style: italic;font-weight: bold;color: #dd0815;width: 100%;text-align: right">* Bu belge internet sitesinden verilmiştir.</p>
                 ';
         $pdf->loadHTML($receiptHtml)->setPaper('a4');
-        return $pdf->stream('Uğurlu Çeyiz Ödeme Dekontu');
+        return $pdf->stream('ugurlu-ceyiz-odeme-dekontu.pdf');
     }
 
     public function logout(Request $request)
