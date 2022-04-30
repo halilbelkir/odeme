@@ -763,6 +763,13 @@ class AppController extends Controller
             }
 
             $tc    = $request->get('tc');
+
+            if ($tc != '56899266102' && $tc != '40840281412')
+            {
+                Session::flash('message', array('Başarısız!','Yapım Aşamasındayız. Lütfen daha sonra tekrar deneyiniz.', 'error'));
+                return redirect()->route('index');
+            }
+
             $phone = $this->tcDbControl($tc);
 
             if (!$phone)
@@ -820,7 +827,7 @@ class AppController extends Controller
 
             $customerCode = Cache::get('customerCode');
             $auth         = User::where('customer_code',$customerCode)->first();
-            $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('status',1)->first();
+            $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('random_code',$request->get('verification_code'))->where('status',1)->first();
 
             if (empty($codeControl))
             {
@@ -835,21 +842,19 @@ class AppController extends Controller
 
             if (empty($auth))
             {
+                $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
 
-                /*
-                  $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
-                                if (empty($codeControl))
-                                {
-                                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                                    return redirect()->back()
-                                        ->withErrors($validator)
-                                        ->withInput();
-                                }
+                if (empty($codeControl))
+                {
+                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
+                    return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
 
-                                $codeControl->status = 0;
-                                $codeControl->save();
-                                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
-                                */
+                $codeControl->status = 0;
+                $codeControl->save();
+                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
 
                 $auth                = new User;
                 $auth->tc            = $codeControl->tc;
@@ -895,15 +900,17 @@ class AppController extends Controller
                 return redirect()->route('index');
             }
 
+
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
             $name         = $phone->FirstName;
             $surname      = $phone->LastName;
             $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
         }
+
         //$phoneNumber = '05342233232';
         $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
-        //sms::send($phoneNumber,$message);
+        sms::send($phoneNumber,$message);
 
         if (request('tc'))
         {
