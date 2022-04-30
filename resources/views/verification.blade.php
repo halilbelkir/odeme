@@ -38,7 +38,7 @@
 
     @section('js')
         <script>
-            var ammount = 60;
+            var ammount = 180;
             var clockType = 'countdown';
             var timer = $('#timer');
             var s = $(timer).find('.seconds');
