@@ -76,7 +76,7 @@
             </div>
         </div>
     </footer>
-    <x-footerInfo></x-footerInfo>
+    <x-footer></x-footer>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>

@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <x-footerInfo></x-footerInfo>
+    <x-footer></x-footer>
 </main>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
