@@ -1,4 +1,5 @@
 <x-guest>
+    <h4 class="font-bold mb-3">Giriş Yapın</h4>
     <form method="post" action="{{route('tc.control')}}">
         @csrf
         <div class="form-floating">

@@ -76,11 +76,7 @@
             </div>
         </div>
     </footer>
-    <div class="container">
-        <div class="col-12 text-left text-md-center mt-2 mb-2">
-            <a href="https://zaurac.io" style="color: #212529;text-decoration: none;" class=" text-center" target="_blank">Zaurac</a> © 2022 Uğurlu Çeyiz. Bütün Hakları Saklıdır.
-        </div>
-    </div>
+    <x-footerInfo></x-footerInfo>
 </body>
 <script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
@@ -90,22 +86,3 @@
 <x-alert></x-alert>
 <x-loading></x-loading>
 </html>
-<style>
-    footer a:hover
-    {
-        color: #dd0815;
-    }
-    footer a
-    {
-        color: #212529;
-        text-decoration: none;
-        margin-bottom: 0
-    }
-    @media (min-width: 1200px)
-    {
-        footer
-        {
-            position: relative;
-        }
-    }
-</style>

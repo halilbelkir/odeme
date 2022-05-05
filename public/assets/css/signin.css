@@ -1,6 +1,7 @@
 html,
 body {
   height: 100%;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -45,8 +46,30 @@ body {
     user-select: none;
 }
 
-@media (min-width: 768px) {
-    .bd-placeholder-img-lg {
+@media (max-width: 768px)
+{
+    .box img
+    {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 0px !important;
+    }
+
+    .box
+    {
+        padding-bottom: 50px;
+    }
+
+    .box h4
+    {
+        padding-top: 50px;
+    }
+}
+
+@media (min-width: 768px)
+{
+    .bd-placeholder-img-lg
+    {
         font-size: 3.5rem;
     }
 }
@@ -67,4 +90,19 @@ body {
 {
     margin-top: 10px;
     text-align: right;
+}
+
+.box
+{
+    border: 1px solid #cecece;
+    box-shadow: 0px 0px 43px -10px #00000057;
+    border-radius: 10px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.box img
+{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }

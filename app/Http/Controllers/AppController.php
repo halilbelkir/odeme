@@ -68,7 +68,7 @@ class AppController extends Controller
         $expiry                       = str_replace(' ','',$request->get('expiry'));
         $expiry                       = explode('/',$request->get('expiry'));
         $data['cardexpiredatemonth']  = trim($expiry[0]);
-        $data['cardexpiredateyear']   = substr(trim($expiry[1]),2, 4);
+        $data['cardexpiredateyear']   = trim($expiry[1]);
         $data['cardcvv2']             = $request->get('cvc');
         $data['secure3dsecuritylevel']= '3D';
 

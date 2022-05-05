@@ -260,3 +260,22 @@ button.dt-button span.dt-down-arrow, div.dt-button span.dt-down-arrow, a.dt-butt
 {
     color: #fff !important;
 }
+
+
+footer a:hover
+{
+    color: #dd0815;
+}
+footer a
+{
+    color: #212529;
+    text-decoration: none;
+    margin-bottom: 0
+}
+@media (min-width: 1200px)
+{
+    footer
+    {
+        position: relative;
+    }
+}

@@ -84,8 +84,10 @@
     <div class="pay-show" style="display: none"></div>
     @section('js')
         <script src="{{asset('assets/js/card.js')}}"></script>
+        <script src="{{asset('assets/js/mask.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
         <script>
+
             $(function() {
                 $('.price').maskMoney();
             })
@@ -95,7 +97,7 @@
                 container: '.card-wrapper',
                 maskCardNumber : '.card_no',
             });
-
+            $('.card_date').mask("99/99");
             $("input[name='price[]']").change(function()
             {
                 var order   = $(this).data('order');
