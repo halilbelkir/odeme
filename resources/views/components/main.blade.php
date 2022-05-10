@@ -17,7 +17,7 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Main navigation">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{route('price.list')}}"><img src="{{asset('assets/img/logo-beyaz.png')}}" width="107" height="30" alt=""> </a>
+            <a class="navbar-brand" href="{{route('price.list')}}"><img src="{{asset('assets/img/logo-beyaz.png')}}" style="height: 50px"> </a>
             <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

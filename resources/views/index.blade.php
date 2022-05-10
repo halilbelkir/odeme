@@ -1,7 +1,7 @@
 <x-guest>
-    <h4 class="font-bold mb-3">Giriş Yapın</h4>
     <form method="post" action="{{route('tc.control')}}">
         @csrf
+        <p style="font-style: italic">* Sistemde tanımlı olan T.C Kimlik numarasını giriniz.</p>
         <div class="form-floating">
             <input type="text" class="form-control" name="tc" placeholder="T.C">
             <label for="floatingPassword">T.C</label>

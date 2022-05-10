@@ -421,21 +421,30 @@ class AppController extends Controller
 
     public function calcPrice(Request $request)
     {
-        $price = 0;
+        $price         = 0;
+        $remainingDept = 0;
 
         if ($request->has('monthYear'))
         {
-            $priceList =  Cache::get('priceList'.Auth::user()->customer_code);
+            $priceList  =  Cache::get('priceList'.Auth::user()->customer_code);
+            $priceTotal = 0;
+
             foreach ($request->get('monthYear') as $monthYear)
             {
                 $price += $priceList[$monthYear]['price'];
             }
 
+            foreach ($priceList as $value)
+            {
+                $priceTotal += $value['price'];
+            }
+
             Cache::put('price', $request->get('monthYear'), Carbon::now()->addMinutes(30));
             Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
+            $remainingDept = $priceTotal - $price;
         }
 
-        return helpers::priceFormat($price);
+        return json_encode(array('totalPrice' => helpers::priceFormat($price),'remainingDept' => helpers::priceFormat($remainingDept)));
     }
 
     public function payResult(Request $request)

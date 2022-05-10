@@ -72,6 +72,13 @@
                         </div>
                         @php $row++; @endphp
                     @endforeach
+
+                    <div class="row" style="margin-top: 20px;border-top: 1px solid #cecece; padding-top: 20px;">
+                        <div class="col-md-3 fw-bold">Toplam Borç </div>
+                        <div class="col-md-9 text-start"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                        <div class="col-md-3 fw-bold">Kalan Borç </div>
+                        <div class="col-md-9 text-start remainingDept"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                    </div>
                 </div>
             </form>
         @else
@@ -87,6 +94,9 @@
         <script src="{{asset('assets/js/mask.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
         <script>
+            @if (Session::has('flash_message'))
+                window.open('{{Session::get('flash_message')['link']}}', '_blank');
+            @endif
 
             $(function() {
                 $('.price').maskMoney();
@@ -141,8 +151,10 @@
                     },
                     success: function(e)
                     {
-                        $('.totalPrice span').text(e+'₺');
-                        $('.price').val(e);
+                        var response = JSON.parse(e);
+                        $('.totalPrice span').text(response.totalPrice+' ₺');
+                        $('.remainingDept').text(': '+response.remainingDept+' ₺');
+                        $('.price').val(response.totalPrice);
                     },
                     complete: function (e){
                         $('.loading').fadeOut('fast');

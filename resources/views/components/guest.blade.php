@@ -17,7 +17,7 @@
     <link href="{{asset('assets/css/join.css')}}" rel="stylesheet" />
 </head>
 <body class="text-center">
-<main class="container-fluid">
+<main class="container-fluid d-none">
     <div class="container">
         <div class="row box justify-content-center">
             <div class="col-md-6 col-lg-7 px-0">
@@ -25,6 +25,33 @@
             </div>
             <div class="col-md-6 col-lg-5">
                 {{$slot}}
+            </div>
+        </div>
+    </div>
+    <x-footer></x-footer>
+</main>
+<main class="container-fluid">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <img src="{{asset('assets/img/logo.png')}}" class="guestLogo">
+                <h1 class="font-bold mb-3 mt-3">TAKSİT ÖDEME SAYFASI</h1>
+            </div>
+            <div class="col-md-12 col-xl-9 login">
+                <div class="row justify-content-center">
+                    <div class="content col-md-10 col-lg-8">
+                        <ul class="breadcrumb">
+                            <li class="active"><i class="fa fa-sign-in" aria-hidden="true"></i> Giriş Yapın</li>
+                            <li><i class="fa fa-file-text" aria-hidden="true"></i> Ödeme Bilgisi</li>
+                            <li><i class="fa fa-try" aria-hidden="true"></i> Dekont</li>
+                        </ul>
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 form">
+                                {{$slot}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
