@@ -76,7 +76,7 @@ class AppController extends Controller
         {
             $priceList = Cache::get('priceList'.Auth::user()->customer_code);
             $price     = 0;
-            foreach ($request->get('monthYear') as $monthYear)
+            foreach ($request->get('price') as $monthYear)
             {
                 $price += $priceList[$monthYear]['price'];
             }
@@ -423,16 +423,28 @@ class AppController extends Controller
     {
         $price         = 0;
         $remainingDept = 0;
+        $priceList     =  Cache::get('priceList'.Auth::user()->customer_code);
+        $priceTotal    = 0;
 
-        if ($request->has('monthYear'))
+        if ($request->get('status') == 1)
         {
-            $priceList  =  Cache::get('priceList'.Auth::user()->customer_code);
-            $priceTotal = 0;
-
             foreach ($request->get('monthYear') as $monthYear)
             {
                 $price += $priceList[$monthYear]['price'];
             }
+
+            foreach ($priceList as $value)
+            {
+                $priceTotal += $value['price'];
+            }
+
+            Cache::put('price', $request->get('monthYear'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
+            $remainingDept = $priceTotal - $price;
+        }
+        elseif ($request->get('status') == 2)
+        {
+            $price      = $request->get('price');
 
             foreach ($priceList as $value)
             {

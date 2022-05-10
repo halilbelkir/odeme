@@ -8,11 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/View/Components/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/View/Components/footer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/css/join.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/css/join.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/components/guest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/components/guest.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/components/main.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/components/main.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/priceList.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/priceList.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -265,7 +260,7 @@
       <workItem from="1651439160051" duration="19000" />
       <workItem from="1651751471535" duration="5725000" />
       <workItem from="1651852971878" duration="12000" />
-      <workItem from="1652098659153" duration="8243000" />
+      <workItem from="1652098659153" duration="12035000" />
     </task>
     <task id="LOCAL-00001" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1631448378775</created>
@@ -498,7 +493,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651759101508</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1652166108458</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1652166108458</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -529,6 +531,11 @@
           <url>file://$PROJECT_DIR$/app/Http/Controllers/AdminController.php</url>
           <line>227</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/resources/views/components/main.blade.php</url>
+          <line>66</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

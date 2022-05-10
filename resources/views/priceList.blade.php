@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="form-floating form-group mt-1 col-12">
-                        <input type="text" class="form-control price" onkeyup="$('.totalPrice span').text(this.value+'₺');" name="total" placeholder="Tutar" required>
+                        <input type="text" class="form-control price" name="total" placeholder="Tutar" required>
                         <label for="price">Tutar</label>
                         <x-inputerror for="price" class="mt-2" />
                     </div>
@@ -107,7 +107,17 @@
                 container: '.card-wrapper',
                 maskCardNumber : '.card_no',
             });
+
             $('.card_date').mask("99/99");
+
+            $("input[name='total']").keyup(function()
+            {
+                $("input[name='price[]']").attr('disabled',true);
+                $('[data-order="0"]').attr('checked',false);
+                $('[data-order="0"]').attr('disabled',false);
+                calcPrice(2,$(this).val());
+            });
+
             $("input[name='price[]']").change(function()
             {
                 var order   = $(this).data('order');
@@ -126,10 +136,10 @@
                     $('[data-order="'+(order + 1)+'"]').attr('disabled',false);
                 }
 
-                calcPrice();
+                calcPrice(1);
             });
 
-            function calcPrice()
+            function calcPrice(status,price = 0)
             {
                 var monthYear = [];
 
@@ -148,6 +158,8 @@
                     type: "POST",
                     data: {
                         monthYear: monthYear,
+                        status   : status,
+                        price   : price,
                     },
                     success: function(e)
                     {
