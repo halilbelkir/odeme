@@ -74,10 +74,10 @@
                     @endforeach
 
                     <div class="row" style="margin-top: 20px;border-top: 1px solid #cecece; padding-top: 20px;">
-                        <div class="col-md-3 fw-bold">Toplam Borç </div>
-                        <div class="col-md-9 text-start"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
-                        <div class="col-md-3 fw-bold">Kalan Borç </div>
-                        <div class="col-md-9 text-start remainingDept"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                        <div class="col-3 fw-bold">Toplam Borç </div>
+                        <div class="col-9 text-start"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                        <div class="col-3 fw-bold">Kalan Borç </div>
+                        <div class="col-9 text-start remainingDept"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
                     </div>
                 </div>
             </form>
