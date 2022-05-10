@@ -38,12 +38,12 @@
 
     @section('js')
         <script>
-            var ammount = 180;
+            var amount    = 180;
             var clockType = 'countdown';
-            var timer = $('#timer');
-            var s = $(timer).find('.seconds');
-            var m = $(timer).find('.minutes');
-            var h = $(timer).find('.hours');
+            var timer     = $('#timer');
+            var s         = $(timer).find('.seconds');
+            var m         = $(timer).find('.minutes');
+            var h         = $(timer).find('.hours');
 
             $(document).ready(function(){
                 startClock();
@@ -63,22 +63,22 @@
                 minutes = 0
                 hours = 0
 
-                if (ammount > 3599) {
-                    let hou = Math.floor(ammount / 3600)
+                if (amount > 3599) {
+                    let hou = Math.floor(amount / 3600)
                     hours = hou
-                    let min = Math.floor((ammount - (hou * 3600)) / 60)
+                    let min = Math.floor((amount - (hou * 3600)) / 60)
                     minutes = min;
-                    let sec = (ammount - (hou * 3600)) - (min * 60)
+                    let sec = (amount - (hou * 3600)) - (min * 60)
                     seconds = sec
                 }
-                else if (ammount > 59) {
-                    let min = Math.floor(ammount / 60)
+                else if (amount > 59) {
+                    let min = Math.floor(amount / 60)
                     minutes = min
-                    let sec = ammount - (min * 60)
+                    let sec = amount - (min * 60)
                     seconds = sec
                 }
                 else {
-                    seconds = ammount
+                    seconds = amount
                 }
 
                 if (seconds <= 10 && clockType == 'countdown' && minutes == 0 && hours == 0) {

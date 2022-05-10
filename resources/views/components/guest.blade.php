@@ -24,7 +24,7 @@
                 <img src="{{asset('assets/img/banner.jpg')}}" class="w-100">
             </div>
             <div class="col-md-6 col-lg-5">
-                {{$slot}}
+
             </div>
         </div>
     </div>
