@@ -785,11 +785,6 @@ class AppController extends Controller
 
             $tc    = $request->get('tc');
 
-            if ($tc != '56899266102' && $tc != '40840281412')
-            {
-                Session::flash('message', array('Başarısız!','Yapım Aşamasındayız. Lütfen daha sonra tekrar deneyiniz.', 'error'));
-                return redirect()->route('index');
-            }
 
             $phone = $this->tcDbControl($tc);
 
