@@ -798,16 +798,21 @@ class AppController extends Controller
             $customerCode = $phone->CustamerCode;
             $name         = $phone->FirstName;
             $surname      = $phone->LastName;
+            $email        = $phone->EmailAddress;
 
+            if (env('APP_SMS_CODE') == true)
+            {
+                $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
+                Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
+            }
 
-            $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
-            Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
             Cache::flush();
             Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
             Cache::put('tc', $tc, Carbon::now()->addMinutes(480));
             Cache::put('name', $name, Carbon::now()->addMinutes(480));
             Cache::put('surname', $surname, Carbon::now()->addMinutes(480));
             Cache::put('phone', $phoneNumber, Carbon::now()->addMinutes(480));
+            Cache::put('email', $email, Carbon::now()->addMinutes(480));
 
             return redirect()->route('verification');
         }
@@ -843,22 +848,10 @@ class AppController extends Controller
 
             $customerCode = Cache::get('customerCode');
             $auth         = User::where('customer_code',$customerCode)->first();
-            $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('random_code',$request->get('verification_code'))->where('status',1)->first();
 
-            if (empty($codeControl))
+            if (env('APP_SMS_CODE') == true)
             {
-                Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $codeControl->status = 0;
-            $codeControl->save();
-
-            if (empty($auth))
-            {
-                $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
+                $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('random_code',$request->get('verification_code'))->where('status',1)->first();
 
                 if (empty($codeControl))
                 {
@@ -870,17 +863,48 @@ class AppController extends Controller
 
                 $codeControl->status = 0;
                 $codeControl->save();
-                $tcControl    = Cache::get('tcControl'.$codeControl->tc);
 
-                $auth                = new User;
-                $auth->tc            = $codeControl->tc;
-                $auth->phone_number  = $codeControl->phone_number;
-                $auth->name          = $codeControl->name;
-                $auth->surname       = $codeControl->surname;
-                $auth->email         = null;
-                $auth->customer_code = $customerCode;
-                $auth->password      = bcrypt($customerCode.$codeControl->tc);
-                $auth->save();
+                if (empty($auth))
+                {
+                    $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
+
+                    if (empty($codeControl))
+                    {
+                        Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
+                        return redirect()->back()
+                            ->withErrors($validator)
+                            ->withInput();
+                    }
+
+                    $codeControl->status = 0;
+                    $codeControl->save();
+                    $tcControl    = Cache::get('tcControl'.$codeControl->tc);
+
+                    $auth                = new User;
+                    $auth->tc            = $codeControl->tc;
+                    $auth->phone_number  = $codeControl->phone_number;
+                    $auth->name          = $codeControl->name;
+                    $auth->surname       = $codeControl->surname;
+                    $auth->email         = null;
+                    $auth->customer_code = $customerCode;
+                    $auth->password      = bcrypt($customerCode.$codeControl->tc);
+                    $auth->save();
+                }
+            }
+            else
+            {
+                if (empty($auth))
+                {
+                    $auth                = new User;
+                    $auth->tc            = Cache::get('tc');
+                    $auth->phone_number  = Cache::get('phone');
+                    $auth->name          = Cache::get('name');
+                    $auth->surname       = Cache::get('surname');
+                    $auth->email         = Cache::get('email');
+                    $auth->customer_code = $customerCode;
+                    $auth->password      = bcrypt($customerCode.Cache::get('tc'));
+                    $auth->save();
+                }
             }
 
             //Auth::login($auth, true);
