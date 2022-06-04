@@ -885,7 +885,7 @@ class AppController extends Controller
                     $auth->phone_number  = $codeControl->phone_number;
                     $auth->name          = $codeControl->name;
                     $auth->surname       = $codeControl->surname;
-                    $auth->email         = null;
+                    $auth->email         = empty($codeControl->email) ? $codeControl->name.$codeControl->surnamname.'@ugurluceyiz.com.tr' : $codeControl->email;
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.$codeControl->tc);
                     $auth->save();
@@ -900,7 +900,7 @@ class AppController extends Controller
                     $auth->phone_number  = Cache::get('phone');
                     $auth->name          = Cache::get('name');
                     $auth->surname       = Cache::get('surname');
-                    $auth->email         = Cache::get('email');
+                    $auth->email         = empty(Cache::get('email')) ? Cache::get('name').Cache::get('surname').'@ugurluceyiz.com.tr' : Cache::get('email');
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.Cache::get('tc'));
                     $auth->save();
