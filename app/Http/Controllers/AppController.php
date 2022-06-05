@@ -950,7 +950,10 @@ class AppController extends Controller
 
         //$phoneNumber = '05342233232';
         $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
-        sms::send($phoneNumber,$message);
+        if (env('APP_SMS_CODE') == true)
+        {
+            sms::send($phoneNumber,$message);
+        }
 
         if (request('tc'))
         {
