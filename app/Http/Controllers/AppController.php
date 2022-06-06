@@ -33,13 +33,18 @@ class AppController extends Controller
 {
     public function verification()
     {
-        $tc      =  Cache::get('tc');
-        $name    =  Cache::get('name');
-        $surName =  Cache::get('surname');
-        $phone   =  Cache::get('phone');
-        $phone   =  helpers::hiddenPhone($phone);
+        if (Cache::has('tc'))
+        {
+            $tc      =  Cache::get('tc');
+            $name    =  Cache::get('name');
+            $surName =  Cache::get('surname');
+            $phone   =  Cache::get('phone');
+            $phone   =  helpers::hiddenPhone($phone);
 
-        return view('verification',compact('name','surName','phone','tc'));
+            return view('verification',compact('name','surName','phone','tc'));
+        }
+
+        return redirect()->route('index');
     }
 
     public function pricing(Request $request)
