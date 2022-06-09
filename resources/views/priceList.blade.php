@@ -1,5 +1,4 @@
 <x-main>
-    @dd(\App\helpers\helpers::totalPriceFormat('2150'))
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{is_array($priceList) ? count($priceList) : 0}}</span></h6>
         @if (Session::has('flash_message'))
