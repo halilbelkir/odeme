@@ -4,7 +4,8 @@
 	namespace App\helpers;
 
 
-	use App\Models\VerificationCodes;
+	use Akaunting\Money\Money;
+    use App\Models\VerificationCodes;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Support\Str;
 
@@ -67,7 +68,18 @@
 
         public static function totalPriceFormat($total)
         {
-            $newTotal = str_replace([',','.'], ['',''],$total);
+            if (strstr($total,'00'))
+            {
+                $newTotal = str_replace([',','.'], ['',''],$total);
+            }
+            else
+            {
+                $price    = Money::TRY($total)->formatSimple();
+                $newPrice = str_replace(['.',','], ['',''],$price);
+
+                return $newPrice;
+            }
+
             return substr($newTotal,0,-2);
         }
 
@@ -78,7 +90,20 @@
                 return 0;
             }
 
-            $price = rtrim($str,'00');
+            $price = $str;
+
+            if (strstr($str,'00'))
+            {
+                $price = rtrim($str,'00');
+            }
+            else
+            {
+                $price    = Money::TRY($price)->formatSimple();
+                $newPrice = str_replace(['.',','], [',','.'],$price);
+
+                return $newPrice;
+            }
+
             return number_format($price, 2, '.', ',');
         }
 

@@ -38,6 +38,7 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
+        'eee56a36884c3af04e64bac85043e771' => __DIR__ . '/..' . '/akaunting/laravel-money/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -189,6 +190,7 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         array (
             'Asm89\\Stack\\' => 12,
             'App\\' => 4,
+            'Akaunting\\Money\\' => 16,
         ),
     );
 
@@ -554,6 +556,10 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
+        'Akaunting\\Money\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/akaunting/laravel-money/src',
+        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -567,6 +573,9 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
     );
 
     public static $classMap = array (
+        'Akaunting\\Money\\Currency' => __DIR__ . '/..' . '/akaunting/laravel-money/src/Currency.php',
+        'Akaunting\\Money\\Money' => __DIR__ . '/..' . '/akaunting/laravel-money/src/Money.php',
+        'Akaunting\\Money\\Provider' => __DIR__ . '/..' . '/akaunting/laravel-money/src/Provider.php',
         'App\\Actions\\Fortify\\CreateNewUser' => __DIR__ . '/../..' . '/app/Actions/Fortify/CreateNewUser.php',
         'App\\Actions\\Fortify\\PasswordValidationRules' => __DIR__ . '/../..' . '/app/Actions/Fortify/PasswordValidationRules.php',
         'App\\Actions\\Fortify\\ResetUserPassword' => __DIR__ . '/../..' . '/app/Actions/Fortify/ResetUserPassword.php',
@@ -579,6 +588,7 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         'App\\Http\\Controllers\\AppController' => __DIR__ . '/../..' . '/app/Http/Controllers/AppController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
+        'App\\Http\\Middleware\\AdminPanelAuth' => __DIR__ . '/../..' . '/app/Http/Middleware/AdminPanelAuth.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
@@ -587,8 +597,6 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
-        'App\\Jobs\\Sp7Sp8' => __DIR__ . '/../..' . '/app/Jobs/Sp7Sp8.php',
-        'App\\Jobs\\Test' => __DIR__ . '/../..' . '/app/Jobs/Test.php',
         'App\\Library\\Media\\Browser' => __DIR__ . '/../..' . '/app/Library/Media/Browser.php',
         'App\\Library\\Media\\ImageHelper' => __DIR__ . '/../..' . '/app/Library/Media/ImageHelper.php',
         'App\\Library\\sms\\sms' => __DIR__ . '/../..' . '/app/Library/sms/sms.php',
@@ -608,14 +616,13 @@ class ComposerStaticInit44a195346c2ad396e1b8109315d08319
         'App\\Models\\prCurrAccCommunication' => __DIR__ . '/../..' . '/app/Models/prCurrAccCommunication.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
-        'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
-        'App\\Providers\\HorizonServiceProvider' => __DIR__ . '/../..' . '/app/Providers/HorizonServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\View\\Components\\AppLayout' => __DIR__ . '/../..' . '/app/View/Components/AppLayout.php',
         'App\\View\\Components\\GuestLayout' => __DIR__ . '/../..' . '/app/View/Components/GuestLayout.php',
         'App\\View\\Components\\Main' => __DIR__ . '/../..' . '/app/View/Components/Main.php',
         'App\\View\\Components\\alert' => __DIR__ . '/../..' . '/app/View/Components/alert.php',
+        'App\\View\\Components\\footer' => __DIR__ . '/../..' . '/app/View/Components/footer.php',
         'App\\View\\Components\\guest' => __DIR__ . '/../..' . '/app/View/Components/guest.php',
         'App\\View\\Components\\inputerror' => __DIR__ . '/../..' . '/app/View/Components/inputerror.php',
         'App\\View\\Components\\loading' => __DIR__ . '/../..' . '/app/View/Components/loading.php',

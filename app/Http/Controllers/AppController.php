@@ -571,7 +571,7 @@ class AppController extends Controller
 
             $payResult                       = new PayResult();
             $payResult->name_surname         = is_array($data['Transaction']['CardHolderName']) ? null : $data['Transaction']['CardHolderName'];
-            $payResult->card_number          = $data['Transaction']['CardNumberMasked'] ?? null;
+            $payResult->card_number          = is_array($data['Transaction']['CardNumberMasked']) ? null : $data['Transaction']['CardNumberMasked'];
             $payResult->response_code        = $data['Transaction']['Response']['Code'];
             $payResult->error_message        = $data['Transaction']['Response']['Message'] ?? null;
             $payResult->error_message_title  = is_array($data['Transaction']['Response']['ErrorMsg']) ? null : $data['Transaction']['Response']['ErrorMsg'];
@@ -1065,31 +1065,32 @@ class AppController extends Controller
                         {
                             padding-right: 10px
                         }
+
                     </style>
                     <title>Uğurlu Çeyiz Ödeme Dekontu</title>
                     <table width="100%" style="margin-top: -50px;border-bottom: 1px solid #a5a5a5;">
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src="'.$logo.'" height="50">
+                                    <img src="'.$logo.'" height="45" style="margin-top: 10px">
                                     <p style="text-align: center;font-size: 15px;font-weight: bold;margin-top: 10px;">Tahsilat Fişi</p>
                                     <p style="text-align: center;margin-top: -10px;">'.$today.'</p>
                                 </td>
                                 <td>
-                                    <p style="text-align: left;font-size: 10px;padding-left: 10px">
+                                    <p style="text-align: left;font-size: 10px;padding-left: 5px">
                                         Merkez : Atatürk Bulvarı No:31 Gaziantep <br>
                                         Şube 1 : Atatürk Bulvarı No:23 Gaziantep <br>
                                         Şube 2 : Çukur Mah. Mehmet Uygun Cd. No:25/C Gaziantep <br>
                                         Şube 3 : Şahintepe Mah. 394 Nolu Cd. No:25/C Gaziantep <br>
-                                        Şube 4 : Sarıgüllük Mah. Ünler Blv Yaşam Sitesi Altı No:12/B Gaziantep <br>
+                                        Şube 4 : Sarıgüllük Mah. Ünler Blv  No:12/B Gaziantep <br>
                                         Şube 5 : 60. Yıl Mah. Yavuz Sultan Selim Cd. Gaziantep <br>
                                     </p>
                                 </td>
                                 <td>
-                                    <p style="text-align: center;font-size: 25px;font-weight: bold;">
+                                    <p style="text-align: center;font-size: 20px;font-weight: bold;">
                                         Müşteri Hizmetleri
                                     </p>
-                                    <p style="text-align: center;font-size: 25px;">
+                                    <p style="text-align: center;font-size: 20px;">
                                         444 0 943
                                     </p>
                                 </td>

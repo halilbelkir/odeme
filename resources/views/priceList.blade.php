@@ -1,5 +1,5 @@
 <x-main>
-    {!! $response['response'] ?? null !!}
+    @dd(\App\helpers\helpers::totalPriceFormat('2150'))
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-0"><strong>Kalan Taksitler</strong> <span class="badge bg-secondary">{{is_array($priceList) ? count($priceList) : 0}}</span></h6>
         @if (Session::has('flash_message'))
@@ -94,9 +94,9 @@
         <script src="{{asset('assets/js/mask.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
         <script>
-            @if (Session::has('flash_message'))
+            @isset (Session::has('flash_message')['link'])
                 window.open('{{Session::get('flash_message')['link']}}', '_blank');
-            @endif
+            @endisset
 
             $(function() {
                 $('.price').maskMoney();

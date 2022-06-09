@@ -29,11 +29,20 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'e34006f88d1bf9d64ffad04347aa9c515a317ce9',
+    'reference' => '820e338781aa300eac9ce948659882a1866f8bd0',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
   array (
+    'akaunting/laravel-money' => 
+    array (
+      'pretty_version' => '1.2.3',
+      'version' => '1.2.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'e97cbb9735540fac995e5e0b17395ef4ba33ac38',
+    ),
     'asm89/stack-cors' => 
     array (
       'pretty_version' => 'v2.1.1',
@@ -504,7 +513,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'e34006f88d1bf9d64ffad04347aa9c515a317ce9',
+      'reference' => '820e338781aa300eac9ce948659882a1866f8bd0',
     ),
     'laravel/sail' => 
     array (
