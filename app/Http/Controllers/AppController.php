@@ -1178,8 +1178,10 @@ class AppController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        Cache::flush();
         Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
+        Cache::flush();
         return redirect()->route('index');
     }
 }
