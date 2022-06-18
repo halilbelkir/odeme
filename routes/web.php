@@ -30,9 +30,6 @@ use Illuminate\Support\Facades\Route;
         Route::post('/profil-duzenle', [\App\Http\Controllers\AppController::class,'profileEdit'])->name('profile.edit');
         Route::match(['get','post'],'/odeme-sonuc', [\App\Http\Controllers\AppController::class,'payResult'])->name('pay.result');
         Route::get('/receipt/{amount}', [\App\Http\Controllers\AppController::class,'receipt'])->name('receipt');
-        Route::get('/queue', function(){
-            artisan::call('queue:work --queue=sp7sp8');
-        });
     });
 
     Route::prefix('yonetimpaneli')->group(function ()

@@ -1182,6 +1182,7 @@ class AppController extends Controller
         Artisan::call('view:clear');
         Artisan::call('config:clear');
         Cache::flush();
+        $request->session()->flush();
         return redirect()->route('index');
     }
 }

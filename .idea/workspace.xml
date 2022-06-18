@@ -7,6 +7,8 @@
     <list default="true" id="224e8392-ad32-4a10-a7f8-c19f3b982e3d" name="Default Changelist" comment="Halil İbrahim BELKIR tarafindan yapildi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/session.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,14 +269,7 @@
       <workItem from="1654803616280" duration="5757000" />
       <workItem from="1655063806036" duration="370000" />
       <workItem from="1655222057644" duration="889000" />
-      <workItem from="1655554753391" duration="627000" />
-    </task>
-    <task id="LOCAL-00001" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1631448378775</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1631448378775</updated>
+      <workItem from="1655554753391" duration="2103000" />
     </task>
     <task id="LOCAL-00002" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1631525689397</created>
@@ -612,7 +607,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655555303249</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1655555388032</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1655555388034</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -643,11 +645,6 @@
           <url>file://$PROJECT_DIR$/app/Http/Controllers/AdminController.php</url>
           <line>227</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/resources/views/components/main.blade.php</url>
-          <line>66</line>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
