@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -1178,6 +1179,7 @@ class AppController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         Cache::flush();
+        Artisan::call('cache:clear');
         return redirect()->route('index');
     }
 }
