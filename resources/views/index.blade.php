@@ -24,7 +24,7 @@
                             success: function (response)
                             {
                                 $('.loading').fadeOut('fast');
-                                toastr.success(response.title,response.message);
+                                toastr.success(response.message,response.title);
 
                                 if (response.route != undefined)
                                 {
@@ -51,7 +51,7 @@
                                 }
                                 else
                                 {
-                                    toastr.error(response.responseJSON.title,response.responseJSON.message);
+                                    toastr.error(response.responseJSON.message,response.responseJSON.title);
                                 }
                             }
                         });
