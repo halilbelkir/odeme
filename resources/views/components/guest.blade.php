@@ -58,7 +58,7 @@
     <x-footer></x-footer>
 </main>
 </body>
-<script src="{{asset('assets/js/jquery-2.2.4.min.js')}}"></script>
+<script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
 <script src="{{asset('assets/js/script.js')}}"></script>
 <x-alert></x-alert>
 <x-loading></x-loading>
