@@ -1,6 +1,5 @@
 <x-guest>
-    <form method="post" name="login" action="{{route('tc.control')}}">
-        @csrf
+    <form method="post" class="loginForm" action="{{route('tc.control')}}">
         <p style="font-style: italic">* Sistemde tanımlı olan T.C Kimlik numarasını giriniz.</p>
         <div class="form-floating">
             <input type="text" class="form-control" name="tc" placeholder="T.C">
@@ -11,7 +10,7 @@
     @section('js')
         <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeAj5cgAAAAAG_HyfWQVwj11LS_A4Zw7EhVV0_v"></script>
         <script>
-            $('[name="login"]').on('submit', function(e)
+            $('.loginForm').on('submit', function(e)
             {
                 e.preventDefault();
                 grecaptcha.enterprise.ready(function() {
@@ -19,9 +18,9 @@
                     {
                         $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
                         $.ajax({
-                            type: $(this).attr('method'),
-                            url:  $(this).attr('action'),
-                            data: $(this).serialize(),
+                            type: $('.loginForm').attr('method'),
+                            url:  $('.loginForm').attr('action'),
+                            data: $('.loginForm').serialize(),
                             success: function (response)
                             {
                                 $('.loading').fadeOut('fast');
