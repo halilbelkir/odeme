@@ -38,6 +38,7 @@
                             },
                             error : function (response)
                             {
+                                $('.loading').fadeOut('fast');
                                 if (response.responseJSON.result == 2)
                                 {
                                     $(this).addClass('was-validated');
