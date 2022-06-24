@@ -274,14 +274,7 @@
       <workItem from="1655668111804" duration="1364000" />
       <workItem from="1655813592134" duration="756000" />
       <workItem from="1655928021621" duration="150000" />
-      <workItem from="1656056872787" duration="4688000" />
-    </task>
-    <task id="LOCAL-00010" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1635160351185</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1635160351185</updated>
+      <workItem from="1656056872787" duration="4801000" />
     </task>
     <task id="LOCAL-00011" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1643128314515</created>
@@ -619,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656068167092</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1656068311321</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1656068311321</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
