@@ -1,3 +1,6 @@
+@empty(Auth::user())
+    {{redirect()->route('index')}}
+@endempty
 <!doctype html>
 <html lang="tr">
 <head>
