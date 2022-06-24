@@ -784,9 +784,13 @@ class AppController extends Controller
             $validator->setAttributeNames($attribute);
 
             if ($validator->fails()) {
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
+                return response()->json(
+                    [
+                        'result'  => 2,
+                        'title'   => 'Hata!',
+                        'message' => $validator->errors()
+                    ],403
+                );
             }
 
             $tc    = $request->get('tc');
@@ -796,8 +800,13 @@ class AppController extends Controller
 
             if (!$phone)
             {
-                Session::flash('message', array('Başarısız!','T.C Numarası Sistemde Bulunamadı.', 'error'));
-                return redirect()->route('index');
+                return response()->json(
+                    [
+                        'result'  => 3,
+                        'title'   => 'Hata!',
+                        'message' => 'T.C Numarasını eksik ya da yanlış girdiniz. Lütfen tekrar deneyiniz.'
+                    ],403
+                );
             }
 
             $phoneNumber  = $phone->PhoneNumber;
@@ -809,7 +818,14 @@ class AppController extends Controller
             if (env('APP_SMS_CODE') == true)
             {
                 $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
-                Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
+                return response()->json(
+                    [
+                        'result'  => 1,
+                        'title'   => 'Başarılı!',
+                        'message' => 'Şifre Gönderildi.',
+                        'route'   => route('verification')
+                    ]
+                );
             }
 
             Cache::flush();
@@ -820,14 +836,19 @@ class AppController extends Controller
             Cache::put('phone', $phoneNumber, Carbon::now()->addMinutes(480));
             Cache::put('email', $email, Carbon::now()->addMinutes(480));
 
-            return redirect()->route('verification');
+            //return redirect()->route('verification');
         }
         catch (\Exception $e)
         {
-            Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
+            return response()->json(
+                [
+                    'result'  => 0,
+                    'title'   => 'Hata!',
+                    'message' => 'Lütfen tekrar deneyiniz.',
+                    'route'   => route('index')
+                ],403
+            );
         }
-
-        return redirect()->route('index');
     }
 
     public function verificationControl(Request $request)
