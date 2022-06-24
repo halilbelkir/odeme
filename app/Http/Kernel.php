@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminPanelAuth;
+use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\Variables;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin.auth' => AdminPanelAuth::class,
-        'variables' => Variables::class
+        'variables' => Variables::class,
+        'back-history' => PreventBackHistory::class
     ];
 }

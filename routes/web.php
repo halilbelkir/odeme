@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/tekrar-sms-gonder', [\App\Http\Controllers\AppController::class,'sendSms'])->name('repeat.sms');
     Route::post('/tc-kontrol', [\App\Http\Controllers\AppController::class,'tcControl'])->name('tc.control');
     Route::post('/cikis-yap', [\App\Http\Controllers\AppController::class,'logout'])->name('logout');
-    Route::middleware(['variables','auth'])->group(function ()
+    Route::middleware(['back-history','variables','auth'])->group(function ()
     {
         Route::post('/odeme-test', [\App\Http\Controllers\AppController::class,'testPrice'])->name('pay.test');
         Route::get('/odemeler', [\App\Http\Controllers\AppController::class,'priceList'])->name('price.list');
