@@ -808,7 +808,7 @@ class AppController extends Controller
                     ],403
                 );
             }
-            else if($phone == 2)
+            else if(is_int($phone) && $phone == 2)
             {
                 return response()->json(
                     [
@@ -819,7 +819,7 @@ class AppController extends Controller
                 );
             }
 
-            dd($phone);
+
 
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
@@ -839,20 +839,20 @@ class AppController extends Controller
             if (env('APP_SMS_CODE') == true)
             {
                 $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
-                return response()->json(
-                    [
-                        'result'  => 1,
-                        'title'   => 'Başarılı!',
-                        'message' => 'Şifre Gönderildi.',
-                        'route'   => route('verification')
-                    ]
-                );
             }
+
+            return response()->json(
+                [
+                    'result'  => 1,
+                    'title'   => 'Başarılı!',
+                    'message' => 'Şifre Gönderildi.',
+                    'route'   => route('verification')
+                ]
+            );
             //return redirect()->route('verification');
         }
         catch (\Exception $e)
         {
-            dd($e);
             return response()->json(
                 [
                     'result'  => 0,
@@ -1046,6 +1046,7 @@ class AppController extends Controller
             }
 
             Cache::put($cacheName, $phoneNumber[0], Carbon::now()->addMinutes(480));
+            $phoneNumber = $phoneNumber[0];
         }
 
         return $phoneNumber ?? false;
