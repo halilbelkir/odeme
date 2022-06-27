@@ -819,6 +819,8 @@ class AppController extends Controller
                 );
             }
 
+            dd($phone);
+
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
             $name         = $phone->FirstName;
@@ -850,6 +852,7 @@ class AppController extends Controller
         }
         catch (\Exception $e)
         {
+            dd($e);
             return response()->json(
                 [
                     'result'  => 0,
@@ -1036,6 +1039,10 @@ class AppController extends Controller
             if (count($phoneNumber) > 1)
             {
                 return $phoneNumber = 2;
+            }
+            else if (count($phoneNumber) == 0)
+            {
+                return $phoneNumber = false;
             }
 
             Cache::put($cacheName, $phoneNumber[0], Carbon::now()->addMinutes(480));

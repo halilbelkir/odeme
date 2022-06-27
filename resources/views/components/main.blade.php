@@ -12,8 +12,7 @@
     <link rel="icon" type="image/png" href="{{asset('assets/img/favicon.ico')}}">
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
-    <link href="{{asset('assets/css/main.css')}}" rel="stylesheet" />
-    <link href="{{asset('assets/css/join.css')}}" rel="stylesheet" />
+    <link href="{{mix('css/main.css')}}" rel="stylesheet" />
     @yield('css')
     <title>Uğurlu Çeyiz</title>
 </head>
@@ -81,10 +80,8 @@
     </footer>
     <x-footer></x-footer>
 </body>
-<script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
-<script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('assets/js/offcanvas.js')}}"></script>
-<script src="{{asset('assets/js/script.js')}}"></script>
+<script src="{{mix('js/main.js')}}"></script>
+<script src="{{mix('js/guest.js')}}"></script>
 @yield('js')
 <x-alert></x-alert>
 <x-loading></x-loading>

@@ -61,8 +61,8 @@ function TCNOKontrol(TCNO)
         TCToplam = 0,
         i = 0,
         hatali = [11111111110, 22222222220, 33333333330, 44444444440, 55555555550, 66666666660, 7777777770, 88888888880, 99999999990];;
-
-    if (TCNO.length != 11) return false;
+    if (TCNO.length > 11) return 2;
+    if (TCNO.length < 11) return 3;
     if (isNaN(TCNO)) return false;
     if (TCNO[0] == 0) return false;
 
@@ -98,7 +98,24 @@ $('.loginForm').on('submit', function(e)
 {
     var tc = $('input[name="tc"]').val();
 
-    if(!TCNOKontrol(tc))
+    var tc      = $('input[name="tc"]').val();
+    var control = TCNOKontrol(tc);
+
+    if(control == 2)
+    {
+        $('.loading').fadeOut('fast');
+        toastr.error('T.C numarasını fazla girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+
+        return false;
+    }
+    else if(control == 3)
+    {
+        $('.loading').fadeOut('fast');
+        toastr.error('T.C numarasını eksik girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+
+        return false;
+    }
+    else if(!control)
     {
         $('.loading').fadeOut('fast');
         toastr.error('T.C numarası formatı doğru değil. Lütfen doğru T.C numarası giriniz.','Hata!');
