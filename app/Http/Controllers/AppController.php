@@ -808,6 +808,16 @@ class AppController extends Controller
                     ],403
                 );
             }
+            else if($phone == 2)
+            {
+                return response()->json(
+                    [
+                        'result'  => 3,
+                        'title'   => 'Hata!',
+                        'message' => "Sistemde Aynı Tc 1'den Fazla Var."
+                    ],403
+                );
+            }
 
             $phoneNumber  = $phone->PhoneNumber;
             $customerCode = $phone->CustamerCode;
@@ -1021,8 +1031,14 @@ class AppController extends Controller
                 ->where('cdCurrAcc.CurrAccTypeCode',4)
                 ->where('cdCurrAcc.IdentityNum',$tc)
                 ->select('cdCurrAcc.CurrAccCode as CustamerCode','cdCurrAcc.FirstName','cdCurrAcc.LastName','cdCurrAcc.IdentityNum as TcNumber','p.CommAddress as PhoneNumber','pr.CommAddress as EmailAddress')
-                ->first();
-            Cache::put($cacheName, $phoneNumber, Carbon::now()->addMinutes(480));
+                ->get();
+
+            if (count($phoneNumber) > 1)
+            {
+                return $phoneNumber = 2;
+            }
+
+            Cache::put($cacheName, $phoneNumber[0], Carbon::now()->addMinutes(480));
         }
 
         return $phoneNumber ?? false;
