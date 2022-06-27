@@ -832,8 +832,6 @@ class AppController extends Controller
                         ->withInput();
                 }
 
-                $codeControl->status = 0;
-                $codeControl->save();
 
                 if (empty($auth))
                 {
@@ -860,6 +858,9 @@ class AppController extends Controller
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.$codeControl->tc);
                     $auth->save();
+
+                    $codeControl->status = 0;
+                    $codeControl->save();
                 }
             }
             else
