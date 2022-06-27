@@ -24,6 +24,7 @@ class StripAuthenticateHeader {
     {
         $response = $next($request);
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('Content-Securtiy-Policy', 'none');
         $this->removeUnwantedHeaders($this->unwantedHeaderList);
         return $response;
     }
