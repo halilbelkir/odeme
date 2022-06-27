@@ -23,6 +23,7 @@ class StripAuthenticateHeader {
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $this->removeUnwantedHeaders($this->unwantedHeaderList);
         return $response;
     }
