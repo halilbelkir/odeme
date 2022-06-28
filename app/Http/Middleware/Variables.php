@@ -41,9 +41,9 @@ class Variables
                 Cache::put($remainderCacheName, $remainder, Carbon::now()->addMinutes(480));
             }
 
-            if (Cache::has('priceList'))
+            if (Cache::has('priceList'.$customerCode))
             {
-                $priceList = Cache::get($priceListCacheName);
+                $priceList  = Cache::get($priceListCacheName);
                 $totalPrice = Cache::get($totalPriceCacheName);
             }
             else
@@ -53,13 +53,13 @@ class Variables
 
                 foreach ($remainder as $price)
                 {
-                    $key = $price->Month;
-                    $priceList[$key]['price'] = isset($priceList[$key]) ? $priceList[$key]['price'] + $price->RemainingInstallment : $price->RemainingInstallment;
-                    $priceList[$key]['amounts'][] = $price->RemainingInstallment;
-                    $priceList[$key]['month']   = $price->AYAD1;
-                    $priceList[$key]['year']    = $price->YIL;
+                    $key                                     = $price->Month;
+                    $priceList[$key]['price']                = isset($priceList[$key]) ? $priceList[$key]['price'] + $price->RemainingInstallment : $price->RemainingInstallment;
+                    $priceList[$key]['amounts'][]            = $price->RemainingInstallment;
+                    $priceList[$key]['month']                = $price->AYAD1;
+                    $priceList[$key]['year']                 = $price->YIL;
                     $priceList[$key]['OrderPaymentPlanID'][] = $price->OrderPaymentPlanID;
-                    $totalPrice += $price->RemainingInstallment;
+                    $totalPrice                             += $price->RemainingInstallment;
                 }
 
                 ksort($priceList);
@@ -72,15 +72,6 @@ class Variables
                 'priceList' => $priceList,
                 'totalPrice' => $totalPrice,
             ]);
-        }
-        else
-        {
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            Artisan::call('cache:clear');
-            Artisan::call('view:clear');
-            Artisan::call('config:clear');
-            Cache::flush();
         }
 
         return $next($request);

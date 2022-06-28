@@ -80,15 +80,17 @@ class AppController extends Controller
 
         if ($request->has('price'))
         {
-            $priceList = Cache::get('priceList'.Auth::user()->customer_code);
-            $price     = 0;
+            $customerCode = Auth::user()->customer_code;
+            $priceList    = Cache::get('priceList'.$customerCode);
+            $price        = 0;
+
             foreach ($request->get('price') as $monthYear)
             {
                 $price += $priceList[$monthYear]['price'];
             }
 
-            Cache::put('price', $request->get('price'), Carbon::now()->addMinutes(30));
-            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
+            Cache::put('price'.$customerCode, $request->get('price'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
         }
 
         return view('pricing',compact('data'));
@@ -112,7 +114,7 @@ class AppController extends Controller
         $amount        = helpers::totalPriceFormat($request->get('total'));
         $customerCode  = Auth::user()->customer_code;
         $sP            = $this->SPSave($amount);
-        $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'));
+        $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'.$customerCode));
 
         $payResult                       = new PayResult();
         $payResult->name_surname         = null;
@@ -129,9 +131,9 @@ class AppController extends Controller
         $payResult->ip_address           = $request->ip();
         $payResult->save();
 
-        if (Cache::has('price') && $amount == $priceTotal)
+        if (Cache::has('price'.$customerCode) && $amount == $priceTotal)
         {
-            $price            = Cache::get('price');
+            $price            = Cache::get('price'.$customerCode);
             $priceList        = Cache::get('priceList'.$customerCode);
             $totalPrice       = 0;
             $order            = 0;
@@ -223,7 +225,7 @@ class AppController extends Controller
 
         $data['link'] = route('receipt',[$amount]);
         $data['Transaction']['Response']['Code'] = 0;
-        Cache::flush();
+        $this->cacheClear();
         session()->flash('flash_message', $data);
         return redirect()->route('price.list');
     }
@@ -360,7 +362,8 @@ class AppController extends Controller
     {
         $price         = 0;
         $remainingDept = 0;
-        $priceList     =  Cache::get('priceList'.Auth::user()->customer_code);
+        $customerCode  = Auth::user()->customer_code;
+        $priceList     = Cache::get('priceList'.$customerCode);
         $priceTotal    = 0;
 
         if ($request->get('status') == 1)
@@ -375,8 +378,8 @@ class AppController extends Controller
                 $priceTotal += $value['price'];
             }
 
-            Cache::put('price', $request->get('monthYear'), Carbon::now()->addMinutes(30));
-            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
+            Cache::put('price'.$customerCode, $request->get('monthYear'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
             $remainingDept = $priceTotal - $price;
         }
         elseif ($request->get('status') == 2)
@@ -388,8 +391,8 @@ class AppController extends Controller
                 $priceTotal += $value['price'];
             }
 
-            Cache::put('price', $request->get('monthYear'), Carbon::now()->addMinutes(30));
-            Cache::put('priceTotal', $price, Carbon::now()->addMinutes(30));
+            Cache::put('price'.$customerCode, $request->get('monthYear'), Carbon::now()->addMinutes(30));
+            Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
             $remainingDept = $priceTotal - $price;
         }
 
@@ -521,11 +524,11 @@ class AppController extends Controller
                 $customerCode  = Auth::user()->customer_code;
                 $amount        = helpers::priceFormatCc($strAmount);
                 $sP            = $this->SPSave($amount);
-                $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'));
+                $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'.$customerCode));
 
-                if (Cache::has('price') && $amount == $priceTotal)
+                if (Cache::has('price'.$customerCode) && $amount == $priceTotal)
                 {
-                    $price            = Cache::get('price');
+                    $price            = Cache::get('price'.$customerCode);
                     $priceList        = Cache::get('priceList'.$customerCode);
                     $totalPrice       = 0;
                     $order            = 0;
@@ -618,7 +621,7 @@ class AppController extends Controller
                 $data['link']= route('receipt',[$amount]);
             }
 
-            Cache::flush();
+            $this->cacheClear();
 
             session()->flash('flash_message', $data);
         }
@@ -919,8 +922,8 @@ class AppController extends Controller
         if (request('tc'))
         {
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
-            Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
-            Cache::put('tc', $tc, Carbon::now()->addMinutes(480));
+            Cache::put('customerCode_'.csrf_token(), $customerCode, Carbon::now()->addMinutes(480));
+            Cache::put('tc_'.csrf_token(), $tc, Carbon::now()->addMinutes(480));
 
             return redirect()->route('verification');
         }
@@ -1144,11 +1147,26 @@ class AppController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        Artisan::call('cache:clear');
-        Artisan::call('view:clear');
-        Artisan::call('config:clear');
-        Cache::flush();
         $request->session()->flush();
+        $this->cacheClear();
         return redirect()->route('index');
+    }
+
+    public function cacheClear()
+    {
+        $customerCode        = Auth::user()->customer_code;
+        $tc                  = Auth::user()->tc;
+
+        Cache::forget('customerCode_'.csrf_token());
+        Cache::forget('tc_'.csrf_token());
+        Cache::forget('name_'.csrf_token());
+        Cache::forget('surname_'.csrf_token());
+        Cache::forget('phone_'.csrf_token());
+        Cache::forget('email_'.csrf_token());
+        Cache::forget('remainder'.$customerCode);
+        Cache::forget('priceList'.$customerCode);
+        Cache::forget('totalPrice'.$customerCode);
+        Cache::forget('price'.$customerCode);
+        Cache::forget('tcControl'.$tc);
     }
 }
