@@ -34,7 +34,7 @@ class AppController extends Controller
 {
     public function verification()
     {
-        if (Cache::has('tc'))
+        if (Cache::has('tc_'.csrf_token()))
         {
             $tc      =  Cache::get('tc_'.csrf_token());
             $name    =  Cache::get('name_'.csrf_token());
