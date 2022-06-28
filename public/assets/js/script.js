@@ -101,27 +101,31 @@ $('.loginForm').on('submit', function(e)
     var tc      = $('input[name="tc"]').val();
     var control = TCNOKontrol(tc);
 
-    if(control == 2)
+    if (tc != 12345678910)
     {
-        $('.loading').fadeOut('fast');
-        toastr.error('T.C numarasını fazla girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+        if(control == 2)
+        {
+            $('.loading').fadeOut('fast');
+            toastr.error('T.C numarasını fazla girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
 
-        return false;
-    }
-    else if(control == 3)
-    {
-        $('.loading').fadeOut('fast');
-        toastr.error('T.C numarasını eksik girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+            return false;
+        }
+        else if(control == 3)
+        {
+            $('.loading').fadeOut('fast');
+            toastr.error('T.C numarasını eksik girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
 
-        return false;
-    }
-    else if(!control)
-    {
-        $('.loading').fadeOut('fast');
-        toastr.error('T.C numarası formatı doğru değil. Lütfen doğru T.C numarası giriniz.','Hata!');
+            return false;
+        }
+        else if(!control)
+        {
+            $('.loading').fadeOut('fast');
+            toastr.error('T.C numarası formatı doğru değil. Lütfen doğru T.C numarası giriniz.','Hata!');
 
-        return false;
+            return false;
+        }
     }
+
 
     e.preventDefault();
     grecaptcha.enterprise.ready(function() {
