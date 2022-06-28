@@ -129,6 +129,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/yajra/laravel-datatables-oracle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/predis/predis" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/akaunting/laravel-money" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/rap2hpoutre/laravel-log-viewer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

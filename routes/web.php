@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/tekrar-sms-gonder', [\App\Http\Controllers\AppController::class,'sendSms'])->name('repeat.sms');
     Route::post('/tc-kontrol', [\App\Http\Controllers\AppController::class,'tcControl'])->name('tc.control');
     Route::post('/cikis-yap', [\App\Http\Controllers\AppController::class,'logout'])->name('logout');
+
     Route::middleware(['back-history','variables','auth'])->group(function ()
     {
         Route::post('/odeme-test', [\App\Http\Controllers\AppController::class,'testPrice'])->name('pay.test');
@@ -52,5 +53,6 @@ use Illuminate\Support\Facades\Route;
             Route::get('/weekDatatables', [App\Http\Controllers\AdminController::class, 'weekDatatable'])->name('admin.week.datatables');
             Route::get('/monthDatatables', [App\Http\Controllers\AdminController::class, 'monthDatatable'])->name('admin.month.datatables');
             Route::get('/datatablesTurkish', [App\Http\Controllers\AdminController::class, 'datatablesTurkish'])->name('admin.datatables.turkish');
+            Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
         });
     });

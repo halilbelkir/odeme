@@ -36,10 +36,10 @@ class AppController extends Controller
     {
         if (Cache::has('tc'))
         {
-            $tc      =  Cache::get('tc');
-            $name    =  Cache::get('name');
-            $surName =  Cache::get('surname');
-            $phone   =  Cache::get('phone');
+            $tc      =  Cache::get('tc_'.csrf_token());
+            $name    =  Cache::get('name_'.csrf_token());
+            $surName =  Cache::get('surname_'.csrf_token());
+            $phone   =  Cache::get('phone_'.csrf_token());
             $phone   =  helpers::hiddenPhone($phone);
 
             return view('verification',compact('name','surName','phone','tc'));
@@ -759,13 +759,12 @@ class AppController extends Controller
             $email        = $phone->EmailAddress;
 
 
-            Cache::flush();
-            Cache::put('customerCode', $customerCode, Carbon::now()->addMinutes(480));
-            Cache::put('tc', $tc, Carbon::now()->addMinutes(480));
-            Cache::put('name', $name, Carbon::now()->addMinutes(480));
-            Cache::put('surname', $surname, Carbon::now()->addMinutes(480));
-            Cache::put('phone', $phoneNumber, Carbon::now()->addMinutes(480));
-            Cache::put('email', $email, Carbon::now()->addMinutes(480));
+            Cache::put('customerCode_'.csrf_token(), $customerCode, Carbon::now()->addMinutes(480));
+            Cache::put('tc_'.csrf_token(), $tc, Carbon::now()->addMinutes(480));
+            Cache::put('name_'.csrf_token(), $name, Carbon::now()->addMinutes(480));
+            Cache::put('surname_'.csrf_token(), $surname, Carbon::now()->addMinutes(480));
+            Cache::put('phone_'.csrf_token(), $phoneNumber, Carbon::now()->addMinutes(480));
+            Cache::put('email_'.csrf_token(), $email, Carbon::now()->addMinutes(480));
 
             if (env('APP_SMS_CODE') == true)
             {
@@ -817,37 +816,26 @@ class AppController extends Controller
                     ->withInput();
             }
 
-            $customerCode = Cache::get('customerCode');
+            $customerCode = Cache::get('customerCode_'.csrf_token());
             $auth         = User::where('customer_code',$customerCode)->first();
+            $tc           = Cache::get('tc_'.csrf_token());
 
             if (env('APP_SMS_CODE') == true)
             {
-                $codeControl  = VerificationCodes::where('tc',Cache::get('tc'))->where('random_code',$request->get('verification_code'))->where('status',1)->first();
+                $codeControl  = VerificationCodes::where('tc',$tc)->where('random_code',$request->get('verification_code'))->where('status',1)->first();
 
                 if (empty($codeControl))
                 {
                     Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                    return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
+                    Log::emergency('verificationControl',[$tc,$request->get('verification_code'),csrf_token()]);
+                    return redirect()->back();
                 }
 
 
                 if (empty($auth))
                 {
-                    $codeControl  = VerificationCodes::where('random_code',$request->get('verification_code'))->where('status',1)->first();
-
-                    if (empty($codeControl))
-                    {
-                        Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                        return redirect()->back()
-                            ->withErrors($validator)
-                            ->withInput();
-                    }
-
                     $codeControl->status = 0;
                     $codeControl->save();
-                    $tcControl    = Cache::get('tcControl'.$codeControl->tc);
 
                     $auth                = new User;
                     $auth->tc            = $codeControl->tc;
@@ -868,13 +856,13 @@ class AppController extends Controller
                 if (empty($auth))
                 {
                     $auth                = new User;
-                    $auth->tc            = Cache::get('tc');
-                    $auth->phone_number  = Cache::get('phone');
-                    $auth->name          = Cache::get('name');
-                    $auth->surname       = Cache::get('surname');
-                    $auth->email         = empty(Cache::get('email')) ? Cache::get('name').Cache::get('surname').'@ugurluceyiz.com.tr' : Cache::get('email');
+                    $auth->tc            = Cache::get('tc_'.csrf_token());
+                    $auth->phone_number  = Cache::get('phone_'.csrf_token());
+                    $auth->name          = Cache::get('name_'.csrf_token());
+                    $auth->surname       = Cache::get('surname_'.csrf_token());
+                    $auth->email         = empty(Cache::get('email_'.csrf_token())) ? Cache::get('name_'.csrf_token()).Cache::get('surname_'.csrf_token()).'@ugurluceyiz.com.tr' : Cache::get('email_'.csrf_token());
                     $auth->customer_code = $customerCode;
-                    $auth->password      = bcrypt($customerCode.Cache::get('tc'));
+                    $auth->password      = bcrypt($customerCode.Cache::get('tc_'.csrf_token()));
                     $auth->save();
                 }
             }
@@ -890,6 +878,7 @@ class AppController extends Controller
         }
         catch (\Exception $e)
         {
+            Log::emergency('verificationControlCatch',$e);
             Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
         }
 
