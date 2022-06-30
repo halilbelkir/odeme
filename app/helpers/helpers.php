@@ -68,19 +68,10 @@
 
         public static function totalPriceFormat($total)
         {
-            if (strstr($total,'00'))
-            {
-                $newTotal = str_replace([',','.'], ['',''],$total);
-            }
-            else
-            {
-                $price    = Money::TRY($total)->formatSimple();
-                $newPrice = str_replace(['.',','], ['',''],$price);
+            $price    = Money::TRY($total)->formatSimple();
+            $newPrice = str_replace(['.',','], ['',''],$price);
 
-                return $newPrice;
-            }
-
-            return substr($newTotal,0,-2);
+            return $newPrice;
         }
 
         public static function priceFormatCc($str)
@@ -92,19 +83,12 @@
 
             $price = $str;
 
-            if (strstr($str,'00'))
-            {
-                $price = rtrim($str,'00');
-            }
-            else
-            {
-                $price    = Money::TRY($price)->formatSimple();
-                $newPrice = str_replace(['.',','], [',','.'],$price);
+            $price    = Money::TRY($price)->formatSimple();
+            $newPrice = str_replace(['.',','], [',','.'],$price);
 
-                return $newPrice;
-            }
+            return $newPrice;
 
-            return number_format($price, 2, '.', ',');
+            //return number_format($newPrice, 2, '.', ',');
         }
 
         public static function hiddenPhone($phone)
