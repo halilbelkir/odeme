@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrPaymentHeader extends Model
 {
-    protected $table = "trPaymentHeader";
-    public $timestamps = false;
+    protected $table      = "trPaymentHeader";
+    protected $connection = 'sqlsrv';
+    public $timestamps    = false;
 }

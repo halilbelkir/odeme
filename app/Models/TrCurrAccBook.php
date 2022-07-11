@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrCurrAccBook extends Model
 {
-    protected $table = "trCurrAccBook";
-    public $timestamps = false;
+    protected $table      = "trCurrAccBook";
+    protected $connection = 'sqlsrv';
+    public $timestamps    = false;
 }

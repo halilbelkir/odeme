@@ -9,5 +9,83 @@
     </form>
     @section('js')
         <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeAj5cgAAAAAG_HyfWQVwj11LS_A4Zw7EhVV0_v"></script>
+        @if(1==2)
+            <script>
+                $('.loginFormA').on('submit', function(e)
+                {
+
+                    var tc      = $('input[name="tc"]').val();
+                    var control = TCNOKontrol(tc);
+
+                    if (tc != 12345678910)
+                    {
+                        if(control == 2)
+                        {
+                            $('.loading').fadeOut('fast');
+                            toastr.error('T.C numarasını fazla girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+
+                            return false;
+                        }
+                        else if(control == 3)
+                        {
+                            $('.loading').fadeOut('fast');
+                            toastr.error('T.C numarasını eksik girdiniz. Lütfen en fazla 11 rakam olacak şekilde giriniz.','Hata!');
+
+                            return false;
+                        }
+                        else if(!control)
+                        {
+                            $('.loading').fadeOut('fast');
+                            toastr.error('T.C numarası formatı doğru değil. Lütfen doğru T.C numarası giriniz.','Hata!');
+
+                            return false;
+                        }
+                    }
+
+
+                    e.preventDefault();
+                    $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
+                    $.ajax({
+                        type: $(this).attr('method'),
+                        url:  $(this).attr('action'),
+                        data: $(this).serialize(),
+                        success: function (response)
+                        {
+                            $('.loading').fadeOut('fast');
+                            toastr.success(response.message,response.title);
+
+                            if (response.route != undefined)
+                            {
+                                location = response.route;
+                                setTimeout(function() {location}, 1000);
+                            }
+                            else
+                            {
+                                setTimeout(function() {location.reload()}, 1000);
+                            }
+
+                        },
+                        error : function (response)
+                        {
+                            $('.loading').fadeOut('fast');
+                            if (response.responseJSON.result == 2)
+                            {
+                                $(this).addClass('was-validated');
+
+                                $.each(response.responseJSON.message, function(i, item)
+                                {
+                                    $('[name="'+i+'"]').addClass('is-invalid');
+                                    $('[name="'+i+'"]').closest('div.form-group').append('<div class="invalid-feedback">'+item[0]+'</div>');
+                                });
+                            }
+                            else
+                            {
+                                toastr.error(response.responseJSON.message,response.responseJSON.title);
+                            }
+                        }
+                    });
+                });
+            </script>
+        @endif
     @endsection
 </x-guest>

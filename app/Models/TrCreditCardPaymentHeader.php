@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrCreditCardPaymentHeader extends Model
 {
-    protected $table = "trCreditCardPaymentHeader";
-    public $timestamps = false;
+    protected $table      = "trCreditCardPaymentHeader";
+    protected $connection = 'sqlsrv';
+    public $timestamps    = false;
+
 }

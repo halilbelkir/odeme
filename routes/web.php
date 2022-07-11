@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Test;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 /*
@@ -12,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+    Route::get('/', function (){return view('index');})->name('index');
 
-    Route::get('/', function () {return view('index');})->name('index');
     Route::get('/verification', [\App\Http\Controllers\AppController::class,'verification'])->name('verification');
     Route::post('/verification-control', [\App\Http\Controllers\AppController::class,'verificationControl'])->name('verification.control');
     Route::post('/tekrar-sms-gonder', [\App\Http\Controllers\AppController::class,'sendSms'])->name('repeat.sms');
@@ -53,6 +54,6 @@ use Illuminate\Support\Facades\Route;
             Route::get('/weekDatatables', [App\Http\Controllers\AdminController::class, 'weekDatatable'])->name('admin.week.datatables');
             Route::get('/monthDatatables', [App\Http\Controllers\AdminController::class, 'monthDatatable'])->name('admin.month.datatables');
             Route::get('/datatablesTurkish', [App\Http\Controllers\AdminController::class, 'datatablesTurkish'])->name('admin.datatables.turkish');
-            Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+            Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('admin.log');
         });
     });

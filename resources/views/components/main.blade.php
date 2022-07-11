@@ -47,6 +47,9 @@
                         <li class="nav-item float-right">
                             <a class="nav-link @if(request()->routeIs('admin.dashboard')) active @endif " href="{{route('admin.dashboard')}}">Anasayfa</a>
                         </li>
+                        <li class="nav-item float-right">
+                            <a class="nav-link" target="_blank" href="{{route('admin.log')}}">Loglar</a>
+                        </li>
                     @endif
                     <li class="nav-item float-right">
                         <a class="nav-link @if(request()->routeIs('profile')) active @endif " href="{{route('profile')}}">Profil</a>
