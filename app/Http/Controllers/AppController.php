@@ -1051,6 +1051,7 @@ class AppController extends Controller
         $customerCode        = Auth::user()->customer_code;;
         $customerNameSurname = Auth::user()->name.' '.Auth::user()->surname;
         $today               = date('d.m.Y');
+        $hour                = date('H:i');
         $priceListCacheName  = 'priceList'.$customerCode;
         $priceList           = Cache::get($priceListCacheName);
         $totalPriceCacheName = 'totalPrice'.$customerCode;
@@ -1126,7 +1127,7 @@ class AppController extends Controller
                                     <p style="text-align: center;font-size: 20px;font-weight: bold;">
                                         Müşteri Hizmetleri
                                     </p>
-                                    <p style="text-align: center;font-size: 20px;">
+                                    <p style="text-align: center;font-size: 20px;font-weight: bold;">
                                         444 0 943
                                     </p>
                                 </td>
@@ -1139,10 +1140,11 @@ class AppController extends Controller
                             <tr>
                                 <td width="425">
                                     <p style="text-align: left;font-size: 12px;margin-top: 10px;"> <strong> Müşteri Kodu : </strong> '.$customerCode.'</p>
-                                    <p style="text-align: left;font-size: 12px;margin-top: -10px;"> <strong> Müşteri Adı : </strong> '.$customerNameSurname.'</p>
+                                    <p style="text-align: left;font-size: 12px;margin-top: -10px;"> <strong> Müşteri Adı &nbsp;&nbsp;&nbsp;: </strong> '.$customerNameSurname.'</p>
                                 </td>
                                 <td>
-                                    <p style="text-align: center;font-size: 12px;margin-top: 10px;"> <strong> Tarih : </strong> '.$today.'</p>
+                                    <p style="text-align: left;font-size: 12px;margin-top: 10px;"> <strong> Tarih : </strong> '.$today.' </p>
+                                    <p style="text-align: left;font-size: 12px;margin-top: -10px;"> <strong> Saat&nbsp; : </strong> '.$hour.' </p>
                                 </td>
                             </tr>
                         </tbody>
@@ -1155,10 +1157,7 @@ class AppController extends Controller
                                     <p style="text-align: left;font-size: 12px;margin-top: 10px;"> <strong> Ödeme Tipi Açıklaması </strong> </p>
                                 </td>
                                 <td>
-                                    <p style="text-align: left;font-size: 12px;margin-top: 10px;"> <strong> Tutar </strong> </p>
-                                </td>
-                                <td>
-                                    <p style="text-align: left;font-size: 12px;margin-top: 10px;"> <strong> Tutar (Y) </strong> </p>
+                                    <p style="text-align: center;font-size: 12px;margin-top: 10px;"> <strong> Ödeme Tutarı </strong> </p>
                                 </td>
                             </tr>
                             <tr>
@@ -1168,12 +1167,9 @@ class AppController extends Controller
                                 <td>
                                     <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.$amount.' ₺</p>
                                 </td>
-                                <td>
-                                    <p style="text-align: right;font-size: 12px;margin-top: 10px;"> '.$amount.' ₺</p>
-                                </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
+                                <td colspan="1">
                                     <p style="text-align: right;font-size: 12px;margin-top: 10px;font-weight: bold"> Toplam :</p>
                                 </td>
                                 <td>
