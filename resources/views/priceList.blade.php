@@ -125,6 +125,7 @@
                 if (checked == false && order != 0)
                 {
                     $('[data-order="'+(order + 1)+'"]').attr('disabled',true);
+                    $('[data-order="'+(order + 1)+'"]').prop('checked',false);
                 }
                 else if(checked == false && order == 0)
                 {
