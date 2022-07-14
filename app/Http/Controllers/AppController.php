@@ -246,7 +246,7 @@ class AppController extends Controller
         $time          = date('H:i:s');
 
         // paymentHeader
-            $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
+            $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first();
 
             if (empty($creditCardPaymentHeaderID))
             {
@@ -258,11 +258,13 @@ class AppController extends Controller
                 }
             }
 
-            Log::emergency('creditCardPaymentHeaderID',$creditCardPaymentHeaderID.'- Müşteri Kodu :'.$customerCode);
+            $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
+
+            Log::emergency('creditCardPaymentHeaderID',[$creditCardPaymentHeaderID.'- Müşteri Kodu :'.$customerCode]);
         // paymentHeader
 
         // paymentLine
-            $creditCardPaymentLineID = TrCreditCardPaymentLine::select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first()->CreditCardPaymentLineID;
+            $creditCardPaymentLineID = TrCreditCardPaymentLine::select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first();
 
             if (empty($creditCardPaymentLineID))
             {
@@ -274,7 +276,9 @@ class AppController extends Controller
                 }
             }
 
-            Log::emergency('creditCardPaymentLineID',$creditCardPaymentLineID.'- Müşteri Kodu :'.$customerCode);
+            $creditCardPaymentLineID = TrCreditCardPaymentLine::select('CreditCardPaymentLineID')->whereRaw('CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = ? and CreditCardPaymentNumber = ?)',[$customerCode,$ccRefNo])->first()->CreditCardPaymentLineID;
+
+            Log::emergency('creditCardPaymentLineID',[$creditCardPaymentLineID.'- Müşteri Kodu :'.$customerCode]);
         // paymentLine
 
         // ccPaymentLineCurrency
@@ -287,12 +291,12 @@ class AppController extends Controller
                     return $this->SPSave($amount);
                 }
 
-                Log::emergency('ccPaymentLineCurrency',$creditCardPaymentLineID.'- Müşteri Kodu :'.$customerCode);
+                Log::emergency('ccPaymentLineCurrency',[$creditCardPaymentLineID.'- Müşteri Kodu :'.$customerCode]);
             }
         // ccPaymentLineCurrency
 
         // trCurrAccBook
-            $currAccBookID = TrCurrAccBook::select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
+            $currAccBookID = TrCurrAccBook::select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first();
 
             if (empty($currAccBookID))
             {
@@ -304,7 +308,9 @@ class AppController extends Controller
                 }
             }
 
-            Log::emergency('currAccBookID',$currAccBookID.'- Müşteri Kodu :'.$customerCode);
+            $currAccBookID = TrCurrAccBook::select('CurrAccBookID')->where('CurrAccCode',$customerCode)->whereRaw('ApplicationID in( Select CreditCardPaymentLineID from trCreditCardPaymentLine Where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = ? and CreditCardPaymentNumber = ?))',[$customerCode,$ccRefNo])->first()->CurrAccBookID;
+
+            Log::emergency('currAccBookID',[$currAccBookID.'- Müşteri Kodu :'.$customerCode]);
         // trCurrAccBook
 
         // trCurrAccBookCurrency
@@ -317,18 +323,18 @@ class AppController extends Controller
                     return $this->SPSave($amount);
                 }
 
-                Log::emergency('trCurrAccBookCurrency',$currAccBookID.'- Müşteri Kodu :'.$customerCode);
+                Log::emergency('trCurrAccBookCurrency',[$currAccBookID.'- Müşteri Kodu :'.$customerCode]);
             }
 
         // trCurrAccBookCurrency
 
         // paymentNumber
             $paymentNumber  = $connection->select("SET NOCOUNT ON;exec sp_LastRefNumPayment 1,'YS','1-5-1',2")[0]->PaymentNumber;
-            Log::emergency('PaymentNumber',$paymentNumber.'- Müşteri Kodu :'.$customerCode);
+            Log::emergency('PaymentNumber',[$paymentNumber.'- Müşteri Kodu :'.$customerCode]);
         // paymentNumber
 
         // trPaymentHeader
-            $paymentHeaderID = TrPaymentHeader::select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
+            $paymentHeaderID = TrPaymentHeader::select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first();
 
             if (empty($paymentHeaderID))
             {
@@ -340,7 +346,9 @@ class AppController extends Controller
                 }
             }
 
-            Log::emergency('paymentHeaderID',$paymentHeaderID.'- Müşteri Kodu :'.$customerCode);
+            $paymentHeaderID = TrPaymentHeader::select('PaymentHeaderID')->where('CurrAccCode',$customerCode)->where('PaymentNumber',$paymentNumber)->first()->PaymentHeaderID;
+
+            Log::emergency('paymentHeaderID',[$paymentHeaderID.'- Müşteri Kodu :'.$customerCode]);
         // trPaymentHeader
 
         return
@@ -403,10 +411,10 @@ class AppController extends Controller
             ApplicationID = (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?)
             where CurrAccCode = ? and CreditCardPaymentNumber = ?",[$data['paymentNumber'],$data['paymentNumber'],$data['customerCode'],$data['CreditCardPaymentNumber']]);
 
-        $paymentLineIdmsg[]   = $paymentLineId;
-        $sp7e[]               = $sp7;
-        $error[]              = $sp8;
-        $updateErr[]          = $update;
+        $paymentLineIdmsg[]   = $paymentLineId.'müşteri kodu : '.$data['customerCode'];
+        $sp7e[]               = $sp7.'müşteri kodu : '.$data['customerCode'];
+        $error[]              = $sp8.'müşteri kodu : '.$data['customerCode'];
+        $updateErr[]          = $update.'müşteri kodu : '.$data['customerCode'];
 
         Log::emergency('PaymentLineID',$paymentLineIdmsg);
         Log::emergency('sp7',$sp7e);
