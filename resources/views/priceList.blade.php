@@ -18,7 +18,7 @@
             </div>
         @endif
         @if(count($priceList) > 0)
-            <form action="@if(env('APP_TEST')) {{route('pay.test')}} @else {{route('pay')}} @endif" class="pay row" method="post">
+            <form action="@if(env('APP_TEST')) {{route('pay.test')}} @else {{route('pay')}} @endif" class="pay row" method="post" autocomplete="off">
                 @csrf
                 <div class="col-md-6 col-12 mt-3">
                     <h5 class="mb-5 mt-3 text-center totalPrice"> Toplam Tutar : <span> 0₺</span></h5>
