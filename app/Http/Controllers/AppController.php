@@ -1202,11 +1202,11 @@ class AppController extends Controller
 
     public function logout(Request $request)
     {
+        $this->cacheClear();
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         $request->session()->flush();
-        $this->cacheClear();
         return redirect()->route('index');
     }
 
