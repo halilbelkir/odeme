@@ -411,10 +411,10 @@ class AppController extends Controller
             ApplicationID = (Select PaymentHeaderID from trPaymentHeader Where PaymentNumber = ?)
             where CurrAccCode = ? and CreditCardPaymentNumber = ?",[$data['paymentNumber'],$data['paymentNumber'],$data['customerCode'],$data['CreditCardPaymentNumber']]);
 
-        $paymentLineIdmsg[]   = $paymentLineId.'müşteri kodu : '.$data['customerCode'];
-        $sp7e[]               = $sp7.'müşteri kodu : '.$data['customerCode'];
-        $error[]              = $sp8.'müşteri kodu : '.$data['customerCode'];
-        $updateErr[]          = $update.'müşteri kodu : '.$data['customerCode'];
+        $paymentLineIdmsg[]   = $paymentLineId.'- Müşteri kodu : '.$data['customerCode'];
+        $sp7e[]               = $sp7.'- Müşteri kodu : '.$data['customerCode'];
+        $error[]              = $sp8.'- Müşteri kodu : '.$data['customerCode'];
+        $updateErr[]          = $update.'- Müşteri kodu : '.$data['customerCode'];
 
         Log::emergency('PaymentLineID',$paymentLineIdmsg);
         Log::emergency('sp7',$sp7e);
