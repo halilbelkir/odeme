@@ -128,7 +128,9 @@
                 }
                 else if(checked == false && order == 0)
                 {
-                    $('[data-order="'+(order + 1)+'"]').attr('disabled',true);
+                    $("input[name='price[]']").attr('disabled',true);
+                    $(this).attr('disabled',false);
+                    $("input[name='price[]']").prop('checked',false);
                 }
                 else
                 {

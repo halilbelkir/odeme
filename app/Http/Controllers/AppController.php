@@ -432,7 +432,7 @@ class AppController extends Controller
         $priceList     = Cache::get('priceList'.$customerCode);
         $priceTotal    = 0;
 
-        if ($request->get('status') == 1)
+        if ($request->get('status') == 1 && is_array($request->get('monthYear')))
         {
             foreach ($request->get('monthYear') as $monthYear)
             {
