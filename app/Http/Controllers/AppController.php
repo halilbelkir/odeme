@@ -1115,12 +1115,13 @@ class AppController extends Controller
                                 </td>
                                 <td>
                                     <p style="text-align: left;font-size: 10px;padding-left: 5px">
-                                        Merkez : Atatürk Bulvarı No:31 Gaziantep <br>
-                                        Şube 1 : Atatürk Bulvarı No:23 Gaziantep <br>
-                                        Şube 2 : Çukur Mah. Mehmet Uygun Cd. No:25/C Gaziantep <br>
-                                        Şube 3 : Şahintepe Mah. 394 Nolu Cd. No:25/C Gaziantep <br>
-                                        Şube 4 : Sarıgüllük Mah. Ünler Blv  No:12/B Gaziantep <br>
-                                        Şube 5 : 60. Yıl Mah. Yavuz Sultan Selim Cd. Gaziantep <br>
+                                        Merkez : Atatürk Bulvarı No:31 <br>
+                                        Şube 1 : Atatürk Bulvarı No:23 <br>
+                                        Şube 2 : Çukur Mah. Mehmet Uygun Cd. No:25/C <br>
+                                        Şube 3 : Şahintepe Mah. 394 Nolu Cd. No:25/C <br>
+                                        Şube 4 : Sarıgüllük Mah. Ünler Blv  No:12/B <br>
+                                        Şube 5 : 60. Yıl Mah. Yavuz Sultan Selim Cd. <br>
+                                        Şube 6 : Pirsultan Mah. Lefkoşe Cad. No:212 <br>
                                     </p>
                                 </td>
                                 <td>
