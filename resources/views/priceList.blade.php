@@ -177,7 +177,7 @@
                         var response = JSON.parse(e);
                         $('.totalPrice span').text(response.totalPrice+' ₺');
                         $('.remainingDept').text(': '+response.remainingDept+' ₺');
-                        $('.price').val(response.totalPrice);
+                        $('.price').val(response.totalPrice == 0 ? null : response.totalPrice);
                     },
                     complete: function (e){
                         $('.loading').fadeOut('fast');

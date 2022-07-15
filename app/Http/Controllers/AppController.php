@@ -417,6 +417,11 @@ class AppController extends Controller
             $remainingDept = $priceTotal - $price;
         }
 
+        if ($price > $priceTotal)
+        {
+            $price         = $priceTotal;
+            $remainingDept = 0;
+        }
         return json_encode(array('totalPrice' => helpers::priceFormat($price),'remainingDept' => helpers::priceFormat($remainingDept)));
     }
 
