@@ -135,8 +135,8 @@ class AppController extends Controller
 
     public function priceList()
     {
-        $deleteDate    = '20220715';
-        $selectDate    = '20220715';
+        $deleteDate    = '20220716';
+        $selectDate    = '20220716';
         $customerCode  = Auth::user()->customer_code;
         $connection    = DB::connection('sqlsrv');
 
