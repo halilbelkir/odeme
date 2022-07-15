@@ -561,11 +561,9 @@ class AppController extends Controller
 
             if ($data['Transaction']['Response']['Code'] == '00')
             {
-
-                $amount = helpers::priceFormatCc($strAmount);
-
+                //$amount = helpers::priceFormatCc($strAmount);
+                $amount = $strAmount;
                 $this->priceMssqlSave($amount);
-
                 $data['link']= route('receipt',[$amount]);
             }
 
