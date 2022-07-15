@@ -852,7 +852,7 @@ class AppController extends Controller
                     $auth->phone_number  = $codeControl->phone_number;
                     $auth->name          = $codeControl->name;
                     $auth->surname       = $codeControl->surname;
-                    $auth->email         = empty($codeControl->email) ? $codeControl->name.$codeControl->surnamname.'@ugurluceyiz.com.tr' : $codeControl->email;
+                    $auth->email         = empty($codeControl->email) ?  Str::slug($codeControl->name, '_').'_'.Str::slug($codeControl->surnamname, '_').'@ugurluceyiz.com.tr' : $codeControl->email;
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.$codeControl->tc);
                     $auth->save();
@@ -870,7 +870,7 @@ class AppController extends Controller
                     $auth->phone_number  = Cache::get('phone_'.csrf_token());
                     $auth->name          = Cache::get('name_'.csrf_token());
                     $auth->surname       = Cache::get('surname_'.csrf_token());
-                    $auth->email         = empty(Cache::get('email_'.csrf_token())) ? Cache::get('name_'.csrf_token()).Cache::get('surname_'.csrf_token()).'@ugurluceyiz.com.tr' : Cache::get('email_'.csrf_token());
+                    $auth->email         = empty(Cache::get('email_'.csrf_token())) ? Str::slug(Cache::get('name_'.csrf_token()), '_').'_'.Str::slug(Cache::get('surname_'.csrf_token()), '_').'@ugurluceyiz.com.tr' : Cache::get('email_'.csrf_token());
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.Cache::get('tc_'.csrf_token()));
                     $auth->save();
@@ -888,7 +888,7 @@ class AppController extends Controller
         }
         catch (\Exception $e)
         {
-            Log::emergency('verificationControlCatch',$e);
+            Log::emergency('verificationControlCatch',[$e]);
             Session::flash('message', array('Başarısız!','Hata! Lütfen tekrar deneyiniz.', 'error'));
         }
 
