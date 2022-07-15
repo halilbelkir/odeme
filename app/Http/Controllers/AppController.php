@@ -51,11 +51,12 @@ class AppController extends Controller
 
     public function pricing(Request $request)
     {
+        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),1) : helpers::totalPriceFormat($request->get('total'));
         $data['mode']                 = "PROD";
         $data['apiversion']           = "v0.01";
         $data['terminalprovuserid']   = "PROVAUT";
         $data['txntype']              = "sales";
-        $data['txnamount']            = str_replace([',','.'],['',''],$request->get('total')); //��lem Tutar�  1.00 TL i�in 100 g�nderilmeli
+        $data['txnamount']            = str_replace([',','.'],['',''],$total); //��lem Tutar�  1.00 TL i�in 100 g�nderilmeli
         $data['txncurrencycode']      = "949";
         $data['txninstallmentcount']  = ""; //Taksit Say�s�. Bo� g�nderilirse taksit yap�lmaz
         $data['terminaluserid']       = "10230941";
@@ -112,7 +113,7 @@ class AppController extends Controller
 
     public function testPrice(Request $request)
     {
-        $amount = helpers::totalPriceFormat($request->get('total'));
+        $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),1) : helpers::totalPriceFormat($request->get('total'));
 
         $this->priceMssqlSave($amount);
 
@@ -151,7 +152,8 @@ class AppController extends Controller
                                                                                                                                 ");
                                                                                         Cache::flush();
                                                                                         return view('priceList');
-        *//*
+        /*
+                        $s[2] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
                         $s[7] = $connection->select("
                                                                                                                    SET NOCOUNT ON;
                                                                                                                    Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
@@ -166,25 +168,25 @@ class AppController extends Controller
                                         $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$data['amount']."'");
                                         $s = $connection->select("
                                                                                                                    SET NOCOUNT ON;
-                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))
                                                                                                                    ");
                                         dd($s);
                                                 $s = $connection->select("
                                                                                                                    SET NOCOUNT ON;
-                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
-                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))
                                                                                                                    ");
                                                         dd($s);
                                                                                                         $s = $connection->select("
                                                                                                                    SET NOCOUNT ON;
-                                                                                                                   Select * from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."';
-                                                                                                                   Select * from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."');
-                                                                                                                   Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."'));
-                                                                                                                   select * from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."';
-                                                                                                                   Select * from trCurrAccBookCurrency Where CurrAccBookID in (select CurrAccBookID from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."');
-                                                                                                                   Select * from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."';
-                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
-                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   Select * from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."';
+                                                                                                                   Select * from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."');
+                                                                                                                   Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));
+                                                                                                                   select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';
+                                                                                                                   Select * from trCurrAccBookCurrency Where CurrAccBookID in (select CurrAccBookID from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."');
+                                                                                                                   Select * from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."';
+                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))
                                                                                                                    ");
                                                                                                                dd($s);*/
 
@@ -199,6 +201,7 @@ class AppController extends Controller
         $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
         $date          = date('Y-m-d');
         $time          = date('H:i:s');
+        $amount        = helpers::priceFormatCc($amount);
 
         // paymentHeader
             $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first();
@@ -351,6 +354,7 @@ class AppController extends Controller
 
 
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
+        //print_r(' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>');
         //$data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
 
         $connection           = DB::connection('sqlsrv');

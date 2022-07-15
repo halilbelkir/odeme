@@ -61,8 +61,13 @@
             return Str::of($phoneNumber)->ltrim('0');
         }
 
-        public static function priceFormat($str)
+        public static function priceFormat($str,$status = null)
         {
+            if ($status == 1)
+            {
+                $price = number_format($str, 2, '.', ',');
+                return self::totalPriceFormat($price);
+            }
             return number_format($str, 2, '.', ',');
         }
 

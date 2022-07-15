@@ -104,15 +104,18 @@
 
             $('.card_date').mask("99/99");
 
-            $("input[name='total']").on('keyup',function()
+            $("input[name='total']").on('blur',function()
             {
+                totalCalc();
+                /*
                 var code = event.keyCode ? event.keyCode : 0;
-                var displayFunc = [8,37,38,39,40];
-                console.log(jQuery.inArray( code, displayFunc ));
-                if(jQuery.inArray( code, displayFunc ))
+                var displayFunc = [8,9,37,38,39,40];
+
+                if(jQuery.inArray( code, displayFunc ) == -1)
                 {
                     totalCalc();
                 }
+                 */
             });
 
             function totalCalc()
