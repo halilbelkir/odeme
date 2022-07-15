@@ -51,7 +51,15 @@ class AppController extends Controller
 
     public function pricing(Request $request)
     {
-        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),1) : helpers::totalPriceFormat($request->get('total'));
+        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),2) : helpers::priceFormat($request->get('total'),3);
+        $totalPrice                   = Cache::get('totalPrice'.Auth::user()->customer_code);
+        $totalPrice                   = helpers::priceFormat($totalPrice,2);
+
+        if ($total > $totalPrice)
+        {
+            return  json_encode(array('message' => 'Girilen tutar, toplam ödenecek tutardan fazladır. Lütfen doğru tutar giriniz.'));
+        }
+
         $data['mode']                 = "PROD";
         $data['apiversion']           = "v0.01";
         $data['terminalprovuserid']   = "PROVAUT";
@@ -108,6 +116,7 @@ class AppController extends Controller
     {
         $pricing =  Cache::get('pricing'.Auth::user()->customer_code);
         $amount  = 0;
+
         return view('pricing',compact('pricing','amount'));
     }
 
@@ -386,6 +395,7 @@ class AppController extends Controller
         $customerCode  = Auth::user()->customer_code;
         $priceList     = Cache::get('priceList'.$customerCode);
         $priceTotal    = 0;
+        $moreMoneyWarn = null;
 
         if ($request->get('status') == 1 && is_array($request->get('monthYear')))
         {
@@ -417,12 +427,16 @@ class AppController extends Controller
             $remainingDept = $priceTotal - $price;
         }
 
+        /*
         if ($price > $priceTotal)
         {
             $price         = $priceTotal;
             $remainingDept = 0;
+            $moreMoneyWarn = array('Uyarı!','Ödeme tutarından fazla tutar girdiniz. Lütfen maksimum tutarı giriniz.');
         }
-        return json_encode(array('totalPrice' => helpers::priceFormat($price),'remainingDept' => helpers::priceFormat($remainingDept)));
+        */
+
+        return json_encode(array('totalPrice' => helpers::priceFormat($price),'remainingDept' => helpers::priceFormat($remainingDept),'moreMoneyWarn' => $moreMoneyWarn));
     }
 
     public function payResult(Request $request)

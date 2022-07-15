@@ -174,10 +174,17 @@
                     },
                     success: function(e)
                     {
-                        var response = JSON.parse(e);
+                        var response      = JSON.parse(e);
+                        var moreMoneyWarn = response.moreMoneyWarn;
+
                         $('.totalPrice span').text(response.totalPrice+' ₺');
                         $('.remainingDept').text(': '+response.remainingDept+' ₺');
                         $('.price').val(response.totalPrice == 0 ? null : response.totalPrice);
+
+                        if(moreMoneyWarn != null)
+                        {
+                            toastr.error(moreMoneyWarn[1],moreMoneyWarn[0]);
+                        }
                     },
                     complete: function (e){
                         $('.loading').fadeOut('fast');
@@ -185,6 +192,18 @@
                 });
             }
             @if(!env('APP_TEST'))
+                function isJson(str)
+                {
+                    try
+                    {
+                        return JSON.parse(str);
+                    }
+                    catch (e)
+                    {
+                        return false;
+                    }
+                }
+
                 $('.pay')
                 .submit(function (e)
                 {
@@ -198,15 +217,25 @@
                         success: function (e)
                         {
                             $('.loading').fadeOut('fast');
-                            $('.pay-show').html(e);
-                            setTimeout(function() {
-                                $('.form-pay-send').trigger('submit');
-                            }, 100);
+
+                            if(isJson(e))
+                            {
+                                var response = JSON.parse(e);
+                                var message  = response.message;
+                                toastr.error(message,'Uyarı!');
+                            }
+                            else
+                            {
+                                $('.pay-show').html(e);
+                                setTimeout(function() {
+                                    $('.form-pay-send').trigger('submit');
+                                }, 100);
+                            }
                         },
                         error : function (e)
                         {
-                            responseMessages('danger',e.responseJSON.message,'#locations');
-                            loading();
+                            $('.loading').fadeOut('fast');
+                            toastr.error(e.responseJSON.message,'Uyarı!');
                         }
                     });
 

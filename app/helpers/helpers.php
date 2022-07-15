@@ -68,6 +68,21 @@
                 $price = number_format($str, 2, '.', ',');
                 return self::totalPriceFormat($price);
             }
+            else if ($status == 2)
+            {
+                $price     = number_format($str, 2, '.', ',');
+                $newAmount = str_replace(['.',','], ['',''],$price);
+
+                return $newAmount;
+            }
+            else if ($status == 3)
+            {
+                $newAmount = str_replace(['.',','], ['',''],$str);
+
+                return $newAmount;
+            }
+
+
             return number_format($str, 2, '.', ',');
         }
 
