@@ -74,6 +74,14 @@
             return $newPrice;
         }
 
+        public static function mssqlPrice($price)
+        {
+            $newAmount = substr($price,0,'-2');
+            $newAmount = str_replace(['.',','], ['',''],$newAmount);
+
+            return $newAmount;
+        }
+
         public static function priceFormatCc($str)
         {
             if (empty($str))

@@ -18,7 +18,7 @@
             </div>
         @endif
         @if(count($priceList) > 0)
-            <form action="@if(env('APP_TEST')) {{route('pay.test')}} @else {{route('pay')}} @endif" class="pay row" method="post" autocomplete="off">
+            <form action="@if(env('APP_TEST')) {{route('pay.test')}} @else {{route('pay')}} @endif" onsubmit="totalCalc();" class="pay row" method="post" autocomplete="off">
                 @csrf
                 <div class="col-md-6 col-12 mt-3">
                     <h5 class="mb-5 mt-3 text-center totalPrice"> Toplam Tutar : <span> 0₺</span></h5>
@@ -90,16 +90,11 @@
     <div class="pay-show" style="display: none"></div>
     @section('js')
         <script src="{{asset('assets/js/card.js')}}"></script>
-        <script src="{{asset('assets/js/mask.js')}}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js"></script>
         <script>
             @isset (Session::has('flash_message')['link'])
                 window.open('{{Session::get('flash_message')['link']}}', '_blank');
             @endisset
-
-            $(function() {
-                $('.price').maskMoney();
-            })
 
             var c = new Card({
                 form: document.querySelector('form.pay'),
@@ -109,13 +104,24 @@
 
             $('.card_date').mask("99/99");
 
-            $("input[name='total']").keyup(function()
+            $("input[name='total']").on('keyup',function()
+            {
+                var code = event.keyCode ? event.keyCode : 0;
+                var displayFunc = [8,37,38,39,40];
+                console.log(jQuery.inArray( code, displayFunc ));
+                if(jQuery.inArray( code, displayFunc ))
+                {
+                    totalCalc();
+                }
+            });
+
+            function totalCalc()
             {
                 $("input[name='price[]']").attr('disabled',true);
-                $('[data-order="0"]').attr('checked',false);
+                $('[data-order="0"]').prop('checked',false);
                 $('[data-order="0"]').attr('disabled',false);
-                calcPrice(2,$(this).val());
-            });
+                calcPrice(2,$("input[name='total']").val());
+            }
 
             $("input[name='price[]']").change(function()
             {
@@ -176,9 +182,11 @@
                 });
             }
             @if(!env('APP_TEST'))
-                $('.pay').submit(function (e)
+                $('.pay')
+                .submit(function (e)
                 {
                     e.preventDefault();
+                    totalCalc();
                     $.ajaxSetup({ headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") } });
                     $.ajax({
                         type: $(this).attr('method'),

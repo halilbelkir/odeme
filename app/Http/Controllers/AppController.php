@@ -112,117 +112,9 @@ class AppController extends Controller
 
     public function testPrice(Request $request)
     {
-        $amount        = helpers::totalPriceFormat($request->get('total'));
-        $customerCode  = Auth::user()->customer_code;
-        $sP            = $this->SPSave($amount);
-        $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'.$customerCode));
+        $amount = helpers::totalPriceFormat($request->get('total'));
 
-        $payResult                       = new PayResult();
-        $payResult->name_surname         = null;
-        $payResult->card_number          = null;
-        $payResult->response_code        = '00';
-        $payResult->error_message        = null;
-        $payResult->error_message_title  = null;
-        $payResult->error_message_detail = null;
-        $payResult->hash_data            = null;
-        $payResult->amount               = $amount;
-        $payResult->reference_no         = null;
-        $payResult->user_id              = Auth::user()->id;
-        $payResult->md_status            = '00';
-        $payResult->ip_address           = $request->ip();
-        $payResult->save();
-
-        if (Cache::has('price'.$customerCode) && $amount == $priceTotal)
-        {
-            $price            = Cache::get('price'.$customerCode);
-            $priceList        = Cache::get('priceList'.$customerCode);
-            $totalPrice       = 0;
-            $order            = 0;
-            $getTotal         = 0;
-            $response         =
-                [
-                    'purchaseAmount1' => 0,
-                    'purchaseAmount'  => 0,
-                    'remainingAmount' => 0,
-                    'response'        => null,
-                ];
-
-            foreach ($price as $key => $value)
-            {
-                foreach ($priceList[$value]['amounts'] as $key2 => $value2)
-                {
-                    $value3 =
-                        [
-                            'amounts'                 => $priceList[$value]['amounts'][$key2],
-                            'OrderPaymentPlanID'      => $priceList[$value]['OrderPaymentPlanID'][$key2],
-                            'order'                   => $order,
-                            'getTotal'                => $getTotal,
-                            'remainingAmount'         => $response['remainingAmount'],
-                            'paymentHeaderID'         => $sP['paymentHeaderID'],
-                            'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
-                            'paymentNumber'           => $sP['paymentNumber'],
-                            'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
-                            'customerCode'            => $customerCode,
-                            'response'                => $response['response'],
-                            'totalPrice'              => $totalPrice,
-                            'purchaseAmount1'         => $response['purchaseAmount1'],
-                            'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
-                        ];
-
-                    $this->lastTwoSPSave($value3,1);
-                }
-            }
-        }
-        else
-        {
-            $priceList        = Cache::get('priceList'.$customerCode);
-            $totalPrice       = 0;
-            $order            = 0;
-            $getTotal         = $amount;
-            $response         =
-                [
-                    'purchaseAmount1' => 0,
-                    'purchaseAmount'  => 0,
-                    'remainingAmount' => 0,
-                    'response'        => null,
-                ];
-
-            foreach ($priceList as $key => $value)
-            {
-                foreach ($value['amounts'] as $key2 => $value2)
-                {
-                    if ($totalPrice < $getTotal)
-                    {
-                        $value3 =
-                            [
-                                'amounts'                 => $value['amounts'][$key2],
-                                'OrderPaymentPlanID'      => $value['OrderPaymentPlanID'][$key2],
-                                'order'                   => $order,
-                                'getTotal'                => $getTotal,
-                                'remainingAmount'         => $response['remainingAmount'],
-                                'paymentHeaderID'         => $sP['paymentHeaderID'],
-                                'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
-                                'paymentNumber'           => $sP['paymentNumber'],
-                                'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
-                                'customerCode'            => $customerCode,
-                                'response'                => $response['response'],
-                                'totalPrice'              => $totalPrice,
-                                'purchaseAmount1'         => $response['purchaseAmount1'],
-                                'purchaseAmount'          => $response['purchaseAmount'],
-                            ];
-
-                        $this->lastTwoSPSave($value3);
-                        $totalPrice += $value['amounts'][$key2];
-                        $order++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-            }
-        }
+        $this->priceMssqlSave($amount);
 
         $data['link'] = route('receipt',[$amount]);
         $data['Transaction']['Response']['Code'] = 0;
@@ -233,6 +125,69 @@ class AppController extends Controller
 
     public function priceList()
     {
+        $deleteDate    = '20220715';
+        $selectDate    = '20220715';
+        $customerCode  = Auth::user()->customer_code;
+        $connection    = DB::connection('sqlsrv');
+
+/*
+                                                                                        $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
+                                                                                                                                        delete from trPaymentLineCurrency Where PaymentLineID in
+                                                                                                                                        (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in
+                                                                                                                                        (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$deleteDate."' ));
+                                                                                                                                        delete from trPaymentLine Where PaymentHeaderID in
+                                                                                                                                        (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$deleteDate."' );
+                                                                                                                                        delete from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$deleteDate."';    --- 6.Tablo
+                                                                                                                                        Delete  from trCurrAccBookCurrency Where CurrAccBookID in
+                                                                                                                                        (select CurrAccBookID from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$deleteDate."');
+                                                                                                                                        Delete from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$deleteDate."';
+                                                                                                                                        Delete from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in
+                                                                                                                                        (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
+                                                                                                                                        (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader
+                                                                                                                                        where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$deleteDate."'));
+                                                                                                                                        Delete  from trCreditCardPaymentLine where CreditCardPaymentHeaderID in
+                                                                                                                                        (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$deleteDate."');
+                                                                                                                                        Delete from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$deleteDate."';
+                                                                                                                                ");
+                                                                                        Cache::flush();
+                                                                                        return view('priceList');
+        *//*
+                        $s[7] = $connection->select("
+                                                                                                                   SET NOCOUNT ON;
+                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
+                                                                                                                   ");
+                        $s[8] = $connection->select("
+                                                                                                                   SET NOCOUNT ON;
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   ");
+                        dd($s);/*
+                                        $paymentLineId = '6386AFBE-1B41-4F81-93A6-815B5399F16B2222';
+                                        $data['amount'] = '500';
+                                        $connection->select("SELECT SCOPE_IDENTITY();EXEC Sp_Web_Odeme_8_trPaymentLineCurrency '".$paymentLineId."','".$data['amount']."'");
+                                        $s = $connection->select("
+                                                                                                                   SET NOCOUNT ON;
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   ");
+                                        dd($s);
+                                                $s = $connection->select("
+                                                                                                                   SET NOCOUNT ON;
+                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   ");
+                                                        dd($s);
+                                                                                                        $s = $connection->select("
+                                                                                                                   SET NOCOUNT ON;
+                                                                                                                   Select * from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."';
+                                                                                                                   Select * from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."');
+                                                                                                                   Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '246492'  and PaymentDate = '".$selectDate."'));
+                                                                                                                   select * from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."';
+                                                                                                                   Select * from trCurrAccBookCurrency Where CurrAccBookID in (select CurrAccBookID from trCurrAccBook where CurrAccCode = '246492' and DocumentDate ='".$selectDate."');
+                                                                                                                   Select * from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."';
+                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."');
+                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '246492' and DocumentDate = '".$selectDate."' ))
+                                                                                                                   ");
+                                                                                                               dd($s);*/
+
         return view('priceList');
     }
 
@@ -369,38 +324,34 @@ class AppController extends Controller
         }
         else
         {
-            $data['amounts'] = \App\helpers\helpers::priceFormat($data['amounts']);
-            $data['amounts'] = str_replace(['.00',','],['',''],$data['amounts']);
+            $data['amounts'] = \App\helpers\helpers::mssqlPrice($data['amounts']);
 
-            if ($data['order'] == 0)
+            if ($data['getTotal'] < $data['amounts'] && $data['remainingAmount'] == 0)
             {
-                if ($data['getTotal'] < $data['amounts'])
-                {
-                    $data['purchaseAmount1'] = $data['amounts'] - $data['getTotal'];
-                    $data['purchaseAmount']  = $data['amounts'] - $data['purchaseAmount1'];
-                    $data['remainingAmount'] = $data['purchaseAmount1'];
-                }
-                else
-                {
-                    $data['purchaseAmount1'] = $data['getTotal'] - $data['amounts'];
-                    $data['purchaseAmount']  = $data['getTotal'] - $data['purchaseAmount1'];
-                    $data['remainingAmount'] = $data['purchaseAmount1'];
-                }
-            }
-            else if ($data['remainingAmount'] > $data['amounts'])
-            {
-                $data['purchaseAmount1'] = $data['remainingAmount'] - $data['amounts'];
-                $data['purchaseAmount']  = $data['amounts'];
-                $data['remainingAmount'] = $data['purchaseAmount1'] ;
+                $data['purchaseAmount']  = $data['getTotal'];
             }
             else
             {
-                $data['purchaseAmount']  = $data['remainingAmount'];
+                $data['purchaseAmount']  = $data['amounts'] - ($data['totalPrice'] - $data['getTotal']);
+
+                if ($data['purchaseAmount']  == $data['getTotal'] )
+                {
+                    $data['purchaseAmount']  = $data['amounts'];
+                }
+
+                if ($data['getTotal'] > $data['totalPrice'])
+                {
+                    $data['purchaseAmount']  = $data['amounts'];
+                }
             }
+
+            $data['remainingAmount'] =  $data['getTotal'] - $data['amounts'];
+            $data['purchaseAmount']  = \App\helpers\helpers::priceFormatCc($data['purchaseAmount']);
         }
 
+
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
-        $data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
+        //$data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
 
         $connection           = DB::connection('sqlsrv');
         $sp7                  = $connection->insert("EXEC Sp_Web_Odeme_7_trPaymentLine '".$data['paymentHeaderID']."','".$data['creditCardPaymentLineID']."','".$orderPaymentPlanId."',".($data['order'] + 1));
@@ -587,102 +538,10 @@ class AppController extends Controller
 
             if ($data['Transaction']['Response']['Code'] == '00')
             {
-                $customerCode  = Auth::user()->customer_code;
-                $amount        = helpers::priceFormatCc($strAmount);
-                $sP            = $this->SPSave($amount);
-                $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'.$customerCode));
 
-                if (Cache::has('price'.$customerCode) && $amount == $priceTotal)
-                {
-                    $price            = Cache::get('price'.$customerCode);
-                    $priceList        = Cache::get('priceList'.$customerCode);
-                    $totalPrice       = 0;
-                    $order            = 0;
-                    $getTotal         = 0;
-                    $response         =
-                        [
-                            'purchaseAmount1' => 0,
-                            'purchaseAmount'  => 0,
-                            'remainingAmount' => 0,
-                            'response'        => null,
-                        ];
+                $amount = helpers::priceFormatCc($strAmount);
 
-                    foreach ($price as $key => $value)
-                    {
-                        foreach ($priceList[$value]['amounts'] as $key2 => $value2)
-                        {
-                            $value3 =
-                                [
-                                    'amounts'                 => $priceList[$value]['amounts'][$key2],
-                                    'OrderPaymentPlanID'      => $priceList[$value]['OrderPaymentPlanID'][$key2],
-                                    'order'                   => $order,
-                                    'getTotal'                => $getTotal,
-                                    'remainingAmount'         => $response['remainingAmount'],
-                                    'paymentHeaderID'         => $sP['paymentHeaderID'],
-                                    'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
-                                    'paymentNumber'           => $sP['paymentNumber'],
-                                    'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
-                                    'customerCode'            => $customerCode,
-                                    'response'                => $response['response'],
-                                    'totalPrice'              => $totalPrice,
-                                    'purchaseAmount1'         => $response['purchaseAmount1'],
-                                    'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
-                                ];
-
-                            $this->lastTwoSPSave($value3,1);
-                        }
-                    }
-                }
-                else
-                {
-                    $priceList        = Cache::get('priceList'.$customerCode);
-                    $totalPrice       = 0;
-                    $order            = 0;
-                    $getTotal         = $amount;
-                    $response         =
-                        [
-                            'purchaseAmount1' => 0,
-                            'purchaseAmount'  => 0,
-                            'remainingAmount' => 0,
-                            'response'        => null,
-                        ];
-
-                    foreach ($priceList as $key => $value)
-                    {
-                        foreach ($value['amounts'] as $key2 => $value2)
-                        {
-                            if ($totalPrice < $getTotal)
-                            {
-                                $value3 =
-                                    [
-                                        'amounts'                 => $value['amounts'][$key2],
-                                        'OrderPaymentPlanID'      => $value['OrderPaymentPlanID'][$key2],
-                                        'order'                   => $order,
-                                        'getTotal'                => $getTotal,
-                                        'remainingAmount'         => $response['remainingAmount'],
-                                        'paymentHeaderID'         => $sP['paymentHeaderID'],
-                                        'creditCardPaymentLineID' => $sP['creditCardPaymentLineID'],
-                                        'paymentNumber'           => $sP['paymentNumber'],
-                                        'CreditCardPaymentNumber' => $sP['CreditCardPaymentNumber'],
-                                        'customerCode'            => $customerCode,
-                                        'response'                => $response['response'],
-                                        'totalPrice'              => $totalPrice,
-                                        'purchaseAmount1'         => $response['purchaseAmount1'],
-                                        'purchaseAmount'          => $response['purchaseAmount'],
-                                    ];
-
-                                $this->lastTwoSPSave($value3);
-                                $totalPrice += $value['amounts'][$key2];
-                                $order++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                    }
-                }
+                $this->priceMssqlSave($amount);
 
                 $data['link']= route('receipt',[$amount]);
             }
@@ -693,6 +552,112 @@ class AppController extends Controller
         }
 
         return redirect()->route('price.list');
+    }
+
+    public function priceMssqlSave($amount)
+    {
+        $customerCode  = Auth::user()->customer_code;
+        $sp            = $this->SPSave($amount);
+        $priceTotal    = str_replace([',','.'],['',''],Cache::get('priceTotal'.$customerCode));
+
+        if (Cache::has('price'.$customerCode) && $amount == $priceTotal)
+        {
+            $price            = Cache::get('price'.$customerCode);
+            $priceList        = Cache::get('priceList'.$customerCode);
+            $totalPrice       = 0;
+            $order            = 0;
+            $getTotal         = 0;
+            $lastTwoSPSave    =
+                [
+                    'purchaseAmount'  => 0,
+                    'remainingAmount' => 0,
+                    'response'        => null,
+                ];
+
+            foreach ($price as $key => $value)
+            {
+                foreach ($priceList[$value]['amounts'] as $key2 => $value2)
+                {
+                    $value3 =
+                        [
+                            'amounts'                 => $priceList[$value]['amounts'][$key2],
+                            'OrderPaymentPlanID'      => $priceList[$value]['OrderPaymentPlanID'][$key2],
+                            'order'                   => $order,
+                            'getTotal'                => $getTotal,
+                            'remainingAmount'         => $lastTwoSPSave['remainingAmount'],
+                            'paymentHeaderID'         => $sp['paymentHeaderID'],
+                            'creditCardPaymentLineID' => $sp['creditCardPaymentLineID'],
+                            'paymentNumber'           => $sp['paymentNumber'],
+                            'CreditCardPaymentNumber' => $sp['CreditCardPaymentNumber'],
+                            'customerCode'            => $customerCode,
+                            'response'                => $lastTwoSPSave['response'],
+                            'totalPrice'              => $totalPrice,
+                            'purchaseAmount'          => $priceList[$value]['amounts'][$key2],
+                        ];
+
+                    $lastTwoSPSave = $this->lastTwoSPSave($value3,1);
+                    $order++;
+                }
+            }
+        }
+        else
+        {
+            $priceList        = Cache::get('priceList'.$customerCode);
+            $totalPrice       = 0;
+            $order            = 0;
+            $getTotal         = $amount;
+            $lastTwoSPSave    =
+                [
+                    'purchaseAmount'  => 0,
+                    'remainingAmount' => 0,
+                    'response'        => null,
+                ];
+
+            foreach ($priceList as $key => $value)
+            {
+                foreach ($value['amounts'] as $key2 => $value2)
+                {
+                    if ($totalPrice < $getTotal)
+                    {
+                        if ($order == 0)
+                        {
+                            $totalPrice = $value['amounts'][$key2];
+                            $totalPrice = \App\helpers\helpers::mssqlPrice($totalPrice);
+                        }
+                        else
+                        {
+                            $totalPrice += \App\helpers\helpers::mssqlPrice($value['amounts'][$key2]);
+                        }
+
+
+                        $value3 =
+                            [
+                                'amounts'                 => $value['amounts'][$key2],
+                                'OrderPaymentPlanID'      => $value['OrderPaymentPlanID'][$key2],
+                                'order'                   => $order,
+                                'getTotal'                => $getTotal,
+                                'remainingAmount'         => $lastTwoSPSave['remainingAmount'],
+                                'paymentHeaderID'         => $sp['paymentHeaderID'],
+                                'creditCardPaymentLineID' => $sp['creditCardPaymentLineID'],
+                                'paymentNumber'           => $sp['paymentNumber'],
+                                'CreditCardPaymentNumber' => $sp['CreditCardPaymentNumber'],
+                                'customerCode'            => $customerCode,
+                                'response'                => $lastTwoSPSave['response'],
+                                'totalPrice'              => $totalPrice,
+                                'purchaseAmount'          => $lastTwoSPSave['purchaseAmount'],
+                            ];
+
+                        $lastTwoSPSave = $this->lastTwoSPSave($value3);
+                        $order++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
     public function profileEdit(Request $request)
