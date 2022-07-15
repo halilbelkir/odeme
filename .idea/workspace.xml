@@ -8,8 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/helpers/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/helpers.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/priceList.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/priceList.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,14 +292,7 @@
       <workItem from="1657711820188" duration="134000" />
       <workItem from="1657712554810" duration="72000" />
       <workItem from="1657714151783" duration="473000" />
-      <workItem from="1657736709512" duration="42384000" />
-    </task>
-    <task id="LOCAL-00047" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1654808787545</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1654808787545</updated>
+      <workItem from="1657736709512" duration="44124000" />
     </task>
     <task id="LOCAL-00048" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1655554872798</created>
@@ -639,7 +630,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657890652025</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1657899356630</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1657899356630</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
