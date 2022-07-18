@@ -122,7 +122,7 @@ class AppController extends Controller
 
     public function testPrice(Request $request)
     {
-        $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),1) : helpers::totalPriceFormat($request->get('total'));
+        $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),2) : helpers::priceFormat($request->get('total'),3);
 
         $this->priceMssqlSave($amount);
 
@@ -135,8 +135,8 @@ class AppController extends Controller
 
     public function priceList()
     {
-        $deleteDate    = '20220716';
-        $selectDate    = '20220716';
+        $deleteDate    = '20220718';
+        $selectDate    = '20220718';
         $customerCode  = Auth::user()->customer_code;
         $connection    = DB::connection('sqlsrv');
 
@@ -210,7 +210,8 @@ class AppController extends Controller
         $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
         $date          = date('Y-m-d');
         $time          = date('H:i:s');
-        $amount        = helpers::priceFormatCc($amount);
+        $amount        = helpers::mssqlPrice($amount);
+
 
         // paymentHeader
             $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first();
@@ -327,43 +328,35 @@ class AppController extends Controller
             ];
     }
 
-    public function lastTwoSPSave($data,$status = null)
+    public function lastTwoSPSave($data)
     {
-        if ($status == 1)
+        $data['amounts'] = \App\helpers\helpers::mssqlPrice($data['amounts']);
+
+        if ($data['getTotal'] < $data['amounts'] && $data['remainingAmount'] == 0)
         {
-            $data['purchaseAmount'] = \App\helpers\helpers::priceFormat($data['purchaseAmount']);
-            $data['purchaseAmount'] = str_replace('.00','',$data['purchaseAmount']);
+            $data['purchaseAmount']  = $data['getTotal'];
         }
         else
         {
-            $data['amounts'] = \App\helpers\helpers::mssqlPrice($data['amounts']);
+            $data['purchaseAmount']  = $data['amounts'] - ($data['totalPrice'] - $data['getTotal']);
 
-            if ($data['getTotal'] < $data['amounts'] && $data['remainingAmount'] == 0)
+            if ($data['purchaseAmount']  == $data['getTotal'] )
             {
-                $data['purchaseAmount']  = $data['getTotal'];
-            }
-            else
-            {
-                $data['purchaseAmount']  = $data['amounts'] - ($data['totalPrice'] - $data['getTotal']);
-
-                if ($data['purchaseAmount']  == $data['getTotal'] )
-                {
-                    $data['purchaseAmount']  = $data['amounts'];
-                }
-
-                if ($data['getTotal'] > $data['totalPrice'])
-                {
-                    $data['purchaseAmount']  = $data['amounts'];
-                }
+                $data['purchaseAmount']  = $data['amounts'];
             }
 
-            $data['remainingAmount'] =  $data['getTotal'] - $data['amounts'];
-            $data['purchaseAmount']  = \App\helpers\helpers::priceFormatCc($data['purchaseAmount']);
+            if ($data['getTotal'] > $data['totalPrice'])
+            {
+                $data['purchaseAmount']  = $data['amounts'];
+            }
         }
+
+        $data['remainingAmount'] =  $data['getTotal'] - $data['amounts'];
+        $data['purchaseAmount']  = \App\helpers\helpers::priceFormatCc($data['purchaseAmount']);
 
 
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
-        //print_r(' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>');
+        //print_r(' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>');exit();
         //$data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
 
         $connection           = DB::connection('sqlsrv');
