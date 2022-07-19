@@ -135,12 +135,14 @@ class AppController extends Controller
 
     public function priceList()
     {
-        $deleteDate    = '20220718';
-        $selectDate    = '20220718';
+        //354241
+        $deleteDate    = '20220719';
+        $selectDate    = '20220719';
         $customerCode  = Auth::user()->customer_code;
+        //$customerCode  = '496931';
         $connection    = DB::connection('sqlsrv');
+        /*
 
-/*
                                                                                         $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
                                                                                                                                         delete from trPaymentLineCurrency Where PaymentLineID in
                                                                                                                                         (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in
@@ -162,7 +164,8 @@ class AppController extends Controller
                                                                                         Cache::flush();
                                                                                         return view('priceList');
         *//*
-                        $s[2] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
+                        $s[3] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
+                        $s[4] = $connection->select("SET NOCOUNT ON; select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';");
                         $s[7] = $connection->select("
                                                                                                                    SET NOCOUNT ON;
                                                                                                                    Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
@@ -210,8 +213,7 @@ class AppController extends Controller
         $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
         $date          = date('Y-m-d');
         $time          = date('H:i:s');
-        $amount        = helpers::mssqlPrice($amount);
-
+        $amount        = helpers::priceFormatCc($amount,1);
 
         // paymentHeader
             $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first();
@@ -352,11 +354,11 @@ class AppController extends Controller
         }
 
         $data['remainingAmount'] =  $data['getTotal'] - $data['amounts'];
-        $data['purchaseAmount']  = \App\helpers\helpers::priceFormatCc($data['purchaseAmount']);
+        $data['purchaseAmount']  = \App\helpers\helpers::priceFormatCc($data['purchaseAmount'],1);
 
 
         $orderPaymentPlanId = $data['OrderPaymentPlanID'];
-        //print_r(' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>');exit();
+        //print_r(' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>');
         //$data['response']  .= 'Kalan Taksit1 : '.$data['purchaseAmount1'].' Ödenecek Tutar : '.$data['purchaseAmount'].' Kalan : '.$data['remainingAmount'].' Total:'.$data['totalPrice'].' Gelen Tutar:'.$data['getTotal'].' value price:'.$data['amounts'].' orderPaymentPlanId '.$orderPaymentPlanId.'------<br>';
 
         $connection           = DB::connection('sqlsrv');

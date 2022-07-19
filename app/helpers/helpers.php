@@ -96,13 +96,22 @@
 
         public static function mssqlPrice($price)
         {
-            $newAmount = substr($price,0,'-2');
-            $newAmount = str_replace(['.',','], ['',''],$newAmount);
+            $newAmountControl = substr($price,-2);
+
+            if ($newAmountControl == 00)
+            {
+                $newAmount = substr($price,0,-2);
+                $newAmount = str_replace(['.',','], ['',''],$newAmount);
+            }
+            else
+            {
+                $newAmount = $price;
+            }
 
             return $newAmount;
         }
 
-        public static function priceFormatCc($str)
+        public static function priceFormatCc($str,$status = null)
         {
             if (empty($str))
             {
@@ -111,8 +120,18 @@
 
             $price = $str;
 
-            $price    = Money::TRY($price)->formatSimple();
-            $newPrice = str_replace(['.',','], [',','.'],$price);
+            $price = Money::TRY($price)->formatSimple();
+
+            if ($status == 1)
+            {
+                $newPrice = str_replace('.', '',$price);
+                $newPrice = str_replace(',', '.',$newPrice);
+                //$newPrice = str_replace('.', '',$price);
+            }
+            else
+            {
+                $newPrice = str_replace(['.',','], [',','.'],$price);
+            }
 
             return $newPrice;
 
