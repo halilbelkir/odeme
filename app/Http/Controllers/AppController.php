@@ -829,8 +829,9 @@ class AppController extends Controller
 
                 if (empty($codeControl))
                 {
-                    Session::flash('message', array('Başarısız!','Hata! Doğrulama kodu geçersiz.', 'error'));
-                    Log::emergency('verificationControl',[$tc,$request->get('verification_code'),csrf_token()]);
+                    $errorMessage = 'Hata! Doğrulama kodu geçersiz.';
+                    Session::flash('message', array('Başarısız!',$errorMessage, 'error'));
+                    Log::emergency('verificationControlHata',[$errorMessage,$tc,$request->get('verification_code'),csrf_token()]);
                     return redirect()->back();
                 }
 
