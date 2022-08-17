@@ -30,7 +30,7 @@
 
             if ($randomCodeControl)
             {
-                return self::verificationCodeMessage($tc,$phoneNumber,$customerCode);
+                return self::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
             }
             else
             {
