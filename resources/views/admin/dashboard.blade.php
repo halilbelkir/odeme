@@ -126,8 +126,8 @@
                         'pageLength','excel', 'pdf'
                     ],
                     lengthMenu: [
-                        [10, 25, 50,100, -1 ],
-                        ['10', '25', '50','100', 'Hepsi' ]
+                        [50,100,200,500, -1 ],
+                        ['50','100', '200', '500', 'Hepsi' ]
                     ],
                     data : {
                         url: $(this).attr('action'),
@@ -208,8 +208,8 @@
                         'pageLength','excel', 'pdf'
                     ],
                     lengthMenu: [
-                        [10, 25, 50,100, -1 ],
-                        ['10', '25', '50','100', 'Hepsi' ]
+                        [50,100,200,500, -1 ],
+                        ['50','100', '200', '500', 'Hepsi' ]
                     ],
                     ajax : {
                         url: $(this).attr('action'),
