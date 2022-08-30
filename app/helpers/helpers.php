@@ -81,7 +81,13 @@
 
                 return $newAmount;
             }
-
+            else if ($status == 4)
+            {
+                $str = str_replace(['.',','], ['',''],$str);
+                $str = Money::TRY($str)->formatSimple();
+                $price = str_replace(['.',','], [',','.'],$str);
+                return $price;
+            }
 
             return number_format($str, 2, '.', ',');
         }

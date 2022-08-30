@@ -51,7 +51,7 @@ class AppController extends Controller
 
     public function pricing(Request $request)
     {
-        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),2) : helpers::priceFormat($request->get('total'),3);
+        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
         $totalPrice                   = Cache::get('totalPrice'.Auth::user()->customer_code);
         $totalPrice                   = helpers::priceFormat($totalPrice,2);
 
@@ -122,7 +122,7 @@ class AppController extends Controller
 
     public function testPrice(Request $request)
     {
-        $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),2) : helpers::priceFormat($request->get('total'),3);
+        $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
 
         $this->priceMssqlSave($amount);
 
@@ -136,8 +136,8 @@ class AppController extends Controller
     public function priceList()
     {
         //354241
-        $deleteDate    = '20220719';
-        $selectDate    = '20220719';
+        $deleteDate    = '20220830';
+        $selectDate    = '20220830';
         $customerCode  = Auth::user()->customer_code;
         //$customerCode  = '496931';
         $connection    = DB::connection('sqlsrv');
@@ -410,7 +410,7 @@ class AppController extends Controller
         }
         elseif ($request->get('status') == 2)
         {
-            $price      = $request->get('price');
+            $price = helpers::priceFormat($request->get('price'),4);
 
             foreach ($priceList as $value)
             {
@@ -431,7 +431,7 @@ class AppController extends Controller
         }
         */
 
-        return json_encode(array('totalPrice' => helpers::priceFormat($price),'remainingDept' => helpers::priceFormat($remainingDept),'moreMoneyWarn' => $moreMoneyWarn));
+        return json_encode(array('totalPrice' => $price,'remainingDept' => helpers::priceFormat($remainingDept),'moreMoneyWarn' => $moreMoneyWarn));
     }
 
     public function payResult(Request $request)
