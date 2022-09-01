@@ -306,28 +306,9 @@
       <workItem from="1661458495130" duration="630000" />
       <workItem from="1661461212995" duration="232000" />
       <workItem from="1661527834909" duration="678000" />
-      <workItem from="1661783323733" duration="3731000" />
-    </task>
-    <task id="LOCAL-00057" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656060094543</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1656060094543</updated>
-    </task>
-    <task id="LOCAL-00058" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656068167091</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1656068167092</updated>
-    </task>
-    <task id="LOCAL-00059" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656068311321</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1656068311321</updated>
+      <workItem from="1661783323733" duration="4362000" />
+      <workItem from="1662025197174" duration="73000" />
+      <workItem from="1662025898013" duration="2349000" />
     </task>
     <task id="LOCAL-00060" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1656068420493</created>
@@ -651,7 +632,28 @@
       <option name="project" value="LOCAL" />
       <updated>1661181855156</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1661884002306</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1661884002306</updated>
+    </task>
+    <task id="LOCAL-00107" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1662026211465</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1662026211465</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1662030496095</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1662030496095</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
