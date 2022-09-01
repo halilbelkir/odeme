@@ -54,7 +54,7 @@ class AppController extends Controller
         //$total                        = strpos($request->get('total'), '.') == false || strpos($request->get('total'), ',') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
         $total                        = helpers::priceFormat($request->get('total'),5);
         $totalPrice                   = Cache::get('totalPrice'.Auth::user()->customer_code);
-        $totalPrice                   = helpers::priceFormat($totalPrice,2);
+        $totalPrice                   = helpers::priceFormat($totalPrice,5);
 
         if ($total > $totalPrice)
         {
