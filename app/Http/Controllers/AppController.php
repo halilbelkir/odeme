@@ -51,7 +51,8 @@ class AppController extends Controller
 
     public function pricing(Request $request)
     {
-        $total                        = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
+        //$total                        = strpos($request->get('total'), '.') == false || strpos($request->get('total'), ',') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
+        $total                        = helpers::priceFormat($request->get('total'),5);
         $totalPrice                   = Cache::get('totalPrice'.Auth::user()->customer_code);
         $totalPrice                   = helpers::priceFormat($totalPrice,2);
 
@@ -407,6 +408,8 @@ class AppController extends Controller
             Cache::put('price'.$customerCode, $request->get('monthYear'), Carbon::now()->addMinutes(30));
             Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
             $remainingDept = $priceTotal - $price;
+
+            $price = helpers::priceFormat($price);
         }
         elseif ($request->get('status') == 2)
         {

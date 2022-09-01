@@ -83,15 +83,23 @@
             }
             else if ($status == 4)
             {
-                if (strpos($str, ',') == false)
+                if (!strpos($str, ','))
                 {
                     return self::priceFormat($str);
                 }
 
-                $str = str_replace(['.',','], ['',''],$str);
-                $str = Money::TRY($str)->formatSimple();
+                //$str = str_replace(['.',','], [',','.'],$str);
+                //$str = Money::TRY($str)->formatSimple();
+
                 $price = str_replace(['.',','], [',','.'],$str);
                 return $price;
+            }
+            else if ($status == 5)
+            {
+                $str = str_replace(['.',','], [',','.'],$str);
+                $str = number_format($str, 2, '.', ',');
+                //$price = str_replace(['.',','], [',','.'],$str);
+                return $str;
             }
 
             return number_format($str, 2, '.', ',');
