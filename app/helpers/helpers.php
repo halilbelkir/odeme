@@ -83,6 +83,11 @@
             }
             else if ($status == 4)
             {
+                if (strpos($str, ',') == false)
+                {
+                    return self::priceFormat($str);
+                }
+
                 $str = str_replace(['.',','], ['',''],$str);
                 $str = Money::TRY($str)->formatSimple();
                 $price = str_replace(['.',','], [',','.'],$str);
