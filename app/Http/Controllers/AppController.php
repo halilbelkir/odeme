@@ -822,9 +822,9 @@ class AppController extends Controller
                     ->withInput();
             }
 
-            $customerCode = Cache::get('customerCode_'.csrf_token());
-            $auth         = User::where('customer_code',$customerCode)->first();
             $tc           = Cache::get('tc_'.csrf_token());
+            $auth         = User::where('tc',$tc)->first();
+            $customerCode = Cache::get('customerCode_'.csrf_token());
 
             if (env('APP_SMS_CODE') == true)
             {
