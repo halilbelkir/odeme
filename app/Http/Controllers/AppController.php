@@ -880,7 +880,7 @@ class AppController extends Controller
                     $auth->phone_number  = $codeControl->phone_number;
                     $auth->name          = $codeControl->name;
                     $auth->surname       = $codeControl->surname;
-                    $auth->email         = empty($codeControl->email) ?  Str::slug($codeControl->name, '_').'_'.Str::slug($codeControl->surnamname, '_').'@ugurluceyiz.com.tr' : $codeControl->email;
+                    $auth->email         = empty($codeControl->email) ?  Str::slug($codeControl->name, '_').'_'.Str::slug($codeControl->surname, '_').'_'.$codeControl->tc.'@ugurluceyiz.com.tr' : $codeControl->email;
                     $auth->customer_code = $customerCode;
                     $auth->password      = bcrypt($customerCode.$codeControl->tc);
                     $auth->save();
