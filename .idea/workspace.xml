@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/cdCurrAcc.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/cdCurrAcc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,14 +312,14 @@
       <workItem from="1663528442583" duration="49000" />
       <workItem from="1663529022852" duration="29000" />
       <workItem from="1663529113529" duration="1743000" />
-      <workItem from="1663587579444" duration="877000" />
-    </task>
-    <task id="LOCAL-00062" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656070421233</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1656070421233</updated>
+      <workItem from="1663587579444" duration="1002000" />
+      <workItem from="1663705679028" duration="753000" />
+      <workItem from="1664311028053" duration="32000" />
+      <workItem from="1664353056160" duration="1208000" />
+      <workItem from="1664392936657" duration="2690000" />
+      <workItem from="1664478673893" duration="597000" />
+      <workItem from="1664729668480" duration="7094000" />
+      <workItem from="1664743629232" duration="1018000" />
     </task>
     <task id="LOCAL-00063" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1656070454029</created>
@@ -655,7 +657,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662035983435</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1663588475782</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1663588475782</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

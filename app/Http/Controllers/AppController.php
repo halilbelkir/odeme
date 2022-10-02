@@ -33,21 +33,7 @@ use Validator,Session;
 
 class AppController extends Controller
 {
-    public function verification()
-    {
-        if (Cache::has('tc_'.csrf_token()))
-        {
-            $tc      =  Cache::get('tc_'.csrf_token());
-            $name    =  Cache::get('name_'.csrf_token());
-            $surName =  Cache::get('surname_'.csrf_token());
-            $phone   =  Cache::get('phone_'.csrf_token());
-            $phone   =  helpers::hiddenPhone($phone);
 
-            return view('verification',compact('name','surName','phone','tc'));
-        }
-
-        return redirect()->route('index');
-    }
 
     public function pricing(Request $request)
     {
@@ -137,7 +123,7 @@ class AppController extends Controller
     public function priceList()
     {
         //354241
-        $deleteDate    = '20220830';
+        $deleteDate    = '20221002';
         $selectDate    = '20220830';
         $customerCode  = Auth::user()->customer_code;
         //$customerCode  = '496931';
@@ -210,7 +196,7 @@ class AppController extends Controller
     {
         $customerCode  = Auth::user()->customer_code;
         $connection    = DB::connection('sqlsrv');
-        $kkRefNo       = $connection->select('SET NOCOUNT ON; exec sp_LastRefNumCreditCardPayment 1');
+        $kkRefNo       = $connection->select('EXEC sp_LastRefNumCreditCardPayment 1');
         $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
         $date          = date('Y-m-d');
         $time          = date('H:i:s');
@@ -229,6 +215,7 @@ class AppController extends Controller
                 }
             }
 
+
             $creditCardPaymentHeaderID = TrCreditCardPaymentHeader::select('CreditCardPaymentHeaderID')->where('CurrAccCode',$customerCode)->where('CreditCardPaymentNumber',$ccRefNo)->first()->CreditCardPaymentHeaderID;
 
             Log::emergency('creditCardPaymentHeaderID',[$creditCardPaymentHeaderID.'- Müşteri Kodu :'.$customerCode]);
@@ -239,7 +226,7 @@ class AppController extends Controller
 
             if (empty($creditCardPaymentLineID))
             {
-                $paymentLine = $connection->insert("EXEC Sp_Web_Odeme_2_trCreditCardPaymentLine '".$creditCardPaymentHeaderID."','".$date."','1','".$amount."'");
+                $paymentLine = $connection->insert("SET NOCOUNT ON;EXEC Sp_Web_Odeme_2_trCreditCardPaymentLine '".$creditCardPaymentHeaderID."','".$date."','1','".$amount."'");
 
                 if (!$paymentLine)
                 {
@@ -691,7 +678,9 @@ class AppController extends Controller
                 ->update($userPhone);
 
             $tc = $users->tc;
-            Cache::forget('tcControl'.$tc);
+
+            session()->forget('user');
+
             $this->tcDbControl($tc);
 
             Session::flash('message', array('Başarılı!','Bilgileriniz Güncellendi.', 'success'));
@@ -702,6 +691,48 @@ class AppController extends Controller
         }
 
         return redirect()->route('profile');
+    }
+
+    public function tcDbControl($tc = null)
+    {
+        //$tc = '56899266102';
+        //$tc = '40840281412';
+        //$cacheName = 'tcControl'.$tc;
+
+        if (session()->has('user'))
+        {
+            $user =  session('user');
+        }
+        else
+        {
+            $sql = cdCurrAcc::join('cdCurrAccDesc as cd','cd.CurrAccCode','=','cdCurrAcc.CurrAccCode')
+                ->join('prCurrAccCommunication as p','cd.CurrAccCode','=','p.CurrAccCode')
+                ->leftJoin('prCurrAccCommunication as pr', function ($join) {
+                    $join->on('cd.CurrAccCode','=','pr.CurrAccCode')
+                        ->whereNull('pr.ContactID')
+                        ->where('pr.CommunicationTypeCode',3);
+                })
+                ->whereNull('p.ContactID')
+                ->where('p.CommunicationTypeCode',7)
+                ->where('cdCurrAcc.CurrAccTypeCode',4)
+                ->where('cdCurrAcc.IdentityNum',$tc)
+                ->select('cdCurrAcc.CurrAccCode as CustamerCode','cdCurrAcc.FirstName','cdCurrAcc.LastName','cdCurrAcc.IdentityNum as TcNumber','p.CommAddress as PhoneNumber','pr.CommAddress as EmailAddress')
+                ->get();
+
+            if ($sql->count() > 1)
+            {
+                return $user = 2;
+            }
+            else if ($sql->count() == 0)
+            {
+                return $user = false;
+            }
+
+            $user = $sql->first();
+            session('user',$user);
+        }
+
+        return $user ?? false;
     }
 
     public function tcControl(Request $request)
@@ -731,11 +762,9 @@ class AppController extends Controller
             }
 
             $tc    = $request->get('tc');
+            $user  = $this->tcDbControl($tc);
 
-
-            $phone = $this->tcDbControl($tc);
-
-            if (!$phone)
+            if (!$user)
             {
                 return response()->json(
                     [
@@ -745,7 +774,7 @@ class AppController extends Controller
                     ],403
                 );
             }
-            else if(is_int($phone) && $phone == 2)
+            else if(is_int($user) && $user == 2)
             {
                 return response()->json(
                     [
@@ -756,21 +785,22 @@ class AppController extends Controller
                 );
             }
 
+            $phoneNumber  = $user->PhoneNumber;
+            $customerCode = $user->CustamerCode;
+            $name         = $user->FirstName;
+            $surname      = $user->LastName;
+            $email        = $user->EmailAddress;
+            $session      =
+                [
+                    'customerCode' => $customerCode,
+                    'tc'           => $tc,
+                    'name'         => $name,
+                    'surname'      => $surname,
+                    'phone'        => $phoneNumber,
+                    'email'        => $email
+                ];
 
-
-            $phoneNumber  = $phone->PhoneNumber;
-            $customerCode = $phone->CustamerCode;
-            $name         = $phone->FirstName;
-            $surname      = $phone->LastName;
-            $email        = $phone->EmailAddress;
-
-
-            Cache::put('customerCode_'.csrf_token(), $customerCode, Carbon::now()->addMinutes(480));
-            Cache::put('tc_'.csrf_token(), $tc, Carbon::now()->addMinutes(480));
-            Cache::put('name_'.csrf_token(), $name, Carbon::now()->addMinutes(480));
-            Cache::put('surname_'.csrf_token(), $surname, Carbon::now()->addMinutes(480));
-            Cache::put('phone_'.csrf_token(), $phoneNumber, Carbon::now()->addMinutes(480));
-            Cache::put('email_'.csrf_token(), $email, Carbon::now()->addMinutes(480));
+            session($session);
 
             if (env('APP_SMS_CODE') == true)
             {
@@ -789,6 +819,7 @@ class AppController extends Controller
         }
         catch (\Exception $e)
         {
+            dd($e);
             return response()->json(
                 [
                     'result'  => 0,
@@ -822,9 +853,9 @@ class AppController extends Controller
                     ->withInput();
             }
 
-            $tc           = Cache::get('tc_'.csrf_token());
+            $tc           = session('tc');
             $auth         = User::where('tc',$tc)->first();
-            $customerCode = Cache::get('customerCode_'.csrf_token());
+            $customerCode = session('customerCode');
 
             if (env('APP_SMS_CODE') == true)
             {
@@ -863,13 +894,13 @@ class AppController extends Controller
                 if (empty($auth))
                 {
                     $auth                = new User;
-                    $auth->tc            = Cache::get('tc_'.csrf_token());
-                    $auth->phone_number  = Cache::get('phone_'.csrf_token());
-                    $auth->name          = Cache::get('name_'.csrf_token());
-                    $auth->surname       = Cache::get('surname_'.csrf_token());
-                    $auth->email         = empty(Cache::get('email_'.csrf_token())) ? Str::slug(Cache::get('name_'.csrf_token()), '_').'_'.Str::slug(Cache::get('surname_'.csrf_token()), '_').'@ugurluceyiz.com.tr' : Cache::get('email_'.csrf_token());
+                    $auth->tc            = session('tc');
+                    $auth->phone_number  = session('phone');
+                    $auth->name          = session('name');
+                    $auth->surname       = session('surname');
+                    $auth->email         = empty(session('email')) ? Str::slug(session('name'), '_').'_'.Str::slug(session('surname'), '_').'@ugurluceyiz.com.tr' : session('email');
                     $auth->customer_code = $customerCode;
-                    $auth->password      = bcrypt($customerCode.Cache::get('tc_'.csrf_token()));
+                    $auth->password      = bcrypt($customerCode.session('tc'));
                     $auth->save();
                 }
             }
@@ -900,24 +931,24 @@ class AppController extends Controller
 
         if (!$phoneNumber)
         {
-            $phone = $this->tcDbControl($tc);
+            $user = $this->tcDbControl($tc);
 
-            if (!$phone)
+            if (!$user)
             {
                 Session::flash('message', array('Başarısız!','T.C Numarası Sistemde Bulunamadı.', 'error'));
                 return redirect()->route('index');
             }
 
-
-            $phoneNumber  = $phone->PhoneNumber;
-            $customerCode = $phone->CustamerCode;
-            $name         = $phone->FirstName;
-            $surname      = $phone->LastName;
+            $phoneNumber  = $user->PhoneNumber;
+            $customerCode = $user->CustamerCode;
+            $name         = $user->FirstName;
+            $surname      = $user->LastName;
             $this->sendSms($tc,$phoneNumber,$customerCode,$name,$surname);
         }
 
         //$phoneNumber = '05342233232';
         $message = helpers::verificationCodeMessage($tc,$phoneNumber,$customerCode,$name,$surname);
+
         if (env('APP_SMS_CODE') == true)
         {
             sms::send($phoneNumber,$message);
@@ -926,8 +957,8 @@ class AppController extends Controller
         if (request('tc'))
         {
             Session::flash('message', array('Başarılı!','Şifre Gönderildi.', 'success'));
-            Cache::put('customerCode_'.csrf_token(), $customerCode, Carbon::now()->addMinutes(480));
-            Cache::put('tc_'.csrf_token(), $tc, Carbon::now()->addMinutes(480));
+            session(['customeCode' => $customerCode]);
+            session(['tc' => $tc]);
 
             return redirect()->route('verification');
         }
@@ -935,49 +966,20 @@ class AppController extends Controller
         return true;
     }
 
-    public function tcDbControl($tc = null)
+    public function verification()
     {
-        //$tc = '56899266102';
-        //$tc = '40840281412';
-        $cacheName = 'tcControl'.$tc;
-
-        if (Cache::has($cacheName))
+        if (session()->has('tc'))
         {
-            $phoneNumber =  Cache::get($cacheName);
-        }
-        else
-        {
-            $tcControl = new cdCurrAcc;
-            $tcControl->setConnection('sqlsrv');
-            $phoneNumber = $tcControl
-                ->join('cdCurrAccDesc as cd','cd.CurrAccCode','=','cdCurrAcc.CurrAccCode')
-                ->join('prCurrAccCommunication as p','cd.CurrAccCode','=','p.CurrAccCode')
-                ->leftJoin('prCurrAccCommunication as pr', function ($join) {
-                    $join->on('cd.CurrAccCode','=','pr.CurrAccCode')
-                        ->whereNull('pr.ContactID')
-                        ->where('pr.CommunicationTypeCode',3);
-                })
-                ->whereNull('p.ContactID')
-                ->where('p.CommunicationTypeCode',7)
-                ->where('cdCurrAcc.CurrAccTypeCode',4)
-                ->where('cdCurrAcc.IdentityNum',$tc)
-                ->select('cdCurrAcc.CurrAccCode as CustamerCode','cdCurrAcc.FirstName','cdCurrAcc.LastName','cdCurrAcc.IdentityNum as TcNumber','p.CommAddress as PhoneNumber','pr.CommAddress as EmailAddress')
-                ->get();
+            $tc      =  session('tc');
+            $name    =  session('name');
+            $surName =  session('surname');
+            $phone   =  session('phone');
+            $phone   =  helpers::hiddenPhone($phone);
 
-            if (count($phoneNumber) > 1)
-            {
-                return $phoneNumber = 2;
-            }
-            else if (count($phoneNumber) == 0)
-            {
-                return $phoneNumber = false;
-            }
-
-            Cache::put($cacheName, $phoneNumber[0], Carbon::now()->addMinutes(480));
-            $phoneNumber = $phoneNumber[0];
+            return view('verification',compact('name','surName','phone','tc'));
         }
 
-        return $phoneNumber ?? false;
+        return redirect()->route('index');
     }
 
     public function receipt($amount)
@@ -1158,12 +1160,8 @@ class AppController extends Controller
         $customerCode        = Auth::user()->customer_code;
         $tc                  = Auth::user()->tc;
 
-        Cache::forget('customerCode_'.csrf_token());
-        Cache::forget('tc_'.csrf_token());
-        Cache::forget('name_'.csrf_token());
-        Cache::forget('surname_'.csrf_token());
-        Cache::forget('phone_'.csrf_token());
-        Cache::forget('email_'.csrf_token());
+        session()->forget(['customerCode','tc','surname','phone','email']);
+
         Cache::forget('remainder'.$customerCode);
         Cache::forget('priceList'.$customerCode);
         Cache::forget('totalPrice'.$customerCode);

@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class cdCurrAcc extends Model
 {
     protected $table = "cdCurrAcc";
+    protected $connection = 'sqlsrv';
     public $timestamps = false;
 }
