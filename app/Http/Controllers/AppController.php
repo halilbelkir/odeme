@@ -128,7 +128,7 @@ class AppController extends Controller
         $customerCode  = Auth::user()->customer_code;
         //$customerCode  = '496931';
         $connection    = DB::connection('sqlsrv');
-
+        /*
 
                                                                                         $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
                                                                                                                                         delete from trPaymentLineCurrency Where PaymentLineID in
@@ -150,7 +150,7 @@ class AppController extends Controller
                                                                                                                                 ");
                                                                                         Cache::flush();
                                                                                         return view('priceList');
-        /*
+        *//*
                         $s[3] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
                         $s[4] = $connection->select("SET NOCOUNT ON; select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';");
                         $s[7] = $connection->select("
