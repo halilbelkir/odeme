@@ -123,12 +123,12 @@ class AppController extends Controller
     public function priceList()
     {
         //354241
-        $deleteDate    = '20221002';
-        $selectDate    = '20220830';
+        $deleteDate    = '20221004';
+        $selectDate    = '20221004';
         $customerCode  = Auth::user()->customer_code;
         //$customerCode  = '496931';
         $connection    = DB::connection('sqlsrv');
-        /*
+
 
                                                                                         $kkRefNo       = $connection->select("SELECT SCOPE_IDENTITY();
                                                                                                                                         delete from trPaymentLineCurrency Where PaymentLineID in
@@ -150,7 +150,7 @@ class AppController extends Controller
                                                                                                                                 ");
                                                                                         Cache::flush();
                                                                                         return view('priceList');
-        *//*
+        /*
                         $s[3] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
                         $s[4] = $connection->select("SET NOCOUNT ON; select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';");
                         $s[7] = $connection->select("
@@ -196,7 +196,7 @@ class AppController extends Controller
     {
         $customerCode  = Auth::user()->customer_code;
         $connection    = DB::connection('sqlsrv');
-        $kkRefNo       = $connection->select('EXEC sp_LastRefNumCreditCardPayment 1');
+        $kkRefNo       = $connection->select('SET NOCOUNT ON;EXEC sp_LastRefNumCreditCardPayment 1');
         $ccRefNo       = $kkRefNo[0]->CreditCardPaymentNumber;
         $date          = date('Y-m-d');
         $time          = date('H:i:s');
