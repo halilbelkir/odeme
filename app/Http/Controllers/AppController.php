@@ -778,7 +778,7 @@ class AppController extends Controller
                     [
                         'result'  => 3,
                         'title'   => 'Hata!',
-                        'message' => "Sistemde Aynı Tc 1'den Fazla Var."
+                        'message' => "Sistemde birden fazla özel mobil telefonu kayıtlı."
                     ],403
                 );
             }
