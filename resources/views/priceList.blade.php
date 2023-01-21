@@ -48,8 +48,8 @@
                     </div>
 
                     <div class="form-floating form-group mt-1 col-12">
-                        <input type="text" class="form-control price" name="total" placeholder="Tutar" required>
-                        <label for="price">Tutar</label>
+                        <input type="text" class="form-control price" name="total" placeholder="Tutar (9.999,99)" required>
+                        <label for="price">Tutar (9.999,99)</label>
                         <x-inputerror for="price" class="mt-2" />
                     </div>
 
@@ -66,7 +66,7 @@
                             <input type="checkbox" @if($row != 0) disabled @endif  name="price[]" data-order="{{$row}}" data-month="{{$price['month']}}" data-year="{{$price['year']}}" value="{{$order}}" class="bd-placeholder-img flex-shrink-0 me-2 mt-2 rounded">
                             <p class="pb-3 mb-0 small lh-sm border-bottom w-100 px-2">
                                 <strong class="d-block text-gray-dark">{{$price['month']}} - {{$price['year']}}</strong>
-                                {{\App\helpers\helpers::priceFormat($price['price'])}} ₺
+                                {{\App\helpers\helpers::priceFormat($price['price'],7)}} ₺
                             </p>
                         </div>
                         @php $row++; @endphp
@@ -74,9 +74,9 @@
 
                     <div class="row" style="margin-top: 20px;border-top: 1px solid #cecece; padding-top: 20px;">
                         <div class="col-5 col-md-3 fw-bold">Toplam Borç </div>
-                        <div class="col-7 col-md-9 text-start"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                        <div class="col-7 col-md-9 text-start"> : {{\App\helpers\helpers::priceFormat($totalPrice,7)}} ₺</div>
                         <div class="col-5 col-md-3 fw-bold">Kalan Borç </div>
-                        <div class="col-7 col-md-9 text-start remainingDept"> : {{\App\helpers\helpers::priceFormat($totalPrice)}} ₺</div>
+                        <div class="col-7 col-md-9 text-start remainingDept"> : {{\App\helpers\helpers::priceFormat($totalPrice,7)}} ₺</div>
                     </div>
                 </div>
             </form>
@@ -104,6 +104,7 @@
 
             $('.card_date').mask("99/99");
 
+
             $("input[name='total']").on('blur',function()
             {
                 totalCalc();
@@ -117,6 +118,8 @@
                 }
                  */
             });
+
+            $("input[name='total']").maskMoney({allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
 
             function totalCalc()
             {

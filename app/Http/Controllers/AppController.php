@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Akaunting\Money\Money;
 use App\helpers\helpers;
 use App\Jobs\Test;
 use App\Library\sms\sms;
@@ -37,15 +38,11 @@ class AppController extends Controller
 
     public function pricing(Request $request)
     {
+
         //$total                        = strpos($request->get('total'), '.') == false || strpos($request->get('total'), ',') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
-        $total                        = helpers::priceFormat($request->get('total'),5);
+        $total                        = $request->get('total');
         $totalPrice                   = Cache::get('totalPrice'.Auth::user()->customer_code);
         $totalPrice                   = helpers::priceFormat($totalPrice,5);
-
-        if ($total > $totalPrice)
-        {
-            return  json_encode(array('message' => 'Girilen tutar, toplam ödenecek tutardan fazladır. Lütfen doğru tutar giriniz.'));
-        }
 
         $data['mode']                 = "PROD";
         $data['apiversion']           = "v0.01";
@@ -111,6 +108,7 @@ class AppController extends Controller
     {
         $amount = strpos($request->get('total'), '.') == false ?  helpers::priceFormat($request->get('total'),4) : helpers::priceFormat($request->get('total'),3);
 
+
         $this->priceMssqlSave($amount);
 
         $data['link'] = route('receipt',[$amount]);
@@ -124,9 +122,9 @@ class AppController extends Controller
     {
         //354241
         $deleteDate    = '20221004';
-        $selectDate    = '20221004';
+        $selectDate    = '20230121';
         $customerCode  = Auth::user()->customer_code;
-        //$customerCode  = '496931';
+        //$customerCode  = '492965';
         $connection    = DB::connection('sqlsrv');
         /*
 
@@ -150,17 +148,14 @@ class AppController extends Controller
                                                                                                                                 ");
                                                                                         Cache::flush();
                                                                                         return view('priceList');
-        *//*
-                        $s[3] = $connection->select("SET NOCOUNT ON; Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
-                        $s[4] = $connection->select("SET NOCOUNT ON; select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';");
-                        $s[7] = $connection->select("
-                                                                                                                   SET NOCOUNT ON;
-                                                                                                                   Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');
-                                                                                                                   ");
-                        $s[8] = $connection->select("
-                                                                                                                   SET NOCOUNT ON;
-                                                                                                                   Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))
-                                                                                                                   ");
+        */
+        /*
+                        $s[1] = $connection->select(" Select * from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."';");
+                        $s[2] = $connection->select(" Select * from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader  where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."');");
+                        $s[3] = $connection->select(" Select * from trCreditCardPaymentLineCurrency where CreditCardPaymentLineID in (Select  CreditCardPaymentLineID from trCreditCardPaymentLine where CreditCardPaymentHeaderID in (Select CreditCardPaymentHeaderID from trCreditCardPaymentHeader where CurrAccCode = '".$customerCode."'  and PaymentDate = '".$selectDate."'));");
+                        $s[4] = $connection->select(" select * from trCurrAccBook where CurrAccCode = '".$customerCode."' and DocumentDate ='".$selectDate."';");
+                        $s[7] = $connection->select(" Select * from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."');");
+                        $s[8] = $connection->select(" Select * from trPaymentLineCurrency Where PaymentLineID in (Select PaymentLineID from trPaymentLine Where PaymentHeaderID in (Select PaymentHeaderID from trPaymentHeader Where CurrAccCode = '".$customerCode."' and DocumentDate = '".$selectDate."' ))");
                         dd($s);/*
                                         $paymentLineId = '6386AFBE-1B41-4F81-93A6-815B5399F16B2222';
                                         $data['amount'] = '500';
@@ -394,14 +389,14 @@ class AppController extends Controller
 
             Cache::put('price'.$customerCode, $request->get('monthYear'), Carbon::now()->addMinutes(30));
             Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
-            $remainingDept = $priceTotal - $price;
 
-            $price = helpers::priceFormat($price);
+            $remainingDept  = $priceTotal-$price;
+            $price          = helpers::priceFormat($price,7);
         }
         elseif ($request->get('status') == 2)
         {
-            $price = helpers::priceFormat($request->get('price'),4);
-
+            //$price = helpers::priceFormat($request->get('price'),3);
+            $price = $request->get('price');
             foreach ($priceList as $value)
             {
                 $priceTotal += $value['price'];
@@ -409,19 +404,22 @@ class AppController extends Controller
 
             Cache::put('price'.$customerCode, $request->get('monthYear'), Carbon::now()->addMinutes(30));
             Cache::put('priceTotal'.$customerCode, $price, Carbon::now()->addMinutes(30));
-            $remainingDept = $priceTotal - $price;
+
+
+            $remainingDept  = helpers::remainingDept($priceTotal,$price);
+            $price          = $remainingDept['price'];
+
+            if (strstr($remainingDept['remaining'], '-'))
+            {
+                $price         = helpers::priceFormat($priceTotal,7);
+                $remainingDept = $price;
+                $moreMoneyWarn = array('Uyarı!','Ödeme tutarından fazla tutar girdiniz. Lütfen maksimum tutarı giriniz.');
+            }
         }
 
-        /*
-        if ($price > $priceTotal)
-        {
-            $price         = $priceTotal;
-            $remainingDept = 0;
-            $moreMoneyWarn = array('Uyarı!','Ödeme tutarından fazla tutar girdiniz. Lütfen maksimum tutarı giriniz.');
-        }
-        */
+        $remainingDept = is_array($remainingDept) ? $remainingDept['remaining'] : $remainingDept;
 
-        return json_encode(array('totalPrice' => $price,'remainingDept' => helpers::priceFormat($remainingDept),'moreMoneyWarn' => $moreMoneyWarn));
+        return json_encode(array('totalPrice' => $price,'remainingDept' => $remainingDept,'moreMoneyWarn' => $moreMoneyWarn));
     }
 
     public function payResult(Request $request)

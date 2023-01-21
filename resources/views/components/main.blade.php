@@ -85,6 +85,7 @@
 </body>
 <script src="{{mix('js/main.js')}}"></script>
 <script src="{{mix('js/guest.js')}}"></script>
+<script src="{{asset('assets/js/jquery.maskMoney.min.js')}}"></script>
 @yield('js')
 <x-alert></x-alert>
 <x-loading></x-loading>
