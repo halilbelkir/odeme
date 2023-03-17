@@ -8,11 +8,6 @@
     </script>
 @endif
 
-@if (session('email'))
-    <script>
-        toastr.error('{{ session('email') }}','');
-    </script>
-@endif
 @if ($errors->any())
     <script>
         @foreach ($errors->all() as $error)

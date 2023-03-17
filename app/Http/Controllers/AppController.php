@@ -703,10 +703,9 @@ class AppController extends Controller
         }
         else
         {
-            $sql = cdCurrAcc::join('cdCurrAccDesc as cd','cd.CurrAccCode','=','cdCurrAcc.CurrAccCode')
-                ->join('prCurrAccCommunication as p','cd.CurrAccCode','=','p.CurrAccCode')
+            $sql = cdCurrAcc::join('prCurrAccCommunication as p','cdCurrAcc.CurrAccCode','=','p.CurrAccCode')
                 ->leftJoin('prCurrAccCommunication as pr', function ($join) {
-                    $join->on('cd.CurrAccCode','=','pr.CurrAccCode')
+                    $join->on('cdCurrAcc.CurrAccCode','=','pr.CurrAccCode')
                         ->whereNull('pr.ContactID')
                         ->where('pr.CommunicationTypeCode',3);
                 })
@@ -817,7 +816,6 @@ class AppController extends Controller
         }
         catch (\Exception $e)
         {
-            dd($e);
             return response()->json(
                 [
                     'result'  => 0,
