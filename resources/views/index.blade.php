@@ -13,7 +13,7 @@
         <b>Garanti BBVA Iban Numarası</b> <br>
         TR19 0006 2001 6060 0006 2974 46 <br>
         Ad Soyad / Ünvan : UĞURLU PERAKENDE MAĞAZACILIK İTH. İHR. SAN. VE TİC. A.Ş. <br>
-        <b>Not: Açıklama kısmına borçlu isim - soyisim TC ve iletişim numarasını muhakkak belirtiniz.</b>
+        <b style="color: #dd0815;font-style: italic">Not: Açıklama kısmına borçlu isim - soyisim TC ve iletişim numarasını muhakkak belirtiniz.</b>
     </div>
     @section('js')
         <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeAj5cgAAAAAG_HyfWQVwj11LS_A4Zw7EhVV0_v"></script>

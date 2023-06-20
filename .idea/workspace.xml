@@ -353,14 +353,8 @@
       <workItem from="1685473993928" duration="514000" />
       <workItem from="1686684714707" duration="1214000" />
       <workItem from="1686830993511" duration="11000" />
-      <workItem from="1687180227278" duration="695000" />
-    </task>
-    <task id="LOCAL-00071" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656320078513</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1656320078513</updated>
+      <workItem from="1687180227278" duration="704000" />
+      <workItem from="1687244983686" duration="47000" />
     </task>
     <task id="LOCAL-00072" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1656327493732</created>
@@ -698,7 +692,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679082407104</updated>
     </task>
-    <option name="localTasksCounter" value="120" />
+    <task id="LOCAL-00120" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1687235296502</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1687235296502</updated>
+    </task>
+    <option name="localTasksCounter" value="121" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -719,8 +720,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="son revize" />
     <MESSAGE value="tc sabitleme" />
-    <MESSAGE value="Halil İbrahim BELKIR tarafindan yapildi" />
     <MESSAGE value="tc kontrol sql update" />
-    <option name="LAST_COMMIT_MESSAGE" value="tc kontrol sql update" />
+    <MESSAGE value="Halil İbrahim BELKIR tarafindan yapildi" />
+    <option name="LAST_COMMIT_MESSAGE" value="Halil İbrahim BELKIR tarafindan yapildi" />
   </component>
 </project>
