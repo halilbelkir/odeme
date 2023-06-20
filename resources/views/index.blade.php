@@ -7,6 +7,14 @@
         </div>
         <button class="w-100 btn btn-md btn-red mt-3" type="submit">Giriş Yap</button>
     </form>
+    <div class="col-12" style="margin-top: 50px; text-align: left">
+        <b>HESAP NUMARASI</b> <br>
+        Taksit ödemelerinizi mağazaya gelmeden Iban numarası ile gerçekleştirebilirsiniz. <br>
+        <b>Garanti BBVA Iban Numarası</b> <br>
+        TR19 0006 2001 6060 0006 2974 46 <br>
+        Ad Soyad / Ünvan : UĞURLU PERAKENDE MAĞAZACILIK İTH. İHR. SAN. VE TİC. A.Ş. <br>
+        <b>Not: Açıklama kısmına borçlu isim - soyisim TC ve iletişim numarasını muhakkak belirtiniz.</b>
+    </div>
     @section('js')
         <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeAj5cgAAAAAG_HyfWQVwj11LS_A4Zw7EhVV0_v"></script>
         @if(1==2)
