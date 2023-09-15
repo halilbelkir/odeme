@@ -7,7 +7,7 @@
     <list default="true" id="224e8392-ad32-4a10-a7f8-c19f3b982e3d" name="Default Changelist" comment="Halil İbrahim BELKIR tarafindan yapildi">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -354,14 +354,18 @@
       <workItem from="1686684714707" duration="1214000" />
       <workItem from="1686830993511" duration="11000" />
       <workItem from="1687180227278" duration="704000" />
-      <workItem from="1687244983686" duration="47000" />
-    </task>
-    <task id="LOCAL-00072" summary="Halil İbrahim BELKIR tarafindan yapildi">
-      <created>1656327493732</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1656327493732</updated>
+      <workItem from="1687244983686" duration="66000" />
+      <workItem from="1687248409148" duration="604000" />
+      <workItem from="1688629953269" duration="723000" />
+      <workItem from="1688636186733" duration="969000" />
+      <workItem from="1688644626819" duration="2000" />
+      <workItem from="1689082854788" duration="607000" />
+      <workItem from="1690296883918" duration="616000" />
+      <workItem from="1692785981881" duration="18000" />
+      <workItem from="1693249400801" duration="3688000" />
+      <workItem from="1693402569347" duration="2314000" />
+      <workItem from="1694549888926" duration="1518000" />
+      <workItem from="1694765726373" duration="326000" />
     </task>
     <task id="LOCAL-00073" summary="Halil İbrahim BELKIR tarafindan yapildi">
       <created>1656329333467</created>
@@ -699,7 +703,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687235296502</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="Halil İbrahim BELKIR tarafindan yapildi">
+      <created>1687245043886</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1687245043886</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

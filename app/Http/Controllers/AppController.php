@@ -51,13 +51,16 @@ class AppController extends Controller
         $data['txnamount']            = str_replace([',','.'],['',''],$total); //��lem Tutar�  1.00 TL i�in 100 g�nderilmeli
         $data['txncurrencycode']      = "949";
         $data['txninstallmentcount']  = ""; //Taksit Say�s�. Bo� g�nderilirse taksit yap�lmaz
-        $data['terminaluserid']       = "10230941";
+        $data['terminaluserid']       = "2321232";
         $data['orderid']              = helpers::orderNumber();
         $data['customeripaddress']    = $request->ip();
         $data['customeremailaddress'] = "eticaret@garanti.com.tr";
-        $data['terminalid']           = "10230941";
-        $strTerminalID_               = "010230941"; //Ba��na 0 eklenerek 9 digite tamamlanmal�d�r.
-        $data['terminalmerchantid']   = "1594364"; //�ye ��yeri Numaras�
+        //$data['terminalid']           = "10230941";
+        $data['terminalid']           = "10266552";
+        //$strTerminalID_               = "010230941"; //Ba��na 0 eklenerek 9 digite tamamlanmal�d�r.
+        $strTerminalID_               = "010266552"; //Ba��na 0 eklenerek 9 digite tamamlanmal�d�r.
+        $data['terminalmerchantid']   = "2321232"; //�ye ��yeri Numaras�
+        //$data['terminalmerchantid']   = "1594364"; //�ye ��yeri Numaras�
         $strStoreKey                  = "313233343536373839303132333435363738393031323334"; //3D Secure �ifreniz
         $strProvisionPassword         = "Beliz.3377"; //TerminalProvUserID �ifresi
         $data['successurl']           = route('pay.result');
@@ -425,6 +428,7 @@ class AppController extends Controller
     public function payResult(Request $request)
     {
         $strMDStatus = $request->get('mdstatus');
+
         if ($strMDStatus == "1" || $strMDStatus == "2" || $strMDStatus == "3" || $strMDStatus == "4")
         {
             $strMode                  = $request->get('mode');
