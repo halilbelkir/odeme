@@ -8,8 +8,8 @@
 
     class sms
 	{
-	    static $apiKey    = '7001604842';
-        static $apiSecret = 'c1d2e86efcd54b348cf5441962e53b76';
+	    static $apiKey    = '5603567218';
+        static $apiSecret = '43213ca4bb1f447cbd4a6ea48336f2f2';
 
 	    public static function curlSend($url,$method,$postfields)
         {
