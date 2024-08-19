@@ -235,7 +235,7 @@ class AdminController extends Controller
         $sql = PayResult::join('users','users.id','=','pay_result.user_id')->select('pay_result.*','users.name','users.surname','users.customer_code')->whereRaw("(DATE_FORMAT(pay_result.created_at,'%Y/%m/%d')) BETWEEN DATE_FORMAT('".$startDate."', '%Y/%m/%d') and DATE_FORMAT('".$endDate."', '%Y/%m/%d')")->get();
         return Datatables::of($sql)
             ->editColumn('created_at', function ($payResult) {
-                return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y') : '';
+                return $payResult->created_at ? with(new Carbon($payResult->created_at))->format('d-m-Y H:i:s') : '';
             })
             ->editColumn('amount', function ($payResult) {
                 $amount = $payResult->amount;
